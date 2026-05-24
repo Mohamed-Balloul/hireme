@@ -1,6 +1,6 @@
 import 'dart:io';
 import 'package:flutter_localizations/flutter_localizations.dart'; // استيراد المكتبة
-import 'package:hireme/core/constant/initialbinding.dart';
+import 'package:hireme/bindings/initialbinding.dart';
 import 'package:hireme/core/localization/changelocal.dart';
 import 'package:hireme/core/localization/translation.dart';
 import 'package:hireme/core/services/services.dart';

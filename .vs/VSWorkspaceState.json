@@ -1,0 +1,16 @@
+{
+  "ExpandedNodes": [
+    "",
+    "\\assets",
+    "\\assets\\images",
+    "\\lib",
+    "\\lib\\data",
+    "\\lib\\data\\datasource",
+    "\\lib\\data\\datasource\\static",
+    "\\lib\\view",
+    "\\lib\\view\\widget",
+    "\\lib\\view\\widget\\company"
+  ],
+  "SelectedNode": "\\lib\\data\\datasource\\static\\static.dart",
+  "PreviewInSolutionExplorer": false
+}

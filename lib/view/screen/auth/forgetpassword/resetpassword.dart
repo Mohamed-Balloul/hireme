@@ -1,4 +1,5 @@
-import 'package:hireme/controller/auth/resetpassword_controller.dart';
+import 'package:hireme/controller/forgetpassword/resetpassword_controller.dart';
+import 'package:hireme/core/class/handlingdataview.dart';
 // import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/core/functions/validinput.dart';
 import 'package:hireme/view/widget/auth/custombuttonauth.dart';
@@ -13,115 +14,223 @@ class ResetPassword extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // ResetPasswordControllerImp controller =
-    //     Get.put(ResetPasswordControllerImp());
     Get.lazyPut(() => ResetPasswordControllerImp());
     return SafeArea(child: Scaffold(
       body: GetBuilder<ResetPasswordControllerImp>(builder: (controller) {
-        return Container(
-          padding: const EdgeInsets.symmetric(
-            horizontal: 20,
-          ),
-          child: Form(
-            key: controller.formState,
-            child: ListView(
-              children: [
-                const Column(
-                  children: [
-                    Padding(
-                      padding: EdgeInsets.only(
-                        bottom: 8,
-                        top: 60,
+        return HandlingDataRequest(
+          statusRequest: controller.statusRequest,
+          widget: Container(
+            padding: const EdgeInsets.symmetric(
+              horizontal: 20,
+            ),
+            child: Form(
+              key: controller.formState,
+              child: ListView(
+                children: [
+                  const Column(
+                    children: [
+                      Padding(
+                        padding: EdgeInsets.only(
+                          bottom: 8,
+                          top: 60,
+                        ),
+                        child: CustomTextTitleAuth(
+                          text: "تعيين كلمة مرور جديدة",
+                        ),
                       ),
-                      child: CustomTextTitleAuth(
-                        text: "تعيين كلمة مرور جديدة",
+                      //--
+                      CustomTextBodyAuth(
+                        text:
+                            "كلمة المرور الجديدة يجب أن تكون مختلفة عن الكلمة السابقة",
                       ),
-                    ),
-                    //--
-                    CustomTextBodyAuth(
-                      text:
-                          "كلمة المرور الجديدة يجب أن تكون مختلفة عن الكلمة السابقة",
-                    ),
-                  ],
-                ),
-                //--
-                Column(
-                  children: [
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 20,
-                        top: 50,
+                    ],
+                  ),
+                  //--
+                  Column(
+                    children: [
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 20,
+                          top: 50,
+                        ),
+                        child: GetBuilder<ResetPasswordControllerImp>(
+                          builder: (controller) {
+                            return CustomTextFormAuthWithLablel(
+                              onTapIcon: () {
+                                controller.showHidePassword();
+                              },
+                              obscureText: controller.isPasswordHidden,
+                              valid: (val) {
+                                return validInput(val!, 5, 30, "password");
+                              },
+                              mycontroller: controller.password,
+                              labelText: "كلمة المرور الجديدة",
+                              hintText: "ادخل كلمة المرور الجديدة",
+                              iconData: controller.isPasswordHidden == true
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              isNumber: false,
+                            );
+                          },
+                        ),
                       ),
-                      child: GetBuilder<ResetPasswordControllerImp>(
-                        builder: (controller) {
-                          return CustomTextFormAuthWithLablel(
-                            onTapIcon: () {
-                              controller.showHidePassword();
-                            },
-                            obscureText: controller.isPasswordHidden,
-                            valid: (val) {
-                              return validInput(val!, 5, 30, "password");
-                            },
-                            mycontroller: controller.password,
-                            labelText: "كلمة المرور الجديدة",
-                            hintText: "ادخل كلمة المرور الجديدة",
-                            iconData: controller.isPasswordHidden == true
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            isNumber: false,
-                          );
-                        },
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          bottom: 20,
+                        ),
+                        child: GetBuilder<ResetPasswordControllerImp>(
+                          builder: (controller) {
+                            return CustomTextFormAuthWithLablel(
+                              onTapIcon: () {
+                                controller.showHidePassword();
+                              },
+                              obscureText: controller.isPasswordHidden,
+                              valid: (val) {
+                                return validInput(val!, 5, 30, "password");
+                              },
+                              mycontroller: controller.confirmPassword,
+                              labelText: "تأكيد كلمة المرور",
+                              hintText: "ادخل كلمة المرور الجديدة",
+                              iconData: controller.isPasswordHidden == true
+                                  ? Icons.visibility_off
+                                  : Icons.visibility,
+                              isNumber: false,
+                            );
+                          },
+                        ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        bottom: 20,
+                      // controller.confirmPassword.text == controller.password.text
+                      //     ? Container()
+                      //     : Text("hi"),
+                      controller.checkPasswords(),
+                      //--
+                      Padding(
+                        padding: const EdgeInsets.only(
+                          top: 20,
+                        ),
+                        child: CustomButtonAuth(
+                          onPressed: () {
+                            controller.goToSuccessResetPassword();
+                          },
+                          text: "تأكيد",
+                        ),
                       ),
-                      child: GetBuilder<ResetPasswordControllerImp>(
-                        builder: (controller) {
-                          return CustomTextFormAuthWithLablel(
-                            onTapIcon: () {
-                              controller.showHidePassword();
-                            },
-                            obscureText: controller.isPasswordHidden,
-                            valid: (val) {
-                              return validInput(val!, 5, 30, "password");
-                            },
-                            mycontroller: controller.confirmPassword,
-                            labelText: "تأكيد كلمة المرور",
-                            hintText: "ادخل كلمة المرور الجديدة",
-                            iconData: controller.isPasswordHidden == true
-                                ? Icons.visibility_off
-                                : Icons.visibility,
-                            isNumber: false,
-                          );
-                        },
-                      ),
-                    ),
-                    // controller.confirmPassword.text == controller.password.text
-                    //     ? Container()
-                    //     : Text("hi"),
-                    controller.checkPasswords(),
-                    //--
-                    Padding(
-                      padding: const EdgeInsets.only(
-                        top: 20,
-                      ),
-                      child: CustomButtonAuth(
-                        onPressed: () {
-                          controller.goToSuccessResetPassword();
-                        },
-                        text: "تأكيد",
-                      ),
-                    ),
-                  ],
-                ),
-                //--
-              ],
+                    ],
+                  ),
+                  //--
+                ],
+              ),
             ),
           ),
         );
       }),
     ));
+    // return SafeArea(child: Scaffold(
+    //   body: GetBuilder<ResetPasswordControllerImp>(builder: (controller) {
+    //     return Container(
+    //       padding: const EdgeInsets.symmetric(
+    //         horizontal: 20,
+    //       ),
+    //       child: Form(
+    //         key: controller.formState,
+    //         child: ListView(
+    //           children: [
+    //             const Column(
+    //               children: [
+    //                 Padding(
+    //                   padding: EdgeInsets.only(
+    //                     bottom: 8,
+    //                     top: 60,
+    //                   ),
+    //                   child: CustomTextTitleAuth(
+    //                     text: "تعيين كلمة مرور جديدة",
+    //                   ),
+    //                 ),
+    //                 //--
+    //                 CustomTextBodyAuth(
+    //                   text:
+    //                       "كلمة المرور الجديدة يجب أن تكون مختلفة عن الكلمة السابقة",
+    //                 ),
+    //               ],
+    //             ),
+    //             //--
+    //             Column(
+    //               children: [
+    //                 Padding(
+    //                   padding: const EdgeInsets.only(
+    //                     bottom: 20,
+    //                     top: 50,
+    //                   ),
+    //                   child: GetBuilder<ResetPasswordControllerImp>(
+    //                     builder: (controller) {
+    //                       return CustomTextFormAuthWithLablel(
+    //                         onTapIcon: () {
+    //                           controller.showHidePassword();
+    //                         },
+    //                         obscureText: controller.isPasswordHidden,
+    //                         valid: (val) {
+    //                           return validInput(val!, 5, 30, "password");
+    //                         },
+    //                         mycontroller: controller.password,
+    //                         labelText: "كلمة المرور الجديدة",
+    //                         hintText: "ادخل كلمة المرور الجديدة",
+    //                         iconData: controller.isPasswordHidden == true
+    //                             ? Icons.visibility_off
+    //                             : Icons.visibility,
+    //                         isNumber: false,
+    //                       );
+    //                     },
+    //                   ),
+    //                 ),
+    //                 Padding(
+    //                   padding: const EdgeInsets.only(
+    //                     bottom: 20,
+    //                   ),
+    //                   child: GetBuilder<ResetPasswordControllerImp>(
+    //                     builder: (controller) {
+    //                       return CustomTextFormAuthWithLablel(
+    //                         onTapIcon: () {
+    //                           controller.showHidePassword();
+    //                         },
+    //                         obscureText: controller.isPasswordHidden,
+    //                         valid: (val) {
+    //                           return validInput(val!, 5, 30, "password");
+    //                         },
+    //                         mycontroller: controller.confirmPassword,
+    //                         labelText: "تأكيد كلمة المرور",
+    //                         hintText: "ادخل كلمة المرور الجديدة",
+    //                         iconData: controller.isPasswordHidden == true
+    //                             ? Icons.visibility_off
+    //                             : Icons.visibility,
+    //                         isNumber: false,
+    //                       );
+    //                     },
+    //                   ),
+    //                 ),
+    //                 // controller.confirmPassword.text == controller.password.text
+    //                 //     ? Container()
+    //                 //     : Text("hi"),
+    //                 controller.checkPasswords(),
+    //                 //--
+    //                 Padding(
+    //                   padding: const EdgeInsets.only(
+    //                     top: 20,
+    //                   ),
+    //                   child: CustomButtonAuth(
+    //                     onPressed: () {
+    //                       controller.goToSuccessResetPassword();
+    //                     },
+    //                     text: "تأكيد",
+    //                   ),
+    //                 ),
+    //               ],
+    //             ),
+    //             //--
+    //           ],
+    //         ),
+    //       ),
+    //     );
+    //   }),
+    // ));
   }
 }
