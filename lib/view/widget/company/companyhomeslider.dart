@@ -3,8 +3,9 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hireme/controller/company/companyhome_controller.dart';
 import 'package:hireme/controller/company/savedstudents_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/view/widget/company/infoitem.dart';
 import 'package:hireme/view/widget/company/separator.dart';
 
@@ -14,6 +15,29 @@ class HomeSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CompanyHomeControllerImp>(builder: (controller) {
+      //
+      // 1. إذا كانت الحالة هي "تحميل" أو القائمة فارغة تماماً
+      if (controller.statusRequest == StatusRequest.loading &&
+          controller.allStudents!.isEmpty) {
+        return Container(
+          height: 160, // نفس ارتفاع السلايدر لكي لا يتحرك التصميم عند التحميل
+          alignment: Alignment.center,
+          child: const CircularProgressIndicator(
+            color: AppColor.primaryColor,
+          ),
+        );
+      }
+
+      // 2. إذا فشل التحميل وكانت القائمة فارغة (اختياري لكن احترافي)
+      if (controller.statusRequest == StatusRequest.serverfailure) {
+        return const SizedBox(
+          height: 160,
+          child: Center(child: Text("فشل تحميل البيانات")),
+        );
+      }
+
+      // 3. الحالة الطبيعية: عرض السلايدر
+
       return Column(
         children: [
           CarouselSlider(
@@ -27,7 +51,7 @@ class HomeSlider extends StatelessWidget {
                 controller.onChange(index);
               },
             ),
-            items: bestStudents.map((student) {
+            items: controller.allStudents.map((student) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 decoration: BoxDecoration(
@@ -53,7 +77,8 @@ class HomeSlider extends StatelessWidget {
                           children: [
                             Positioned.fill(
                               child: Image.network(
-                                student.image!,
+                                student.image! ??
+                                    "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop",
                                 fit: BoxFit.cover,
                               ),
                             ),
@@ -144,44 +169,8 @@ class HomeSlider extends StatelessWidget {
                                       );
                                     },
                                   )
-                                  // InkWell(
-                                  //   onTap: () {
-                                  //     Get.find<SavedStudentsControllerImp>()
-                                  //         .toggleSave(student);
-                                  //   },
-                                  //   child: Container(
-                                  //     padding: const EdgeInsets.all(
-                                  //         5), // تصغير البادينغ قليلاً
-                                  //     decoration: BoxDecoration(
-                                  //         color: Get.find<
-                                  //                     SavedStudentsControllerImp>()
-                                  //                 .isSaved(student)
-                                  //             ? AppColor.primaryColor
-                                  //                 .withOpacity(0.1)
-                                  //             : Colors.white,
-                                  //         shape: BoxShape.circle,
-                                  //         border: Border.all(
-                                  //           color: Get.find<
-                                  //                       SavedStudentsControllerImp>()
-                                  //                   .isSaved(student)
-                                  //               ? Colors.white
-                                  //               : Colors.grey.shade300,
-                                  //         )),
-                                  //     child: Icon(
-                                  //       Icons.bookmark_border,
-                                  //       size: 16,
-                                  //       color: Get.find<
-                                  //                   SavedStudentsControllerImp>()
-                                  //               .isSaved(student)
-                                  //           ? AppColor.primaryColor
-                                  //           : Colors.grey,
-                                  //     ),
-                                  //   ),
-                                  // ),
                                 ],
                               ),
-
-                              // const SizedBox(height: 6), // مسافة صغيرة
 
                               // 2. الاسم والمسمى
                               Text(
@@ -266,90 +255,8 @@ class HomeSlider extends StatelessWidget {
                                 mainAxisAlignment:
                                     MainAxisAlignment.spaceBetween,
                                 children: [
-                                  // أزرار الإجراءات السريعة
                                   Row(
-                                    children: [
-                                      // InkWell(
-                                      //   onTap: () {
-                                      //     // إظهار قائمة خيارات
-                                      //     // Get.bottomSheet(
-                                      //     //   Container(
-                                      //     //     color: Colors.white,
-                                      //     //     child: Wrap(
-                                      //     //       children: [
-                                      //     //         ListTile(
-                                      //     //           leading: Get.find<
-                                      //     //                       SavedPostsControllerImp>()
-                                      //     //                   .isSaved(
-                                      //     //                       freelancerPostModel)
-                                      //     //               ? const Icon(Icons
-                                      //     //                   .bookmark_remove_outlined)
-                                      //     //               : const Icon(Icons
-                                      //     //                   .bookmark_add_outlined),
-                                      //     //           title: Get.find<
-                                      //     //                       SavedPostsControllerImp>()
-                                      //     //                   .isSaved(
-                                      //     //                       freelancerPostModel)
-                                      //     //               ? const Text(
-                                      //     //                   "إزالة من الإعلانات المحفوظة")
-                                      //     //               : const Text(
-                                      //     //                   "إضافة إلى الإعلانات المحفوظة"),
-                                      //     //           onTap: () {
-                                      //     //             Get.back(); // إغلاق القائمة
-                                      //     //             Get.find<
-                                      //     //                     SavedPostsControllerImp>()
-                                      //     //                 .toggleSave(
-                                      //     //                     freelancerPostModel);
-                                      //     //           },
-                                      //     //         ),
-                                      //     //         // خيارات أخرى...
-                                      //     //       ],
-                                      //     //     ),
-                                      //     //   ),
-                                      //     // );
-                                      //     Get.find<SavedStudentsControllerImp>()
-                                      //         .toggleSave(student);
-                                      //   },
-                                      //   child: Container(
-                                      //     padding: const EdgeInsets.all(
-                                      //         5), // تصغير البادينغ قليلاً
-                                      //     decoration: BoxDecoration(
-                                      //         shape: BoxShape.circle,
-                                      //         border: Border.all(
-                                      //           color: Get.find<
-                                      //                       SavedStudentsControllerImp>()
-                                      //                   .isSaved(student)
-                                      //               ? AppColor.primaryColor
-                                      //               : Colors.grey.shade300,
-                                      //         )),
-                                      //     child: Icon(
-                                      //       Icons.bookmark_border,
-                                      //       size: 16,
-                                      //       color: Get.find<
-                                      //                   SavedStudentsControllerImp>()
-                                      //               .isSaved(student)
-                                      //           ? AppColor.primaryColor
-                                      //           : Colors.grey,
-                                      //     ),
-                                      //   ),
-                                      // ),
-                                      // const SizedBox(width: 8),
-                                      // InkWell(
-                                      //   onTap: () {},
-                                      //   child: Container(
-                                      //     padding: const EdgeInsets.all(5),
-                                      //     decoration: BoxDecoration(
-                                      //       shape: BoxShape.circle,
-                                      //       color: AppColor.primaryColor
-                                      //           .withOpacity(0.1),
-                                      //     ),
-                                      //     child: const Icon(
-                                      //         Icons.chat_bubble_outline,
-                                      //         size: 16,
-                                      //         color: AppColor.primaryColor),
-                                      //   ),
-                                      // ),
-                                    ],
+                                    children: [],
                                   ),
 
                                   // زر عرض الملف
@@ -389,7 +296,7 @@ class HomeSlider extends StatelessWidget {
           // النقاط
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: bestStudents.asMap().entries.map((entry) {
+            children: controller.allStudents.asMap().entries.map((entry) {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 width: controller.currentIndex == entry.key ? 20.0 : 8.0,

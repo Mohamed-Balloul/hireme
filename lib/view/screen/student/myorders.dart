@@ -1,8 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hireme/controller/student/myorders_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/view/widget/student/buildmodernrequestcard.dart';
 
 class MyOrders extends StatelessWidget {
@@ -134,19 +135,23 @@ class MyRequestsToCompaniesList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MyOrdersControllerImp controller = Get.find<MyOrdersControllerImp>();
+    MyOrdersControllerImp controller = Get.find<MyOrdersControllerImp>();
+    // فحص حالة التحميل أولاً
+    if (controller.statusRequest == StatusRequest.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     print("hi company");
-    return myRequestsToCompaniesList.isEmpty
+    return controller.allMyAdApplications.isEmpty
         ? const Center(child: Text("لم ترسل بعد أي طلب الى أية شركة"))
         : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            itemCount: /*controller.*/ myRequestsToCompaniesList.length,
+            itemCount: /*controller.*/ controller.allMyAdApplications.length,
             itemBuilder: (context, i) {
-              final request = /*controller.*/ myRequestsToCompaniesList[i];
+              final request = controller.allMyAdApplications[i];
               return BuildModernRequestCard(
-                id: i,
-                title: request.jobTitle!,
-                publisher: request.publisher!,
+                id: request.id!,
+                title: request.jobTitle ?? "عنوان غير متوفر",
+                publisher: request.publisher ?? "ناشر غير معروف",
                 imageUrl: request.logo ?? "",
                 status: request.orderState == 1
                     ? "تمت الموافقة"
@@ -176,19 +181,24 @@ class MyRequestsToCustomersList extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    // MyOrdersControllerImp controller = Get.find<MyOrdersControllerImp>();
+    MyOrdersControllerImp controller = Get.find<MyOrdersControllerImp>();
+    // فحص حالة التحميل أولاً
+    if (controller.statusRequest == StatusRequest.loading) {
+      return const Center(child: CircularProgressIndicator());
+    }
     print("hi customer");
-    return myRequestsToCustomersList.isEmpty
+    return controller.allMyProjectApplications.isEmpty
         ? const Center(child: Text("لم ترسل بعد أي طلب الى أي عميل"))
         : ListView.builder(
             padding: const EdgeInsets.symmetric(horizontal: 16, vertical: 20),
-            itemCount: /*controller.*/ myRequestsToCustomersList.length,
+            itemCount: /*controller.*/
+                controller.allMyProjectApplications.length,
             itemBuilder: (context, i) {
-              final request = /*controller.*/ myRequestsToCustomersList[i];
+              final request = controller.allMyProjectApplications[i];
               return BuildModernRequestCard(
-                id: i,
-                title: request.serviceTitle!,
-                publisher: request.publisher!,
+                id: request.id!,
+                title: request.serviceTitle ?? "عنوان غير متوفر",
+                publisher: request.publisher ?? "ناشر غير معروف",
                 imageUrl: request.image!,
                 status: request.requestState == 1
                     ? "تمت الموافقة"

@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/controller/student/companiesposts_controller.dart';
 import 'package:hireme/controller/student/studenthome_controller.dart';
 import 'package:hireme/controller/student/studentsuggestions_controller.dart';
 import 'package:hireme/core/constant/color.dart';
@@ -11,7 +12,7 @@ import 'package:hireme/view/widget/student/reusable_job_slider.dart';
 // استيراد الموديلات والقوائم الوهمية
 import 'package:hireme/data/model/companiespostmodel.dart';
 import 'package:hireme/data/model/freelancerpostmodel.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/view/widget/student/suggestionsfreelancerpostcard.dart';
 import 'package:hireme/view/widget/student/suggestionspostcard.dart';
 
@@ -21,8 +22,7 @@ class StudentHome extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     StudentHomeControllerImp controller = Get.put(StudentHomeControllerImp());
-    StudentSuggestionsControllerImp controller1 =
-        Get.put(StudentSuggestionsControllerImp());
+    Get.put(StudentSuggestionsControllerImp());
 
     return SafeArea(
       child: Scaffold(
@@ -80,26 +80,55 @@ class StudentHome extends StatelessWidget {
 
               // عرض القائمة المختلطة
               // نستخدم ListView.builder مع منع التمرير الخاص به لأنه داخل SingleChildScrollView
-              ListView.builder(
-                shrinkWrap: true,
-                physics: const NeverScrollableScrollPhysics(),
-                itemCount: suggestedItems.length,
-                itemBuilder: (context, index) {
-                  final item = suggestedItems[index];
+              // ListView.builder(
+              //   shrinkWrap: true,
+              //   physics: const NeverScrollableScrollPhysics(),
+              //   itemCount: controller1.suggestionsAds.length,
+              //   itemBuilder: (context, index) {
+              //     final item = controller1.suggestionsAds[index];
 
-                  // فحص نوع الموديل لعرض الكارد المناسب
-                  if (item is CompaniesPostModel) {
-                    return SuggestionsStudentPostCard(
-                      companiesPostModel: item,
-                      index: index,
-                    );
-                  } else if (item is FreelancerPostModel) {
-                    return SuggestionsStudentFreelancerPostCard(
-                      freelancerPostModel: item,
-                      index: index,
-                    );
+              //     // فحص نوع الموديل لعرض الكارد المناسب
+              //     if (item is CompaniesPostModel) {
+              //       return SuggestionsStudentPostCard(
+              //         companiesPostModel: item,
+              //         index: index,
+              //       );
+              //     } else if (item is FreelancerPostModel) {
+              //       return SuggestionsStudentFreelancerPostCard(
+              //         freelancerPostModel: item,
+              //         index: index,
+              //       );
+              //     }
+              //     return const SizedBox.shrink();
+              //   },
+              // ),
+              // داخل StudentHome
+
+              GetBuilder<StudentSuggestionsControllerImp>(
+                builder: (controller1) {
+                  if (controller1.suggestionsAds.isEmpty) {
+                    return const Center(
+                        child: Padding(
+                      padding: EdgeInsets.all(20.0),
+                      child: Text("جاري تحضير المقترحات..."),
+                    ));
                   }
-                  return const SizedBox.shrink();
+                  return ListView.builder(
+                    shrinkWrap: true,
+                    physics: const NeverScrollableScrollPhysics(),
+                    itemCount: controller1.suggestionsAds.length,
+                    itemBuilder: (context, index) {
+                      final item = controller1.suggestionsAds[index];
+                      if (item is CompaniesPostModel) {
+                        return SuggestionsStudentPostCard(
+                            companiesPostModel: item, index: index);
+                      } else if (item is FreelancerPostModel) {
+                        return SuggestionsStudentFreelancerPostCard(
+                            freelancerPostModel: item, index: index);
+                      }
+                      return const SizedBox.shrink();
+                    },
+                  );
                 },
               ),
 

@@ -1,11 +1,14 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/customer/customer.dart';
 import 'package:hireme/data/model/attachedfileitemmodel.dart';
 
 abstract class AddCustomerPostController extends GetxController {
-  signUp();
   goToSignIn();
   //
   showHidePassword();
@@ -23,6 +26,8 @@ abstract class AddCustomerPostController extends GetxController {
   pickAndAddFile();
   //
   getFileIcon(String? extension);
+  //--
+  createCustomerPost();
 }
 
 class AddCustomerPostControllerImp extends AddCustomerPostController {
@@ -30,6 +35,7 @@ class AddCustomerPostControllerImp extends AddCustomerPostController {
   //
   // 1. تعريف المتحكمات للنصوص البسيطة
   TextEditingController titleController = TextEditingController();
+  TextEditingController descriptionController = TextEditingController();
   TextEditingController detailsController = TextEditingController();
 
   // 2. تعريف قوائم المتحكمات للقوائم المتعددة (المهام، المتطلبات، الميزات)
@@ -51,6 +57,15 @@ class AddCustomerPostControllerImp extends AddCustomerPostController {
   PlatformFile? pickedFile;
   //
   int c = 0;
+  //
+  //ربط
+  MyServices myServices = Get.find();
+  StatusRequest statusRequest = StatusRequest.none;
+
+  CustomerData customerData = CustomerData(Get.find());
+
+  // List data = [];
+  //ربط
 
   @override
   goToSignIn() {
@@ -58,17 +73,10 @@ class AddCustomerPostControllerImp extends AddCustomerPostController {
   }
 
   @override
-  signUp() {
-    var formData = formState.currentState;
-    if (formData!.validate()) {
-      Get.offNamed(AppRoute.verfiyCodeSignUp);
-    } else {}
-  }
-
-  @override
   void onInit() {
     titleController = TextEditingController();
     detailsController = TextEditingController();
+    descriptionController = TextEditingController();
     for (var c in dutiesControllers) {
       c = TextEditingController();
     }
@@ -88,6 +96,7 @@ class AddCustomerPostControllerImp extends AddCustomerPostController {
   void dispose() {
     titleController.dispose();
     detailsController.dispose();
+    descriptionController.dispose();
     for (var c in dutiesControllers) {
       c.dispose();
     }
@@ -194,5 +203,53 @@ class AddCustomerPostControllerImp extends AddCustomerPostController {
         return const Icon(Icons.insert_drive_file,
             color: Colors.grey, size: 40);
     }
+  }
+
+  @override
+  createCustomerPost() async {
+    var formData = formState.currentState;
+    if (formData!.validate()) {
+      statusRequest = StatusRequest.loading;
+      update();
+
+      // --- تجهيز البيانات (Mapping) بناءً على توثيق Postman ---
+      Map<String, dynamic> data = {
+        "name": titleController.text,
+        "additional_details": detailsController.text,
+        "details": descriptionController.text,
+      };
+
+      // إضافة المتطلبات (req1, req2, ...)
+      for (int i = 0; i < dutiesControllers.length; i++) {
+        if (dutiesControllers[i].text.isNotEmpty && i < 5) {
+          data["tool${i + 1}"] = dutiesControllers[i].text;
+        }
+      }
+
+      // إرسال الطلب للسيرفر
+      String token = myServices.sharedPreferences.getString("token")!;
+      var response = await customerData.createCustomerPost(data, token);
+
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        if (response["message"] == "Project created successfully.") {
+          // نجاح العملية
+          // Get.back(); // العودة للخلف أو للهوم
+          Get.snackbar("نجاح", "تم نشر الإعلان بنجاح",
+              backgroundColor: Colors.green, colorText: Colors.white);
+
+          // (اختياري) تحديث قائمة الإعلانات في صفحة الهوم فوراً
+          // if (Get.isRegistered<CompanyHomeControllerImp>()) {
+          //   // Get.find<CompanyHomeControllerImp>().getAds();
+          // }
+        } else {
+          Get.defaultDialog(
+              title: "تنبيه", middleText: "فشل في نشر الإعلان، حاول مجدداً");
+          statusRequest = StatusRequest.failure;
+        }
+      }
+      update();
+    } else {}
   }
 }

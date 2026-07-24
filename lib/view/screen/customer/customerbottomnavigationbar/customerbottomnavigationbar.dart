@@ -2,13 +2,13 @@ import 'package:hireme/controller/customer/customerbottomnavigationbar/customerb
 import 'package:hireme/core/constant/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/data/datasource/static/static.dart';
-import 'package:hireme/view/screen/company/myorders.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/view/screen/company/myorders.dart';
 import 'package:hireme/view/screen/customer/addcustomerpost.dart';
-import 'package:hireme/view/screen/customer/customercomingrequests.dart';
+// import 'package:hireme/view/screen/customer/customercomingrequests.dart';
 import 'package:hireme/view/screen/customer/customerhome.dart';
 import 'package:hireme/view/screen/customer/customernotifications.dart';
-import 'package:hireme/view/screen/customer/customerpostsdetails.dart';
+// import 'package:hireme/view/screen/customer/customerpostsdetails.dart';
 import 'package:hireme/view/screen/customer/customerprofile.dart';
 
 class CustomerBottomNavigationBarr extends StatelessWidget {
@@ -17,20 +17,22 @@ class CustomerBottomNavigationBarr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(CustomerBottomNavigationBarrControllerImp());
-    List<Widget> mainList = [
-      const CustomerHome(),
-      // const MyOrders(),
-      // const CustomerPostsDetails(),
-      const AddCustomerPost(),
-      // const CustomerComingRequests(),
-      const CustomerNotifications(),
-      CustomerProfile(
-        customer: customerProfileList[0],
-        isMine: true,
-      ),
-    ];
+
     return GetBuilder<CustomerBottomNavigationBarrControllerImp>(
         builder: (controller) {
+      List<Widget> mainList = [
+        const CustomerHome(),
+        const AddCustomerPost(),
+        const CustomerNotifications(),
+
+        // فحص: إذا لم تصل البيانات بعد، اعرض Loading بدل البروفايل
+        controller.customerModel == null
+            ? const Center(child: CircularProgressIndicator())
+            : CustomerProfile(
+                customer: controller.customerModel!,
+                isMine: true,
+              ),
+      ];
       return SafeArea(
           child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(

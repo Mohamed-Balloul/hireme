@@ -4,8 +4,9 @@ import 'package:get/get.dart';
 // import 'package:hireme/controller/company/companyhome_controller.dart';
 import 'package:hireme/controller/customer/customerhome_controller.dart';
 import 'package:hireme/controller/customer/customersavedstudents_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/view/widget/company/infoitem.dart';
 import 'package:hireme/view/widget/company/separator.dart';
 
@@ -15,6 +16,29 @@ class HomeSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<CustomerHomeControllerImp>(builder: (controller) {
+      //
+      // 1. إذا كانت الحالة هي "تحميل" أو القائمة فارغة تماماً
+      if (controller.statusRequest == StatusRequest.loading &&
+          controller.allStudents!.isEmpty) {
+        return Container(
+          height: 185, // نفس ارتفاع السلايدر لكي لا يتحرك التصميم عند التحميل
+          alignment: Alignment.center,
+          child: const CircularProgressIndicator(
+            color: AppColor.primaryColor,
+          ),
+        );
+      }
+
+      // 2. إذا فشل التحميل وكانت القائمة فارغة (اختياري لكن احترافي)
+      if (controller.statusRequest == StatusRequest.serverfailure) {
+        return const SizedBox(
+          height: 185,
+          child: Center(child: Text("فشل تحميل البيانات")),
+        );
+      }
+
+      // 3. الحالة الطبيعية: عرض السلايدر
+
       return Column(
         children: [
           CarouselSlider(
@@ -28,7 +52,7 @@ class HomeSlider extends StatelessWidget {
                 controller.onChange(index);
               },
             ),
-            items: bestStudents.map((student) {
+            items: controller.allStudents.map((student) {
               return Container(
                 margin: const EdgeInsets.symmetric(horizontal: 5, vertical: 5),
                 decoration: BoxDecoration(
@@ -329,7 +353,7 @@ class HomeSlider extends StatelessWidget {
           // النقاط
           Row(
             mainAxisAlignment: MainAxisAlignment.center,
-            children: bestStudents.asMap().entries.map((entry) {
+            children: controller.allStudents.asMap().entries.map((entry) {
               return AnimatedContainer(
                 duration: const Duration(milliseconds: 300),
                 width: controller.currentIndex == entry.key ? 20.0 : 8.0,

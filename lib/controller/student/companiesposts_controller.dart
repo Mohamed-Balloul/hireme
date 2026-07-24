@@ -1,4 +1,5 @@
 // import 'package:hireme/core/constant/routes.dart';
+import 'package:hireme/controller/student/studenthome_controller.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 import 'package:get/get.dart';
 import 'package:hireme/data/model/companiespostmodel.dart';
@@ -12,26 +13,39 @@ abstract class CompaniesPostsController extends GetxController {
   goToCompanyProfile(String companyName);
   action(int index);
   change(int index);
+  //--
+  getAllCompaniesPosts();
 }
 
 class CompaniesPostsControllerImp extends CompaniesPostsController {
+  StudentHomeControllerImp homeController =
+      Get.find<StudentHomeControllerImp>();
   int currentIndex = 0;
-
+  //--
+  List<CompaniesPostModel> allCompaniesPosts = [];
+  //--
   // متغير للتحكم في حالة الفتح والإغلاق
 
   List<bool>? isExpanded = [];
   @override
   void onInit() {
+    getAllCompaniesPosts(); // استدعاء البيانات فوراً عند فتح الصفحة
     super.onInit();
-    for (int i = 0; i < allcompaniesPosts.length; i++) {
-      isExpanded!.add(false);
-    }
+    // for (int i = 0; i < allcompaniesPosts.length; i++) {
+    //   isExpanded!.add(false);
+    // }
   }
 
-  // @override
-  // goToPostDetails(companyPostModel) {
-  //   Get.to(() => CompanyPostDetails(companyPostModel: companyPostModel));
-  // }
+  @override
+  getAllCompaniesPosts() {
+    // جلب البيانات الحقيقية من الهوم كنترولر
+    allCompaniesPosts = homeController.allCompaniesAds;
+
+    // تهيئة قائمة "عرض المزيد" بناءً على عدد البيانات الحقيقية المجلوبة
+    isExpanded = List.generate(allCompaniesPosts.length, (index) => false);
+
+    update(); // تحديث الواجهة
+  }
 
   @override
   action(index) {

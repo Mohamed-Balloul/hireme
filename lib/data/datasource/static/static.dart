@@ -415,6 +415,7 @@ List<CompanyPostModel> companiesPostsList = [
 //   ),
 // ];
 List<FreelancerPostModel> freelancerPostsList = [
+  // + + //
   // 1. مشروع متجر إلكتروني (تم تغيير صورة البوست + صورة الناشر)
   FreelancerPostModel(
     publisher: "أحمد العلي",
@@ -983,7 +984,9 @@ List<StudentNotificationModel> allNotifications = [
 //   ),
 // ];
 //---------------- Static Data : All Companies Posts Information In Student view -----------------
+
 List<CompaniesPostModel> allcompaniesPosts = [
+  //+ +//
   CompaniesPostModel(
     companyName: "Tech Solutions",
     logo:
@@ -1133,6 +1136,7 @@ List<IncomingRequestsToCompanyModel> incomingRequestsOnCompanyPostList = [
 
 //---------------- Static Data : company profile -----------------
 List<CompanyProfileModel> companyProfileList = [
+  // + + //
   CompanyProfileModel(
     // images
     logoUrl:
@@ -1429,6 +1433,7 @@ List<CompanyPostInCompanyHomeModel> companyPosts = [
 // ];
 //---------------- Static Data : Best Students Informations -----------------
 List<StudentProfileModel> bestStudents = [
+  //+ + //
   StudentProfileModel(
     cover:
         "https://images.unsplash.com/photo-1497215728101-856f4ea42174?q=80&w=1000&auto=format&fit=crop",
@@ -1746,6 +1751,7 @@ List<ComingRequestOnCompanyPostModel> comingRequestsOnCustomerPostList = [
 ];
 //---------------- Static Data : customer profile -----------------
 List<CustomerProfileModel> customerProfileList = [
+  // + + //
   CustomerProfileModel(
     // 1 General Informations
     cover:
@@ -1760,9 +1766,7 @@ List<CustomerProfileModel> customerProfileList = [
         "مطور تطبيقات موبايل شغوف باستخدام Flutter. لدي خبرة قوية في بناء تطبيقات متجاوبة وعالية الأداء. ",
     // 2 Statistical Info
     city: "Latakia",
-    // hourlySalary: 15,
-    // experienceYears: 5,
-    // skils: ["Dart", "Clean Arch", "Bloc", "Git"],
+
     github: "https://github.com/Mohamed-Balloul",
     linkedIn: "https://www.linkedin.com/in/mohamed-balloul-13b4173b3",
     // 3 Education Info
@@ -1772,26 +1776,6 @@ List<CustomerProfileModel> customerProfileList = [
       "college": "كلية الهندسة المعلوماتية",
       "university": "جامعة حمص",
     },
-    // 4 Work Experiences || الخبرة المهنية
-    // workExperiences: [
-    //   {
-    //     "companyName": "شركة أمازون",
-    //     "jobTitle": "Flutter Developer",
-    //     "startDate": "Jan 2024",
-    //     "endDate": "حتى الآن",
-    //     "logo":
-    //         "https://assets.aboutamazon.com/2e/d7/ac71f1f344c39f8949f48fc89e71/amazon-logo-squid-ink-smile-orange.png",
-    //     "isFreelancer": false,
-    //   },
-    //   {
-    //     "companyName": "Freelance",
-    //     "jobTitle": "UI/UX Designer",
-    //     "startDate": "Mar 2022",
-    //     "endDate": "Dec 2023",
-    //     "logo": "",
-    //     "isFreelancer": true,
-    //   },
-    // ],
   ),
   CustomerProfileModel(
     // 1 General Informations

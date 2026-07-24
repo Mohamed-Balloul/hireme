@@ -101,7 +101,7 @@ class SendRequestToCompany extends StatelessWidget {
                           valid: (val) {
                             return validInput(val!, 6, 30, "username");
                           },
-                          mycontroller: controller.titleController,
+                          mycontroller: controller.githubLinkController,
                           labelText: "رابط حسابك على Git Hub :",
                           hintText: "ادخل الرابط هنا",
                           iconData: Icons.link,
@@ -119,7 +119,7 @@ class SendRequestToCompany extends StatelessWidget {
                           valid: (val) {
                             return validInput(val!, 6, 30, "username");
                           },
-                          mycontroller: controller.detailsController,
+                          mycontroller: controller.expectedSalaryController,
                           labelText: "الراتب المتوقع :",
                           hintText: "ادخل الراتب المتوقع هنا",
                           iconData: Icons.attach_money,
@@ -138,7 +138,8 @@ class SendRequestToCompany extends StatelessWidget {
                   child: CustomButtonAuth(
                     text: "إرسال",
                     onPressed: () {
-                      controller.signUp();
+                      controller.createAndSendApplicationToCompany(
+                          companiesPostModel.id!);
                     },
                   ),
                 ),

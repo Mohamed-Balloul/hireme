@@ -108,7 +108,7 @@ class SendRequestToCustomer extends StatelessWidget {
                         valid: (val) {
                           return validInput(val!, 6, 30, "username");
                         },
-                        mycontroller: controller.detailsController,
+                        mycontroller: controller.expectedSalaryController,
                         labelText: "الأجر المطلوب مقابل تقديم الخدمة :",
                         hintText: "ادخل المبلغ المطلوب هنا",
                         iconData: Icons.attach_money,

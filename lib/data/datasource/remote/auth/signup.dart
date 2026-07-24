@@ -8,8 +8,10 @@ class SignUpData {
     var response = await crud.postData(AppLink.signUp, {
       "username": username,
       "password": password,
+      "password_confirmation":
+          password, // الباك اند يطلبه، سنرسل نفس الباسورد حالياً
       "email": email,
-      "role": role,
+      "user_type": role,
     });
     return response.fold((l) => l, (r) => r);
   }

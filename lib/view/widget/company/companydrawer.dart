@@ -1,6 +1,8 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/controller/company/companybottomnavigationbar/companybottomnavigationbar_controller.dart';
 import 'package:hireme/controller/company/companyhome_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/companyprofilemodel.dart';
@@ -10,149 +12,182 @@ class CompanyDrawer extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
-    CompanyHomeControllerImp controller = Get.find<CompanyHomeControllerImp>();
-    CompanyProfileModel company = companyProfileList[0];
-    return Drawer(
-      width:
-          MediaQuery.of(context).size.width * 0.75, // عرض الدراور 75% من الشاشة
-      // هذا السطر هو المسؤول عن جعل الزوايا حادة (قائمة)
-      shape: const RoundedRectangleBorder(
-        borderRadius: BorderRadius.zero,
-      ),
-      backgroundColor: Colors.white,
-      child: Column(
-        children: [
-          // ================= 1. الهيدر المنحني =================
+    Get.find<CompanyHomeControllerImp>();
+    // نحتاج للوصول لل كنترولر لمعرفة حالة التحميل
+    CompanyBottomNavigationBarrControllerImp controller1 =
+        Get.find<CompanyBottomNavigationBarrControllerImp>();
+
+    // CompanyProfileModel company = companyProfileList[0];
+    return GetBuilder<CompanyHomeControllerImp>(builder: (controller) {
+      // 1. حالة التحميل: إذا كانت ال لا تزال تحمل والقائمة فارغة
+      if (controller1.statusRequest == StatusRequest.loading &&
+          controller.companyModel == null) {
+        return const Center(
+          child: Column(
+            mainAxisAlignment: MainAxisAlignment.center,
+            children: [
+              CircularProgressIndicator(color: AppColor.primaryColor),
+              SizedBox(height: 15),
+              Text("جاري تحميل ...", style: TextStyle(color: Colors.grey)),
+            ],
+          ),
+        );
+      }
+
+      // 2. حالة القائمة فارغة (بعد انتهاء التحميل)
+      if (controller.companyModel == null) {
+        return const Center(child: Text("خطأ في تحميل البيانات"));
+      }
+      // 3. الحالة الطبيعية: عرض
+      CompanyProfileModel company = controller.companyModel!;
+      return Drawer(
+        width: MediaQuery.of(context).size.width *
+            0.75, // عرض الدراور 75% من الشاشة
+        // هذا السطر هو المسؤول عن جعل الزوايا حادة (قائمة)
+        shape: const RoundedRectangleBorder(
+          borderRadius: BorderRadius.zero,
+        ),
+        backgroundColor: Colors.white,
+        child: Column(
+          children: [
+            // ================= 1. الهيدر المنحني =================
 
 // داخل كلاس StudentDrawer، استبدل الـ Stack الخاص بالهيدر بهذا:
-          Stack(
-            children: [
-              ClipPath(
-                clipper: HeaderCurveClipper(),
-                child: Container(
-                  height: 250,
-                  decoration: const BoxDecoration(
-                    gradient: LinearGradient(
-                      begin: Alignment.centerRight,
-                      end: Alignment.centerLeft,
-                      colors: [
-                        Color.fromARGB(255, 29, 191, 83),
-                        Color.fromARGB(255, 134, 255, 189),
-                      ],
+            Stack(
+              children: [
+                ClipPath(
+                  clipper: HeaderCurveClipper(),
+                  child: Container(
+                    height: 250,
+                    decoration: const BoxDecoration(
+                      gradient: LinearGradient(
+                        begin: Alignment.centerRight,
+                        end: Alignment.centerLeft,
+                        colors: [
+                          Color.fromARGB(255, 29, 191, 83),
+                          Color.fromARGB(255, 134, 255, 189),
+                        ],
+                      ),
                     ),
                   ),
                 ),
-              ),
-              // الصورة الشخصية والمعلومات (تعديل الإحداثيات لتناسب الموجة)
-              Positioned(
-                top: 55,
-                right:
-                    11, // إزاحة جهة اليمين ليكون في قلب الجزء المرتفع من المنحنى
-                child: Column(
-                  crossAxisAlignment: CrossAxisAlignment.start,
-                  children: [
-                    Container(
-                      padding: const EdgeInsets.all(3.5),
-                      decoration: const BoxDecoration(
-                        // color: Color.fromARGB(255, 29, 191, 83),
-                        color: Color.fromARGB(255, 134, 255, 189),
-                        // color: Color.fromARGB(255, 50, 255, 156),
-                        shape: BoxShape.circle,
-                      ),
-                      child: const CircleAvatar(
-                        radius: 60,
-                        backgroundImage: NetworkImage(
-                            // "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000"),
-                            // "https://unsplash.com/photos/the-amazon-logo-is-displayed-on-a-building-CLcmKictgSY"),
-                            "https://www.thebusinesstoolkit.com/wp-content/uploads/2025/08/amazon-logo-1.png"),
-                      ),
-                    ),
-                    const SizedBox(height: 10),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 11),
-                      child: Text(
-                        company.name!,
-                        style: TextStyle(
-                          fontSize: 19,
-                          fontWeight: FontWeight.bold,
-                          color: Colors.black87,
+                // الصورة الشخصية والمعلومات (تعديل الإحداثيات لتناسب الموجة)
+                Positioned(
+                  top: 55,
+                  right:
+                      11, // إزاحة جهة اليمين ليكون في قلب الجزء المرتفع من المنحنى
+                  child: Column(
+                    crossAxisAlignment: CrossAxisAlignment.start,
+                    children: [
+                      Container(
+                        padding: const EdgeInsets.all(3.5),
+                        decoration: const BoxDecoration(
+                          // color: Color.fromARGB(255, 29, 191, 83),
+                          color: Color.fromARGB(255, 134, 255, 189),
+                          // color: Color.fromARGB(255, 50, 255, 156),
+                          shape: BoxShape.circle,
+                        ),
+                        child: CircleAvatar(
+                          radius: 60,
+                          backgroundImage: NetworkImage(company
+                                  .logoUrl.isNotEmpty
+                              ? company.logoUrl
+                              : // صورة احتياطية
+                              // "https://images.unsplash.com/photo-1544005313-94ddf0286df2?q=80&w=1000"),
+                              // "https://unsplash.com/photos/the-amazon-logo-is-displayed-on-a-building-CLcmKictgSY"),
+                              "https://www.thebusinesstoolkit.com/wp-content/uploads/2025/08/amazon-logo-1.png"),
                         ),
                       ),
-                    ),
-                    Padding(
-                      padding: const EdgeInsets.only(right: 11),
-                      child: Text(
-                        company.industry!,
-                        style: TextStyle(
-                          fontSize: 13,
-                          color: Colors.grey,
+                      const SizedBox(height: 10),
+                      Padding(
+                        padding: const EdgeInsets.only(right: 11),
+                        child: Text(
+                          company.name!,
+                          style: TextStyle(
+                            fontSize: 19,
+                            fontWeight: FontWeight.bold,
+                            color: Colors.black87,
+                          ),
                         ),
                       ),
-                    ),
-                  ],
+                      Padding(
+                        padding: const EdgeInsets.only(right: 11),
+                        child: Text(
+                          company.industry!,
+                          style: TextStyle(
+                            fontSize: 13,
+                            color: Colors.grey,
+                          ),
+                        ),
+                      ),
+                    ],
+                  ),
                 ),
-              ),
-            ],
-          ),
-          const SizedBox(height: 20),
+              ],
+            ),
+            const SizedBox(height: 20),
 
-          // ================= 2. قائمة العناصر =================
-          Expanded(
-            child: Directionality(
-              textDirection: TextDirection.rtl, // لضمان اتجاه العناصر من اليمين
-              child: Padding(
-                padding: const EdgeInsets.symmetric(horizontal: 15),
-                child: Column(
-                  children: [
-                    _buildMenuItem(
-                      title: "ملفي الشخصي",
-                      icon: Icons.person_pin_outlined,
-                      isSelected: true, // لتمييز العنصر المختار
-                      onTap: () {
-                        controller.goToMyProfile();
-                      },
-                    ),
-                    _buildMenuItem(
-                      title: "البحث عن طالب",
-                      icon: Icons.search_rounded,
-                      onTap: () {
-                        controller.goToSearchPage();
-                      },
-                    ),
-                    _buildMenuItem(
-                      title: "الطلاب المحفوظين",
-                      icon: Icons.bookmark_outline_rounded,
-                      onTap: () {
-                        controller.goToSavedStudents();
-                      },
-                    ),
-                    _buildMenuItem(
-                      title: "الإعدادات",
-                      icon: Icons.settings_outlined,
-                      onTap: () {},
-                    ),
-                    _buildMenuItem(
-                      title: "حول التطبيق",
-                      icon: Icons.folder_open_outlined,
-                      onTap: () {},
-                    ),
-                    const Spacer(), // يدفع تسجيل الخروج للأسفل
-                    const Divider(height: 1, thickness: 1),
-                    _buildMenuItem(
-                      title: "تسجيل خروج",
-                      icon: Icons.logout_rounded,
-                      isLogout: true,
-                      onTap: () {},
-                    ),
-                    const SizedBox(height: 20),
-                  ],
+            // ================= 2. قائمة العناصر =================
+            Expanded(
+              child: Directionality(
+                textDirection:
+                    TextDirection.rtl, // لضمان اتجاه العناصر من اليمين
+                child: Padding(
+                  padding: const EdgeInsets.symmetric(horizontal: 15),
+                  child: Column(
+                    children: [
+                      _buildMenuItem(
+                        title: "ملفي الشخصي",
+                        icon: Icons.person_pin_outlined,
+                        isSelected: true, // لتمييز العنصر المختار
+                        onTap: () {
+                          controller.goToMyProfile();
+                        },
+                      ),
+                      _buildMenuItem(
+                        title: "البحث عن طالب",
+                        icon: Icons.search_rounded,
+                        onTap: () {
+                          controller.goToSearchPage();
+                        },
+                      ),
+                      _buildMenuItem(
+                        title: "الطلاب المحفوظين",
+                        icon: Icons.bookmark_outline_rounded,
+                        onTap: () {
+                          controller.goToSavedStudents();
+                        },
+                      ),
+                      _buildMenuItem(
+                        title: "الإعدادات",
+                        icon: Icons.settings_outlined,
+                        onTap: () {},
+                      ),
+                      _buildMenuItem(
+                        title: "حول التطبيق",
+                        icon: Icons.folder_open_outlined,
+                        onTap: () {},
+                      ),
+                      const Spacer(), // يدفع تسجيل الخروج للأسفل
+                      const Divider(height: 1, thickness: 1),
+                      _buildMenuItem(
+                        title: "تسجيل خروج",
+                        icon: Icons.logout_rounded,
+                        isLogout: true,
+                        onTap: () {
+                          controller.logout();
+                        },
+                      ),
+                      const SizedBox(height: 20),
+                    ],
+                  ),
                 ),
               ),
             ),
-          ),
-        ],
-      ),
-    );
+          ],
+        ),
+      );
+    });
   }
 
   // ويجت بناء عناصر القائمة

@@ -1,7 +1,8 @@
 class CustomerProfileModel {
   // 1 General Informations
+  final String? id;
   final String? cover;
-  final String? image;
+  final String image;
   final String? name;
   final String? jobLabel;
   final String? email;
@@ -9,20 +10,21 @@ class CustomerProfileModel {
   final String? bio;
   // 2 Statistical Info
   final String? city;
-  // final int? hourlySalary;
-  // final int? experienceYears;
-  // final List<String>? skils;
+
   final String? github;
   final String? linkedIn;
   // 3 Education Info
   final Map<String, dynamic>? educationInfo;
-  // 4 Work Experiences || الخبرة المهنية
-  // final List<Map<String, dynamic>>? workExperiences;
+  // New fields from backend
+  final String? type;
+  final int? profileId;
+  final int? userId;
 
   CustomerProfileModel({
 // General Informations
+    this.id,
     this.cover,
-    this.image,
+    required this.image,
     this.name,
     this.jobLabel,
     this.email,
@@ -30,14 +32,38 @@ class CustomerProfileModel {
     this.bio,
     // Statistical Info
     this.city,
-    // this.hourlySalary,
-    // this.experienceYears,
-    // this.skils,
     this.github,
     this.linkedIn,
     // Education Info
     this.educationInfo,
-    // Work Experiences || الخبرة المهنية
-    // this.workExperiences,
+    // New fields from backend
+    this.type,
+    this.profileId,
+    this.userId,
   });
+  //
+  factory CustomerProfileModel.fromJson(Map<String, dynamic> json) {
+    final data = json['data'] ?? {};
+    final profile = data['profile'] ?? {};
+
+    return CustomerProfileModel(
+      id: data['id'] ?? 0,
+      type: data['type'] ?? '',
+      profileId: profile['id'] ?? 0,
+      userId: profile['user_id'] ?? 0,
+      name: data['username'] ?? '',
+      email: data['email'] ?? '',
+      jobLabel: profile['title'], // بيانات متداخلة
+      // Education Info
+      educationInfo: profile['education'] ?? {},
+      // Statistical Info
+      city: profile['city'] ?? '',
+      github: profile['github'] ?? "لا توجد حساب GitHub",
+      linkedIn: profile['linkedin'] ?? "لا توجد حساب LinkedIn",
+      phone: '',
+      bio: '',
+      image: '',
+      cover: '',
+    );
+  }
 }

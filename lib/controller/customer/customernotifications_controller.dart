@@ -1,4 +1,8 @@
 import 'package:get/get.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/student/notifications.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/studentnotificationmodel.dart';
 import 'package:hireme/data/model/studentprofilemodel.dart';
@@ -8,10 +12,19 @@ abstract class CustomerNotificationsController extends GetxController {
   changeFilter(String newFilter);
   deleteNotification(int id); // النوع المحدد حالياً للفلترة
   goToStudentProfile(String studentName);
+  //
+  getAllCustomerNotifications();
+  markRead(int id);
 }
 
 class CustomerNotificationsControllerImp
     extends CustomerNotificationsController {
+  //--
+  NotificationData notificationData = NotificationData(Get.find());
+  MyServices myServices = Get.find();
+  StatusRequest statusRequest = StatusRequest.none;
+  List<StudentNotificationModel> allNotifications = [];
+  //--
   String selectedFilter = "الكل";
 
   // قائمة الفلاتر
@@ -19,10 +32,8 @@ class CustomerNotificationsControllerImp
 
   // القائمة التي يتم عرضها بعد الفلترة
   List<StudentNotificationModel> get filteredNotifications {
-    if (selectedFilter == "الكل") return allCustomerNotifications;
-    return allCustomerNotifications
-        .where((n) => n.type == selectedFilter)
-        .toList();
+    if (selectedFilter == "الكل") return allNotifications;
+    return allNotifications.where((n) => n.type == selectedFilter).toList();
   }
 
   @override
@@ -33,12 +44,13 @@ class CustomerNotificationsControllerImp
 
   @override
   void deleteNotification(id) {
-    allCustomerNotifications.removeWhere((element) => element.id == id);
+    allNotifications.removeWhere((element) => element.id == id);
     update();
   }
 
   @override
   void onInit() {
+    getAllCustomerNotifications(); // جلب الإشعارات الحقيقية عند فتح الصفحة
     super.onInit();
   }
 
@@ -55,5 +67,38 @@ class CustomerNotificationsControllerImp
           isMine: false, // لأن الزائر طالب وليس صاحب الشركة
           isCompany: false,
         ));
+  }
+
+  @override
+  getAllCustomerNotifications() async {
+    statusRequest = StatusRequest.loading;
+    update();
+    String token = myServices.sharedPreferences.getString("token")!;
+    var response = await notificationData.getNotifications(token);
+
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      List responseData = response['data'];
+      allNotifications.clear();
+      allNotifications.addAll(
+          responseData.map((e) => StudentNotificationModel.fromJson(e)));
+    }
+    update();
+  }
+
+  @override
+  markRead(id) async {
+    // 1. تحديث الحالة في الواجهة فوراً قبل نداء السيرفر
+    int index = allNotifications.indexWhere((element) => element.id == id);
+    if (index != -1) {
+      // افترضنا أنك أضفت متغير isRead حقيقي في المودل
+      allNotifications[index].isRead = true;
+      update();
+    }
+
+    // 2. إرسال الطلب للسيرفر في الخلفية
+    String token = myServices.sharedPreferences.getString("token")!;
+    await notificationData.markAsRead(token, id.toString());
   }
 }

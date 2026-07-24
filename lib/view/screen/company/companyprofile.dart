@@ -23,8 +23,6 @@ class CompanyProfile extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(CompanyProfileControllerImp());
-    CompanyProfileControllerImp controller =
-        Get.put(CompanyProfileControllerImp());
 
     return Scaffold(
       // backgroundColor: const Color(0xFFF8F9FA),

@@ -2,6 +2,7 @@ import 'package:carousel_slider/carousel_slider.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hireme/controller/student/studenthome_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 
@@ -11,6 +12,28 @@ class ReusableFreelancerSlider extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return GetBuilder<StudentHomeControllerImp>(builder: (controller) {
+      // 1. إذا كانت الحالة هي "تحميل" أو القائمة فارغة تماماً
+      if (controller.statusRequest == StatusRequest.loading &&
+          controller.allCustomersAds!.isEmpty) {
+        return Container(
+          height: 160, // نفس ارتفاع السلايدر لكي لا يتحرك التصميم عند التحميل
+          alignment: Alignment.center,
+          child: const CircularProgressIndicator(
+            color: AppColor.primaryColor,
+          ),
+        );
+      }
+
+      // 2. إذا فشل التحميل وكانت القائمة فارغة (اختياري لكن احترافي)
+      if (controller.statusRequest == StatusRequest.serverfailure) {
+        return const SizedBox(
+          height: 160,
+          child: Center(child: Text("فشل تحميل البيانات")),
+        );
+      }
+
+      // 3. الحالة الطبيعية: عرض السلايدر
+
       return Stack(
         alignment: Alignment.bottomCenter,
         children: [
@@ -28,7 +51,7 @@ class ReusableFreelancerSlider extends StatelessWidget {
                 controller.onChange(index);
               },
             ),
-            items: freelancerPostsList.map((job) {
+            items: controller.allCustomersAds.map((job) {
               return InkWell(
                 onTap: () {
                   controller.goToOneFreelancerPost(job);
@@ -137,7 +160,7 @@ class ReusableFreelancerSlider extends StatelessWidget {
             bottom: 10,
             child: Row(
               mainAxisAlignment: MainAxisAlignment.center,
-              children: freelancerPostsList.asMap().entries.map((entry) {
+              children: controller.allCustomersAds.asMap().entries.map((entry) {
                 return AnimatedContainer(
                   duration: const Duration(milliseconds: 300),
                   width: controller.currentIndx == entry.key ? 20.0 : 6.0,

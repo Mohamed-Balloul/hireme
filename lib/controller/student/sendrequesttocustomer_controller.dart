@@ -1,4 +1,8 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/student/student.dart';
 import 'package:hireme/interfaces/file_handler_interface.dart';
 import 'package:hireme/core/constant/routes.dart';
 import 'package:flutter/material.dart';
@@ -27,15 +31,23 @@ abstract class SendRequestToCustomerController extends GetxController {
   pickAndAddCvFile();
   //
   // getFileIcon(String? extension);
+  //ربط
+  //--ربط
+  createAndSendApplicationToCustomer(int adId);
 }
 
 class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
     implements FileHandlerInterface {
+  //--ربط
+  StatusRequest statusRequest = StatusRequest.none;
+  MyServices myServices = Get.find();
+  StudentData studentData = StudentData(Get.find());
+  //--ربط
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   //
   // 1. تعريف المتحكمات للنصوص البسيطة
   TextEditingController titleController = TextEditingController();
-  TextEditingController detailsController = TextEditingController();
+  TextEditingController expectedSalaryController = TextEditingController();
 
   // 2. تعريف قوائم المتحكمات للقوائم المتعددة (المهام، المتطلبات، الميزات)
   List<TextEditingController> dutiesControllers = [TextEditingController()];
@@ -71,10 +83,71 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
     } else {}
   }
 
+  //ربط
+  @override
+  createAndSendApplicationToCustomer(adId) async {
+    var formData = formState.currentState;
+    if (formData!.validate()) {
+      statusRequest = StatusRequest.loading;
+      print(
+          "========createAndSendApplicationToCustomer======================-*-Controller $statusRequest ");
+      update();
+      // بعد ما ينجح الـ API call
+      // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+      // ثم انتقل لصفحة الـ
+
+      var response = await studentData.createAndSendApplicationToCustomer(
+        myServices.sharedPreferences.getString("token")!,
+        adId,
+        int.parse(expectedSalaryController.text),
+      );
+
+      print(
+          "======createAndSendApplicationToCustomer========================* Controller $response ");
+      print(
+          "=====createAndSendApplicationToCustomer=========================--Controller $statusRequest ");
+
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        // Start backend
+        // if (response['status'] == "success") {
+        if (response['data'] != null) {
+          // data.addAll(response['data']);
+          // Get.offNamed(AppRoute.verfiyCodeSignUp);
+          Get.defaultDialog(
+            title: "نجاح",
+            middleText: "تم إرسال الطلب بنجاح!",
+          );
+          statusRequest = StatusRequest.none;
+        } else {
+          Get.defaultDialog(
+            title: "تنبيه",
+            middleText: "اسم المستخدم او البريد الإلكتروني مستخدم بالفعل!",
+          );
+          statusRequest = StatusRequest.none;
+        }
+        // End
+      } else {
+        // في حال فشل الاتصال بالسيرفر أو انقطاع الإنترنت
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم،تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update(); // استدعاء التحديث هنا مهم جداً لإخفاء شاشة التحميل وإعادة عرض النموذج
+
+      print(
+          "*****createAndSendApplicationToCustomer********************* *-*-* $statusRequest");
+    } else {}
+  }
+
   @override
   void onInit() {
     titleController = TextEditingController();
-    detailsController = TextEditingController();
+    expectedSalaryController = TextEditingController();
     for (var c in dutiesControllers) {
       c = TextEditingController();
     }
@@ -93,7 +166,7 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
   @override
   void dispose() {
     titleController.dispose();
-    detailsController.dispose();
+    expectedSalaryController.dispose();
     for (var c in dutiesControllers) {
       c.dispose();
     }

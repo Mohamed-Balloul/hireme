@@ -1,6 +1,7 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hireme/controller/student/studentnotifications_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/view/widget/student/buildfilterbar.dart';
 import 'package:hireme/view/widget/student/buildnotificationsitem.dart';
@@ -36,18 +37,23 @@ class StudentNotifications extends StatelessWidget {
 
               // 2. قائمة الإشعارات
               Expanded(
-                child: controller.filteredNotifications.isEmpty
-                    ? const Center(child: Text("لا توجد إشعارات حالياً"))
-                    : ListView.builder(
-                        itemCount: controller.filteredNotifications.length,
-                        itemBuilder: (context, index) {
-                          return BuildNotificationsItem(
-                            notification:
-                                controller.filteredNotifications[index],
-                            controller: controller,
-                          );
-                        },
-                      ),
+                // child: controller.filteredNotifications.isEmpty
+                child: controller.statusRequest == StatusRequest.loading
+                    ? const Center(
+                        child:
+                            CircularProgressIndicator()) // إظهار مؤشر التحميل أولاً
+                    : controller.filteredNotifications.isEmpty
+                        ? const Center(child: Text("لا توجد إشعارات حالياً"))
+                        : ListView.builder(
+                            itemCount: controller.filteredNotifications.length,
+                            itemBuilder: (context, index) {
+                              return BuildNotificationsItem(
+                                notification:
+                                    controller.filteredNotifications[index],
+                                controller: controller,
+                              );
+                            },
+                          ),
               ),
             ],
           ),

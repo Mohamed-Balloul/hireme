@@ -9,11 +9,24 @@ import 'package:hireme/routes.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/widgets.dart';
 import 'package:get/get.dart';
+import 'package:firebase_core/firebase_core.dart';
+import 'package:firebase_messaging/firebase_messaging.dart';
+
+Future<void> _firebaseMessagingBackgroundHandler(RemoteMessage message) async {
+  print("============= Background Message arrives No click =================");
+  print(message.notification!.title);
+  print(message.notification!.body);
+  print("============= Background Message arrives No click =================");
+}
 
 void main() async {
   WidgetsFlutterBinding.ensureInitialized();
   await initialServices();
+
   HttpOverrides.global = MyHttpOverrides();
+  // WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp();
+  FirebaseMessaging.onBackgroundMessage(_firebaseMessagingBackgroundHandler);
   runApp(const MyApp());
 }
 

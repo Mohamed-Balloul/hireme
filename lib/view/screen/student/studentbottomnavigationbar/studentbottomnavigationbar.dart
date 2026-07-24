@@ -1,5 +1,6 @@
 import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:hireme/controller/student/thebottomnavigationbar/thebottomnavigationbar_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -14,31 +15,33 @@ class StudentBottomNavigationBarr extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    // StudentBottomNavigationBarrControllerImp controller =
     Get.put(StudentBottomNavigationBarrControllerImp());
-    List<Widget> mainList = [
-      const StudentHome(),
-      const MyOrders(),
-      const StudentNotifications(),
-      StudentProfile(
-        student: studentProfileList[0],
-        isMine: true,
-        isCompany: false,
-      ),
-    ];
     return GetBuilder<StudentBottomNavigationBarrControllerImp>(
         builder: (controller) {
+      // تعريف القائمة داخل الـ GetBuilder لتحديثها عند وصول البيانات
+      List<Widget> mainList = [
+        const StudentHome(),
+        const MyOrders(),
+        const StudentNotifications(),
+        // فحص: إذا لم تصل البيانات بعد، اعرض Loading بدل البروفايل
+        controller.studentModel == null
+            ? const Center(child: CircularProgressIndicator())
+            : StudentProfile(
+                student: controller.studentModel!,
+                isMine: true,
+                isCompany: false,
+              ),
+      ];
       return SafeArea(
           child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(
-          // showSelectedLabels: false,
-          // showUnselectedLabels: false,
           selectedLabelStyle: TextStyle(fontSize: 10),
           unselectedLabelStyle: TextStyle(fontSize: 10),
           type: BottomNavigationBarType.fixed,
           selectedItemColor: AppColor.primaryColor,
           unselectedItemColor: Colors.grey,
           elevation: 20,
-          // backgroundColor: AppColor.black,
 
           items: const [
             BottomNavigationBarItem(

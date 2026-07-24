@@ -2,13 +2,13 @@ import 'package:hireme/controller/company/companybottomnavigationbar/companybott
 import 'package:hireme/core/constant/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/data/datasource/static/static.dart';
-import 'package:hireme/view/screen/Company/myorders.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/view/screen/Company/myorders.dart';
 import 'package:hireme/view/screen/Company/Companyhome.dart';
 import 'package:hireme/view/screen/company/addcompanypost.dart';
-import 'package:hireme/view/screen/company/companycomingrequests.dart';
+// import 'package:hireme/view/screen/company/companycomingrequests.dart';
 import 'package:hireme/view/screen/company/companynotifications.dart';
-import 'package:hireme/view/screen/company/companypostdetails.dart';
+// import 'package:hireme/view/screen/company/companypostdetails.dart';
 import 'package:hireme/view/screen/company/companyprofile.dart';
 
 class CompanyBottomNavigationBarr extends StatelessWidget {
@@ -17,19 +17,22 @@ class CompanyBottomNavigationBarr extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     Get.put(CompanyBottomNavigationBarrControllerImp());
-    List<Widget> mainList = [
-      const CompanyHome(),
-      const AddCompanyPost(),
-      // const CompanyPostsDetails(),
-      // const CompanyComingRequests(),
-      const CompanyNotifications(),
-      CompanyProfile(
-        company: companyProfileList[0],
-        isMine: true,
-      ),
-    ];
+
     return GetBuilder<CompanyBottomNavigationBarrControllerImp>(
         builder: (controller) {
+      // تعريف القائمة داخل الـ GetBuilder لتحديثها عند وصول البيانات
+      List<Widget> mainList = [
+        const CompanyHome(),
+        const AddCompanyPost(),
+        const CompanyNotifications(),
+        // فحص: إذا لم تصل البيانات بعد، اعرض Loading بدل البروفايل
+        controller.companyModel == null
+            ? const Center(child: CircularProgressIndicator())
+            : CompanyProfile(
+                company: controller.companyModel!,
+                isMine: true,
+              ),
+      ];
       return SafeArea(
           child: Scaffold(
         bottomNavigationBar: BottomNavigationBar(

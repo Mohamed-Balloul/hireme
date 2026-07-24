@@ -5,9 +5,6 @@ import 'package:hireme/controller/company/savedstudents_controller.dart';
 import 'package:hireme/controller/customer/customersavedstudents_controller.dart';
 import 'package:hireme/controller/student/studentprofile_controller.dart';
 import 'package:hireme/core/constant/color.dart';
-// import 'package:url_launcher/url_launcher.dart';
-// import 'package:hireme/data/datasource/static/static.dart';
-// import 'package:font_awesome_flutter/font_awesome_flutter.dart';
 import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:hireme/view/widget/student/buildexperiencecard.dart';
 import 'package:hireme/view/widget/student/buildseparator.dart';
@@ -740,45 +737,4 @@ class StudentProfile extends StatelessWidget {
       ),
     );
   }
-
-  // Widget _buildCompanyActions() {
-  //   return Positioned(
-  //     bottom: 10,
-  //     left: 10,
-  //     child: Padding(
-  //       padding: const EdgeInsets.symmetric(horizontal: 25, vertical: 10),
-  //       child: Row(
-  //         children: [
-  //           Expanded(
-  //             child: ElevatedButton.icon(
-  //               onPressed: () {
-  //                 // منطق إرسال إشعار اهتمام للطالب
-  //                 Get.snackbar("طلب توظيف",
-  //                     "تم إرسال إشعار اهتمام للطالب ${student.name}");
-  //               },
-  //               icon: const Icon(Icons.send_rounded,
-  //                   color: Colors.white, size: 18),
-  //               label: const Text("إرسال إشعار توظيف",
-  //                   style: TextStyle(color: Colors.white, fontSize: 13)),
-  //               style: ElevatedButton.styleFrom(
-  //                 backgroundColor: AppColor.primaryColor,
-  //                 shape: RoundedRectangleBorder(
-  //                     borderRadius: BorderRadius.circular(8)),
-  //               ),
-  //             ),
-  //           ),
-  //           const SizedBox(width: 10),
-  //           IconButton(
-  //             onPressed: () {},
-  //             icon: const Icon(Icons.bookmark_border,
-  //                 color: AppColor.primaryColor),
-  //             style: IconButton.styleFrom(
-  //               backgroundColor: AppColor.primaryColor.withOpacity(0.1),
-  //             ),
-  //           )
-  //         ],
-  //       ),
-  //     ),
-  //   );
-  // }
 }

@@ -1,4 +1,8 @@
 import 'package:file_picker/file_picker.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/student/student.dart';
 import 'package:hireme/interfaces/file_handler_interface.dart';
 import 'package:hireme/core/constant/routes.dart';
 import 'package:flutter/material.dart';
@@ -9,7 +13,7 @@ import 'package:hireme/data/model/singlefilemodel.dart';
 //--
 
 abstract class SendRequestToCompanyController extends GetxController {
-  signUp();
+  createAndSendApplicationToCompany(int adId);
   goToSignIn();
   //
   showHidePassword();
@@ -31,11 +35,16 @@ abstract class SendRequestToCompanyController extends GetxController {
 
 class SendRequestToCompanyControllerImp extends SendRequestToCompanyController
     implements FileHandlerInterface {
+  //--ربط
+  StatusRequest statusRequest = StatusRequest.none;
+  MyServices myServices = Get.find();
+  StudentData studentData = StudentData(Get.find());
+  //--ربط
   GlobalKey<FormState> formState = GlobalKey<FormState>();
   //
   // 1. تعريف المتحكمات للنصوص البسيطة
-  TextEditingController titleController = TextEditingController();
-  TextEditingController detailsController = TextEditingController();
+  TextEditingController githubLinkController = TextEditingController();
+  TextEditingController expectedSalaryController = TextEditingController();
 
   // 2. تعريف قوائم المتحكمات للقوائم المتعددة (المهام، المتطلبات، الميزات)
   List<TextEditingController> dutiesControllers = [TextEditingController()];
@@ -63,18 +72,79 @@ class SendRequestToCompanyControllerImp extends SendRequestToCompanyController
     Get.offNamed(AppRoute.login);
   }
 
+//ربط
   @override
-  signUp() {
+  createAndSendApplicationToCompany(adId) async {
     var formData = formState.currentState;
     if (formData!.validate()) {
-      Get.offNamed(AppRoute.verfiyCodeSignUp);
+      statusRequest = StatusRequest.loading;
+      print(
+          "========createAndSendApplicationToCompany======================-*-Controller $statusRequest ");
+      update();
+      // بعد ما ينجح الـ API call
+      // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+      // ثم انتقل لصفحة الـ
+
+      var response = await studentData.createAndSendApplicationToCompany(
+        myServices.sharedPreferences.getString("token")!,
+        adId,
+        int.parse(expectedSalaryController.text),
+        githubLinkController.text,
+      );
+
+      print(
+          "======createAndSendApplicationToCompany========================* Controller $response ");
+      print(
+          "=====createAndSendApplicationToCompany=========================--Controller $statusRequest ");
+
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        // Start backend
+        // if (response['status'] == "success") {
+        if (response['data'] != null) {
+          // data.addAll(response['data']);
+          // Get.offNamed(AppRoute.verfiyCodeSignUp);
+          Get.defaultDialog(
+            title: "نجاح",
+            middleText: "تم إرسال الطلب بنجاح!",
+          );
+          statusRequest = StatusRequest.none;
+        } else {
+          Get.defaultDialog(
+            title: "تنبيه",
+            middleText: "اسم المستخدم او البريد الإلكتروني مستخدم بالفعل!",
+          );
+          statusRequest = StatusRequest.none;
+        }
+        // End
+      } else {
+        // في حال فشل الاتصال بالسيرفر أو انقطاع الإنترنت
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم،تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update(); // استدعاء التحديث هنا مهم جداً لإخفاء شاشة التحميل وإعادة عرض النموذج
+
+      print(
+          "*****createAndSendApplicationToCompany********************* *-*-* $statusRequest");
     } else {}
   }
+  //--
+  //  var formData = formState.currentState;
+  //   if (formData!.validate()) {
 
+  //   } else {}
+  //--
+
+//ربط
   @override
   void onInit() {
-    titleController = TextEditingController();
-    detailsController = TextEditingController();
+    githubLinkController = TextEditingController();
+    expectedSalaryController = TextEditingController();
     for (var c in dutiesControllers) {
       c = TextEditingController();
     }
@@ -92,8 +162,8 @@ class SendRequestToCompanyControllerImp extends SendRequestToCompanyController
 
   @override
   void dispose() {
-    titleController.dispose();
-    detailsController.dispose();
+    githubLinkController.dispose();
+    expectedSalaryController.dispose();
     for (var c in dutiesControllers) {
       c.dispose();
     }

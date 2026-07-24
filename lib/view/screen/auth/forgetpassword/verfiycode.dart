@@ -55,9 +55,9 @@ class VerfiyCode extends StatelessWidget {
                     child: Directionality(
                       textDirection: TextDirection.ltr,
                       child: OtpTextField(
-                        fieldWidth: 50,
+                        fieldWidth: 45,
                         borderRadius: BorderRadius.circular(20),
-                        numberOfFields: 5,
+                        numberOfFields: 6,
                         borderColor: AppColor.primaryColor,
                         cursorColor: AppColor.primaryColor,
                         focusedBorderColor: AppColor.primaryColor,

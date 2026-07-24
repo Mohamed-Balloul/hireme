@@ -1,4 +1,6 @@
 class AppLink {
+  // static const String server = "https://honeybunny.online/api";
+  static const String server = "https://cage-sleep-dallying.ngrok-free.dev/api";
 // //========================== Image ============================
 //   static const String imagestCategories = "$imageststatic/categories";
 //   static const String imagestItems = "$imageststatic/items";
@@ -10,10 +12,37 @@ class AppLink {
 
 // // ================================= Auth ========================== //
 
-  static const String signUp = "auth/signup.php";
-  // static const String signUp = "$server/auth/signup.php";
-//   static const String login = "$server/auth/login.php";
-//   static const String verifycodessignup = "$server/auth/verfiycode.php";
+  static const String signUp = "$server/auth/signup";
+  static const String login = "$server/auth/login";
+  static const String verifyOtp = "$server/auth/verify-otp";
+  static const String refreshToken = "$server/auth/refresh";
+  static const String logout = "$server/auth/logout";
+  static const String checkEmail = "$server/auth/send-email";
+  static const String resetPassword = "$server/auth/change-password";
+// // ================================= Student ========================== //
+  static const String student = "$server/students";
+  static const String allCompaniesAds = "$server/ads";
+  static const String allCustomersAds = "$server/projects";
+  static const String myAdApplications = "$server/student/my-ad-applications";
+  static const String myProjectApplications =
+      "$server/student/my-project-applications";
+  static const String deleteMyAdApplication = "$server/ad-applications";
+  static const String deleteMyProjectApplication =
+      "$server/project-applications";
+  static const String allAdsApplications = "$server/ad-applications";
+  static const String allProjectsApplications = "$server/project-applications";
+
+  static const String pushNotifications = "$server/push-notifications";
+  static const String deviceTokens = "$server/device-tokens";
+// // ================================= Company ========================== //
+  static const String company = "$server/companies";
+  static const String allStudents = "$server/students";
+  static const String ads = "$server/ads";
+// // ================================= Customer ========================== //
+  static const String customer = "$server/customers";
+  static const String projects = "$server/projects";
+
+  // static const String verifycodessignup = "$server/auth/verfiycode.php";
 //   static const String resend = "$server/auth/resend.php";
 
 // // ================================= ForgetPassword ========================== //

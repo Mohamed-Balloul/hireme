@@ -1,4 +1,5 @@
 // import 'package:hireme/core/constant/routes.dart';
+import 'package:hireme/controller/student/studenthome_controller.dart';
 import 'package:hireme/core/constant/routes.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 import 'package:get/get.dart';
@@ -22,9 +23,16 @@ abstract class StudentSuggestionsController extends GetxController {
   // action(int index);
   // change(int index);
   goToSendRequestToCustomer();
+  //--
+  makeSuggestionsPosts();
 }
 
 class StudentSuggestionsControllerImp extends StudentSuggestionsController {
+  //--
+  StudentHomeControllerImp homeController =
+      Get.find<StudentHomeControllerImp>();
+  List<dynamic> suggestionsAds = [];
+  //--
   int currentIndex = 0;
 
   // متغير للتحكم في حالة الفتح والإغلاق
@@ -33,15 +41,10 @@ class StudentSuggestionsControllerImp extends StudentSuggestionsController {
   @override
   void onInit() {
     super.onInit();
-    for (int i = 0; i < suggestedItems.length; i++) {
+    for (int i = 0; i < suggestionsAds.length; i++) {
       isExpanded!.add(false);
     }
   }
-
-  // @override
-  // goToPostDetails(companyPostModel) {
-  //   Get.to(() => CompanyPostDetails(companyPostModel: companyPostModel));
-  // }
 
   @override
   action(index) {
@@ -74,41 +77,11 @@ class StudentSuggestionsControllerImp extends StudentSuggestionsController {
         ));
   }
   //---------
-  // int currentIndex = 0;
-
-  // متغير للتحكم في حالة الفتح والإغلاق
-
-  // List<bool>? isExpanded = [];
-  // @override
-  // void onInit() {
-  //   super.onInit();
-  //   for (int i = 0; i < freelancerPostsList.length; i++) {
-  //     isExpanded!.add(false);
-  //   }
-  // }
-
-  // @override
-  // goToPostDetails(freelancerPostModel) {
-  //   Get.to(
-  //       () => FreelancerPostDetails(freelancerPostModel: freelancerPostModel));
-  // }
 
   @override
   goToSendRequestToCustomer() {
     Get.toNamed(AppRoute.sendRequestToCustomer);
   }
-
-  // @override
-  // action(index) {
-  //   isExpanded![index] = !isExpanded![index];
-  //   update();
-  // }
-
-  // @override
-  // change(index) {
-  //   currentIndex = index;
-  //   update();
-  // }
 
   @override
   void goToCustomerProfile(customerName) {
@@ -122,5 +95,28 @@ class StudentSuggestionsControllerImp extends StudentSuggestionsController {
           customer: customerData,
           isMine: false, // لأن الزائر طالب وليس صاحب الشركة
         ));
+  }
+
+  @override
+  makeSuggestionsPosts() {
+    suggestionsAds.clear(); // تفريغ القائمة القديمة
+
+    // أخذ عينة من الشركات (مثلاً أول 3 أو نصف القائمة)
+    if (homeController.allCompaniesAds.isNotEmpty) {
+      suggestionsAds.addAll(homeController.allCompaniesAds.take(5));
+    }
+
+    // أخذ عينة من العملاء
+    if (homeController.allCustomersAds.isNotEmpty) {
+      suggestionsAds.addAll(homeController.allCustomersAds.take(5));
+    }
+
+    // حركة احترافية: خلط العناصر لتظهر بشكل عشوائي كمقترحات
+    suggestionsAds.shuffle();
+
+    // تحديث حالة الـ Expanded بناءً على طول القائمة الجديدة
+    isExpanded = List.filled(suggestionsAds.length, false);
+
+    update(); // تحديث الواجهة
   }
 }

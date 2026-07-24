@@ -28,6 +28,7 @@ class ResetPasswordControllerImp extends ResetPasswordController {
   List data = [];
 
   String? email;
+  String? token; // متغير جديد لحفظ التوكن
   //ربط
 
   @override
@@ -40,12 +41,12 @@ class ResetPasswordControllerImp extends ResetPasswordController {
         print("==============================-*-Controller $statusRequest ");
         update();
         // بعد ما ينجح الـ API call
-        await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
         // ثم انتقل لصفحة الـ
 
         var response = await resetPassword.postData(
-          password.text,
           email!,
+          password.text,
+          // token!, // تأكد من إرسال التوكن مع الطلب
         );
 
         print("==============================* Controller $response ");
@@ -55,7 +56,7 @@ class ResetPasswordControllerImp extends ResetPasswordController {
 
         if (StatusRequest.success == statusRequest) {
           // Start backend
-          if (response['status'] == "success") {
+          if (response['message'] != null) {
             // data.addAll(response['data']);
             Get.offNamed(AppRoute.successResetPassword,
                 arguments: {"email": email});
@@ -64,16 +65,20 @@ class ResetPasswordControllerImp extends ResetPasswordController {
               title: "warning",
               middleText: "Try Again",
             );
-            statusRequest = StatusRequest.failure;
+            statusRequest = StatusRequest.none;
           }
           // End
-        } else {}
-        // update();
+        } else {
+          // في حال فشل الاتصال بالسيرفر أو انقطاع الإنترنت
+          Get.defaultDialog(
+            title: "خطأ",
+            middleText:
+                "حدث خطأ أثناء الاتصال بالخادم،تحقق من اتصالك وأعد المحاولة.",
+          );
+          statusRequest = StatusRequest.none;
+        }
+        update();
         print("************************** *-*-* $statusRequest");
-
-        // Future.delayed(Durations.extralong4);
-        Get.offNamed(AppRoute.successResetPassword,
-            arguments: {"email": email});
       } else {
         update();
       }
@@ -89,6 +94,7 @@ class ResetPasswordControllerImp extends ResetPasswordController {
     password = TextEditingController();
     confirmPassword = TextEditingController();
     email = Get.arguments['email'];
+    token = Get.arguments['token']; // تأكد من إرساله من واجهة VerifyOTP
     super.onInit();
   }
 

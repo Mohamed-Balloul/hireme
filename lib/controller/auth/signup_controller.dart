@@ -11,6 +11,8 @@ import 'package:hireme/view/widget/auth/terms_conditions.dart';
 abstract class SignUpController extends GetxController {
   signUp();
   goToSignIn();
+  // دالة مساعدة لتحويل النوع إلى اللغة الإنجليزية المتوافقة مع الباك اند
+  mapRoleToEnglish(String arabicRole);
   //
   showHidePassword();
   selectType(String type);
@@ -40,6 +42,20 @@ class SignUpControllerImp extends SignUpController {
     Get.offNamed(AppRoute.login);
   }
 
+  @override
+  String mapRoleToEnglish(arabicRole) {
+    switch (arabicRole) {
+      case "طالب/خريج":
+        return "student";
+      case "شركة":
+        return "company";
+      case "عميل":
+        return "customer";
+      default:
+        return "student"; // القيمة الافتراضية في حال عدم المطابقة
+    }
+  }
+
   //ربط
   @override
   signUp() async {
@@ -49,14 +65,14 @@ class SignUpControllerImp extends SignUpController {
       print("==============================-*-Controller $statusRequest ");
       update();
       // بعد ما ينجح الـ API call
-      await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+      // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
       // ثم انتقل لصفحة الـ
 
       var response = await signupData.postData(
         name.text,
         password.text,
         email.text,
-        selectedType,
+        mapRoleToEnglish(selectedType), // تعديل هنا لإرسال القيمة الإنجليزية
       );
 
       print("==============================* Controller $response ");
@@ -66,24 +82,33 @@ class SignUpControllerImp extends SignUpController {
 
       if (StatusRequest.success == statusRequest) {
         // Start backend
-        if (response['status'] == "success") {
+        // if (response['status'] == "success") {
+        if (response['data'] != null) {
           // data.addAll(response['data']);
           Get.offNamed(AppRoute.verfiyCodeSignUp,
               arguments: {"email": email.text});
         } else {
+          // في حال عدم وجود data
+
           Get.defaultDialog(
-            title: "warning",
-            middleText: "email is already exist try using another one",
+            title: "تنبيه",
+            middleText: "اسم المستخدم او البريد الإلكتروني مستخدم بالفعل!",
           );
-          statusRequest = StatusRequest.failure;
+          statusRequest = StatusRequest.none;
         }
         // End
-      } else {}
-      // update();
-      print("************************** *-*-* $statusRequest");
+      } else {
+        // في حال فشل الاتصال بالسيرفر أو انقطاع الإنترنت
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم،تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update(); // استدعاء التحديث هنا مهم جداً لإخفاء شاشة التحميل وإعادة عرض النموذج
 
-      // Future.delayed(Durations.extralong4);
-      Get.offNamed(AppRoute.verfiyCodeSignUp, arguments: {"email": email.text});
+      print("************************** *-*-* $statusRequest");
     } else {}
   }
   //ربط

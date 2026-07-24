@@ -32,7 +32,7 @@ class ForgetPasswordControllerImp extends ForgetPasswordController {
       print("==============================-*-Controller $statusRequest ");
       update();
       // بعد ما ينجح الـ API call
-      await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+
       // ثم انتقل لصفحة الـ
 
       var response = await checkEmailData.postData(
@@ -46,23 +46,29 @@ class ForgetPasswordControllerImp extends ForgetPasswordController {
 
       if (StatusRequest.success == statusRequest) {
         // Start backend
-        if (response['status'] == "success") {
+        if (response['data'] != null) {
           // data.addAll(response['data']);
           Get.offNamed(AppRoute.verfiyCode, arguments: {"email": email.text});
         } else {
           Get.defaultDialog(
-            title: "warning",
-            middleText: "Email Not Found",
+            title: "خطأ",
+            middleText:
+                "البريد الالكتروني غير موجود، يرجى التحقق من البريد الالكتروني والمحاولة مجدداً.",
           );
-          statusRequest = StatusRequest.failure;
+          statusRequest = StatusRequest.none;
         }
         // End
-      } else {}
-      // update();
+      } else {
+        // في حال فشل الاتصال بالإنترنت أو خطأ السيرفر العام
+        Get.defaultDialog(
+          title: "خطأ في الاتصال",
+          middleText:
+              "تعذر الاتصال بالخادم، يرجى التحقق من الإنترنت والمحاولة مجدداً.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update();
       print("************************** *-*-* $statusRequest");
-
-      // Future.delayed(Durations.extralong4);
-      Get.offNamed(AppRoute.verfiyCode, arguments: {"email": email.text});
     } else {}
   }
 
