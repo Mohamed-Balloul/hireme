@@ -44,8 +44,8 @@ class SearchResultsStudentFreelancerPostCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       // استدعاء دالة الانتقال من المتحكم
-                      controller
-                          .goToCustomerProfile(freelancerPostModel.publisher!);
+                      controller.goToCustomerProfile(
+                          freelancerPostModel.publisherId!.toString()); //
                     },
                     child: CircleAvatar(
                       radius: 22,
@@ -72,7 +72,7 @@ class SearchResultsStudentFreelancerPostCard extends StatelessWidget {
                           onTap: () {
                             // استدعاء دالة الانتقال من المتحكم
                             controller.goToCustomerProfile(
-                                freelancerPostModel.publisher!);
+                                freelancerPostModel.publisherId!.toString()); //
                           },
                           child: Text(
                             // "$companyName • $timePosted",

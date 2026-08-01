@@ -89,7 +89,9 @@ class SendRequestToCompanyControllerImp extends SendRequestToCompanyController
         myServices.sharedPreferences.getString("token")!,
         adId,
         int.parse(expectedSalaryController.text),
+        // 5000, // قيمة ثابتة مؤقتة للراتب المتوقع
         githubLinkController.text,
+        // "https://github.com"
       );
 
       print(

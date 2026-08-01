@@ -22,6 +22,24 @@ class CompanyData {
     return response.fold((l) => l, (r) => r);
   }
 
+  getMyAds(String token) async {
+    var response = await crud.getData(AppLink.myAds, {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  getApplications(String token, String adId) async {
+    var response = await crud.getData("${AppLink.ads}/$adId/applications", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
   createCompanyPost(Map data, String token) async {
     var response = await crud.postData(
         AppLink.ads,
@@ -54,6 +72,20 @@ class CompanyData {
       // "Accept": "application/json",
       // "Content-Type": "application/json",
       // "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  //--
+  editProfileInfo(
+    String id,
+    String token,
+    Map data, // إرسال خريطة البيانات هنا
+  ) async {
+    var response = await crud.putData("${AppLink.company}/$id", data, {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
     });
     return response.fold((l) => l, (r) => r);
   }

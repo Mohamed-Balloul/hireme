@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/controller/student/thebottomnavigationbar/thebottomnavigationbar_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/student/student.dart';
 import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:intl/intl.dart'; // ستحتاج لإضافة حزمة intl في pubspec.yaml لتنسيق التاريخ
 import 'package:image_picker/image_picker.dart';
 
@@ -9,15 +15,30 @@ abstract class EditStudentProfileController extends GetxController {
   pickExperienceLogo();
   addSkill();
   removeSkill(int index);
-  saveAll();
   selectDate(BuildContext context, bool isStart);
   addExperience();
   removeExperience(int index);
   deleteExperienceLogo();
+  //ربط
+  saveAll();
+  //ربط
 }
 
 // ملاحظة: تأكد من إضافة هذا الملف في المسار الصحيح
 class EditStudentProfileControllerImp extends EditStudentProfileController {
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+  //ربط
+  StudentBottomNavigationBarrControllerImp controller =
+      Get.find<StudentBottomNavigationBarrControllerImp>();
+  //ربط
+  MyServices myServices = Get.find();
+  StatusRequest statusRequest = StatusRequest.none;
+
+  StudentData studentData = StudentData(Get.find());
+
+  //ربط
+
+  //ربط
   // نقوم بتعريف TextControllers لكل حقل لسهولة التحكم
   late TextEditingController nameController;
   late TextEditingController jobController;
@@ -53,9 +74,9 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
 
   @override
   void onInit() {
-    super.onInit();
     // هنا نقوم بتعبئة البيانات الحالية من المودل (فرضاً studentProfileList[0])
-    var data = studentProfileList[0];
+    // var data = studentProfileList[0];
+    var data = controller.studentModel!;
     nameController = TextEditingController(text: data.name);
     jobController = TextEditingController(text: data.jobLabel);
     bioController = TextEditingController(text: data.bio);
@@ -78,6 +99,7 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
         TextEditingController(text: data.educationInfo?['university']);
     workExperiences =
         List<Map<String, dynamic>>.from(data.workExperiences ?? []);
+    super.onInit();
   }
 
   @override
@@ -169,12 +191,96 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
   }
 
   @override
-  void saveAll() {
-    // منطق الحفظ النهائي وإرسال البيانات للسيرفر
-    Get.back();
-    Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
-        backgroundColor: Colors.green, colorText: Colors.white);
+  void saveAll() async {
+    var formData = formState.currentState;
+
+    // التحقق من صحة المدخلات في الفورم
+    if (formData == null || formData.validate()) {
+      statusRequest = StatusRequest.loading;
+      print(
+          "=====saveAll===========EditStudentProfileControllerImp==============-*-Controller $statusRequest ");
+      update();
+
+      // 1. تجهيز البيانات المراد إرسالها بناءً على توثيق البوستمان الدقيق للباك-إند الخاص بك
+      Map<String, dynamic> updatedData = {
+        "username": nameController.text.trim(),
+        "description": bioController.text.trim(),
+        "phone_number": phoneController.text.trim(),
+
+        // استخلاص المسارات النسبية للصور النظيفة لتجنب تخزين روابط الـ ngrok المؤقتة
+        "avatar": _getRelativePath(controller.studentModel?.image),
+        "cover_image": _getRelativePath(controller.studentModel?.cover),
+
+        "address": locationController.text.trim(),
+        "hour_cost": salaryController.text.trim(),
+        "experience_years":
+            int.tryParse(experienceYearsController.text.trim()) ?? 0,
+        "title": jobController.text.trim(),
+        "college": collegeController.text.trim(),
+
+        // إرسال المهارة الأولى كقيمة افتراضية لـ tech1 لتفادي أي مشاكل
+        "tech1": skills.isNotEmpty ? skills.first : "Laravel",
+      };
+
+      print("--- البيانات المرسلة للباك-إند: $updatedData");
+
+      // 2. إرسال طلب التحديث (PUT) للسيرفر
+      String token = myServices.sharedPreferences.getString("token")!;
+      String userId = myServices.sharedPreferences.getString("user_id")!;
+
+      var response =
+          await studentData.editProfileInfo(userId, token, updatedData);
+
+      print(
+          "=====saveAll============EditStudentProfileControllerImp=============* Response: $response ");
+      print(
+          "=====saveAll===========EditStudentProfileControllerImp==============-*-Controller $statusRequest ");
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        if (response['data'] != null) {
+          // 3. الخطوة الأهم: تحويل البيانات المحدثة المرجعة من السيرفر لموديل جديد
+          StudentProfileModel updatedModel =
+              StudentProfileModel.fromJson(response['data']);
+
+          // 4. عكس وتحديث البيانات مباشرة في الكنترولر الرئيسي للـ Navigation Bar والبروفايل
+          controller.studentModel = updatedModel;
+          controller
+              .update(); // لتحديث واجهة الملف الشخصي فوراً بالبيانات الجديدة
+
+          Get.back(); // العودة لواجهة الملف الشخصي
+          Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
+              backgroundColor: Colors.green, colorText: Colors.white);
+
+          statusRequest = StatusRequest.none;
+        } else {
+          statusRequest = StatusRequest.failure;
+        }
+      } else {
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم، تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update();
+      print(
+          "=====saveAll===========EditStudentProfileControllerImp==============-*-Controller $statusRequest ");
+    }
   }
+
+  // دالة مساعدة لتخليص مسار الصورة من رابط الـ ngrok وإرجاع المسار النسبي فقط
+  String _getRelativePath(String? fullUrl) {
+    if (fullUrl == null) return "";
+    if (fullUrl.contains("/storage/")) {
+      return fullUrl
+          .split("/storage/")
+          .last; // يستخلص الجزء بعد /storage/ مثل avatars/new-avatar.png
+    }
+    return fullUrl;
+  }
+  //ربط
 
   @override
   void deleteExperienceLogo() {

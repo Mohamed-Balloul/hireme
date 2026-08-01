@@ -1,6 +1,8 @@
 class AppLink {
   // static const String server = "https://honeybunny.online/api";
-  static const String server = "https://cage-sleep-dallying.ngrok-free.dev/api";
+  // static const String server = "https://cage-sleep-dallying.ngrok-free.dev/api";
+  static const String server =
+      "https://clone-nylon-congenial.ngrok-free.dev/api";
 // //========================== Image ============================
 //   static const String imagestCategories = "$imageststatic/categories";
 //   static const String imagestItems = "$imageststatic/items";
@@ -34,13 +36,16 @@ class AppLink {
 
   static const String pushNotifications = "$server/push-notifications";
   static const String deviceTokens = "$server/device-tokens";
+  static const String companies = "$server/companies";
 // // ================================= Company ========================== //
   static const String company = "$server/companies";
   static const String allStudents = "$server/students";
   static const String ads = "$server/ads";
+  static const String myAds = "$server/my-ads";
 // // ================================= Customer ========================== //
   static const String customer = "$server/customers";
   static const String projects = "$server/projects";
+  static const String myProjects = "$server/my-projects";
 
   // static const String verifycodessignup = "$server/auth/verfiycode.php";
 //   static const String resend = "$server/auth/resend.php";

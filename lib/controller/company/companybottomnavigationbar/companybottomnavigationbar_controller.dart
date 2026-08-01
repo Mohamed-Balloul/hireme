@@ -31,7 +31,7 @@ class CompanyBottomNavigationBarrControllerImp
     update();
 
     var response = await companyData.getCompanyData(
-        myServices.sharedPreferences.getString("id")!,
+        myServices.sharedPreferences.getString("user_id")!,
         myServices.sharedPreferences.getString("token")!);
 
     print(

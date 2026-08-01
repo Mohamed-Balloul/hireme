@@ -1,6 +1,7 @@
 // import 'package:hireme/controller/company/freelancerposts_controller.dart';
 import 'package:hireme/controller/student/companiesposts_controller.dart';
 import 'package:hireme/controller/student/freelancerposts_controller.dart';
+import 'package:hireme/controller/student/studentsearch_controller.dart';
 import 'package:hireme/controller/student/studentsuggestions_controller.dart';
 import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/routes.dart';
@@ -37,6 +38,8 @@ abstract class StudentHomeController extends GetxController {
   getStudentData();
   getAllCompaniesAds();
   getAllCustomersAds();
+  // الدالة الجديدة هنا
+  // Future<void> refreshData();
 }
 
 class StudentHomeControllerImp extends StudentHomeController {
@@ -64,6 +67,13 @@ class StudentHomeControllerImp extends StudentHomeController {
   goToFreelancerPosts() {
     Get.toNamed(AppRoute.freelancerPosts);
   }
+
+  // @override
+  // Future<void> refreshData() async {
+  //   await getAllCompaniesAds();
+  //   await getAllCustomersAds();
+  //   update(); // تحديث واجهة المستخدم بعد تحديث البيانات
+  // }
 
   @override
   goToMyProfile() {
@@ -111,6 +121,7 @@ class StudentHomeControllerImp extends StudentHomeController {
         //   Get.find<StudentSuggestionsControllerImp>().makeSuggestionsPosts();
         // }
         _updateSuggestions();
+        _updateSearch();
         if (Get.isRegistered<FreelancerPostsControllerImp>()) {
           Get.find<FreelancerPostsControllerImp>().getAllCustomersPosts();
         } // استدعاء دالة تحديث المقترحات
@@ -159,6 +170,7 @@ class StudentHomeControllerImp extends StudentHomeController {
         allCompaniesAds!
             .addAll(responseData.map((e) => CompaniesPostModel.fromJson(e)));
         _updateSuggestions(); // استدعاء دالة تحديث المقترحات
+        _updateSearch();
         if (Get.isRegistered<CompaniesPostsControllerImp>()) {
           Get.find<CompaniesPostsControllerImp>().getAllCompaniesPosts();
         }
@@ -180,6 +192,13 @@ class StudentHomeControllerImp extends StudentHomeController {
   void _updateSuggestions() {
     if (Get.isRegistered<StudentSuggestionsControllerImp>()) {
       Get.find<StudentSuggestionsControllerImp>().makeSuggestionsPosts();
+    }
+  }
+
+  // دالة مساعدة لتجنب تكرار الكود
+  void _updateSearch() {
+    if (Get.isRegistered<StudentSearchControllerImp>()) {
+      Get.find<StudentSearchControllerImp>().getAllAdsAndProjects();
     }
   }
 
@@ -288,6 +307,85 @@ class StudentHomeControllerImp extends StudentHomeController {
   }
 
   //ربط
+  // @override
+  // logout() {
+  //   Get.defaultDialog(
+  //     title: "تأكيد تسجيل الخروج",
+  //     middleText: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
+  //     textCancel: "إلغاء",
+  //     textConfirm: "تأكيد",
+  //     onConfirm: () async {
+  //       // هنا يمكنك استدعاء دالة تسجيل الخروج من الـ Controller الخاص بك
+  //       // مثلاً:
+  //       // authController.logout();
+  //       // Get.offAllNamed(AppRoute.login);
+  //       statusRequest = StatusRequest.loading;
+  //       print(
+  //           "=====logout========StudentHomeControllerImp=================-*-Controller $statusRequest ");
+  //       update();
+  //       // 1. جلب التوكن من الـ SharedPreferences
+  //       String token = myServices.sharedPreferences.getString("token") ?? "";
+  //       String? deviceId =
+  //           myServices.sharedPreferences.getString("device_record_id");
+
+  //       // بعد ما ينجح الـ API call
+  //       // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+  //       // الخطوة 1: حذف الجهاز من السيرفر (Push Notification Cleanup)
+  //       if (deviceId != null) {
+  //         await notificationData.deleteDevice(token, deviceId);
+  //       }
+  //       // ثم انتقل لصفحة الـ
+  //       // الخطوة 2: تسجيل الخروج الرسمي من الحساب
+
+  //       var response = await logoutData.postData(token);
+
+  //       print(
+  //           "===logout=======StudentHomeControllerImp====================* Controller $response ");
+  //       print(
+  //           "====logout======StudentHomeControllerImp====================--Controller $statusRequest ");
+
+  //       statusRequest = handlingData(response);
+
+  //       if (StatusRequest.success == statusRequest) {
+  //         // Start backend
+  //         // if (response['status'] == "success") {
+  //         if (response['message'] == "Logged out successfully.") {
+  //           // data.addAll(response['data']);
+  //           // Get.offNamed(AppRoute.verfiyCodeSignUp,
+  //           //     arguments: {"email": email.text});
+  //           // 3. الخطوة الأهم: حذف البيانات محلياً
+  //           myServices.sharedPreferences
+  //               .clear(); // أو احذف فقط التوكن والـ step
+  //           // 4. الانتقال لصفحة تسجيل الدخول ومنع الرجوع للخلف
+  //           Get.offAllNamed(AppRoute.login);
+  //         } else {
+  //           Get.defaultDialog(
+  //             title: "warning",
+  //             middleText: "wrong logout",
+  //           );
+  //           statusRequest = StatusRequest.none;
+  //         }
+  //         // End
+  //       } else {
+  //         // حتى لو فشل السيرفر، يفضل تسجيل الخروج محلياً لضمان تجربة مستخدم جيدة
+  //         // myServices.sharedPreferences.clear();
+  //         // Get.offAllNamed(AppRoute.login);
+  //         print("logout failed: $response");
+  //         Get.defaultDialog(
+  //           title: "خطأ",
+  //           middleText:
+  //               "تعذر تسجيل الخروج، يرجى التحقق من الإنترنت والمحاولة مجدداً.",
+  //         );
+  //         statusRequest = StatusRequest.none;
+  //       }
+  //       update();
+  //       print(
+  //           "****logout******StudentHomeControllerImp****************** *-*-* $statusRequest");
+  //     },
+  //   );
+  // }
+  // داخل كلاس StudentHomeControllerImp:
+
   @override
   logout() {
     Get.defaultDialog(
@@ -295,66 +393,61 @@ class StudentHomeControllerImp extends StudentHomeController {
       middleText: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
       textCancel: "إلغاء",
       textConfirm: "تأكيد",
+      // confirmTextColor: Colors.white,
+      // buttonColor: const Color(0xFF1DBF53), // لون الزر الأخضر المعتمد لديك
       onConfirm: () async {
-        // هنا يمكنك استدعاء دالة تسجيل الخروج من الـ Controller الخاص بك
-        // مثلاً:
-        // authController.logout();
-        // Get.offAllNamed(AppRoute.login);
+        // 1. إغلاق دايلوج التأكيد فوراً لتجنب النقر المتعدد وإظهار شاشة التحميل بوضوح
+        Get.back();
+
         statusRequest = StatusRequest.loading;
         print(
-            "=============StudentHomeControllerImp=================-*-Controller $statusRequest ");
+            "=====logout========StudentHomeControllerImp=================-*-Controller $statusRequest ");
         update();
-        // 1. جلب التوكن من الـ SharedPreferences
+
+        // 2. جلب البيانات المحلية
         String token = myServices.sharedPreferences.getString("token") ?? "";
         String? deviceId =
             myServices.sharedPreferences.getString("device_record_id");
 
-        // بعد ما ينجح الـ API call
-        // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
-        // الخطوة 1: حذف الجهاز من السيرفر (Push Notification Cleanup)
+        // 3. الخطوة الأولى: حذف جهاز الإشعارات بشكل محمي تماماً
         if (deviceId != null) {
-          await notificationData.deleteDevice(token, deviceId);
+          try {
+            await notificationData.deleteDevice(token, deviceId);
+          } catch (e) {
+            print("--- خطأ غير مؤثر في حذف توكن الإشعارات: $e");
+          }
         }
-        // ثم انتقل لصفحة الـ
-        // الخطوة 2: تسجيل الخروج الرسمي من الحساب
 
+        // 4. الخطوة الثانية: تسجيل الخروج الرسمي من السيرفر
         var response = await logoutData.postData(token);
 
         print(
-            "==========StudentHomeControllerImp====================* Controller $response ");
-        print(
-            "==========StudentHomeControllerImp====================--Controller $statusRequest ");
-
+            "===logout=======StudentHomeControllerImp====================* Response: $response ");
         statusRequest = handlingData(response);
 
         if (StatusRequest.success == statusRequest) {
-          // Start backend
-          // if (response['status'] == "success") {
-          if (response['message'] != null) {
-            // data.addAll(response['data']);
-            // Get.offNamed(AppRoute.verfiyCodeSignUp,
-            //     arguments: {"email": email.text});
-            // 3. الخطوة الأهم: حذف البيانات محلياً
-            myServices.sharedPreferences
-                .clear(); // أو احذف فقط التوكن والـ step
-            // 4. الانتقال لصفحة تسجيل الدخول ومنع الرجوع للخلف
+          if (response['message'] == "Logged out successfully.") {
+            // نجاح كامل: مسح البيانات محلياً والتحويل لصفحة تسجيل الدخول
+            myServices.sharedPreferences.clear();
             Get.offAllNamed(AppRoute.login);
           } else {
-            Get.defaultDialog(
-              title: "warning",
-              middleText: "wrong logout",
-            );
-            statusRequest = StatusRequest.failure;
+            // رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن
+            print(
+                "رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن");
+            // myServices.sharedPreferences.clear();
+            // Get.offAllNamed(AppRoute.login);
           }
-          // End
         } else {
-          // حتى لو فشل السيرفر، يفضل تسجيل الخروج محلياً لضمان تجربة مستخدم جيدة
-          myServices.sharedPreferences.clear();
-          Get.offAllNamed(AppRoute.login);
+          // في حال فشل السيرفر أو انقطاع الإنترنت، نقوم بالتنظيف محلياً لضمان خروج العميل وتفادي احتجازه
+          print("--- فشل الاتصال بالسيرفر، يتم تسجيل الخروج محلياً الآن.");
+          // myServices.sharedPreferences.clear();
+          // Get.offAllNamed(AppRoute.login);
         }
-        // update();
+
+        statusRequest = StatusRequest.none;
+        update();
         print(
-            "**********StudentHomeControllerImp****************** *-*-* $statusRequest");
+            "****logout******StudentHomeControllerImp****************** *-*-* $statusRequest");
       },
     );
   }

@@ -48,6 +48,7 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
   // 1. تعريف المتحكمات للنصوص البسيطة
   TextEditingController titleController = TextEditingController();
   TextEditingController expectedSalaryController = TextEditingController();
+  TextEditingController gitController = TextEditingController();
 
   // 2. تعريف قوائم المتحكمات للقوائم المتعددة (المهام، المتطلبات، الميزات)
   List<TextEditingController> dutiesControllers = [TextEditingController()];
@@ -100,6 +101,8 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
         myServices.sharedPreferences.getString("token")!,
         adId,
         int.parse(expectedSalaryController.text),
+        // "https://github.com", // قيمة ثابتة مؤقتة للـ GitHub link
+        gitController.text,
       );
 
       print(
@@ -148,6 +151,7 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
   void onInit() {
     titleController = TextEditingController();
     expectedSalaryController = TextEditingController();
+    gitController = TextEditingController();
     for (var c in dutiesControllers) {
       c = TextEditingController();
     }
@@ -167,6 +171,7 @@ class SendRequestToCustomerControllerImp extends SendRequestToCustomerController
   void dispose() {
     titleController.dispose();
     expectedSalaryController.dispose();
+    gitController.dispose();
     for (var c in dutiesControllers) {
       c.dispose();
     }

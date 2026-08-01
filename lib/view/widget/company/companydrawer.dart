@@ -4,7 +4,7 @@ import 'package:hireme/controller/company/companybottomnavigationbar/companybott
 import 'package:hireme/controller/company/companyhome_controller.dart';
 import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/companyprofilemodel.dart';
 
 class CompanyDrawer extends StatelessWidget {

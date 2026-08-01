@@ -1,16 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/controller/student/studenthome_controller.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/companiespostmodel.dart';
+// import 'package:hireme/data/model/companyprofilemodel.dart';
 import 'package:hireme/data/model/freelancerpostmodel.dart';
 
 abstract class StudentSearchController extends GetxController {
   performSearch();
+  getAllAdsAndProjects();
   changeType(String type);
 }
 
 //-----------------------
 class StudentSearchControllerImp extends StudentSearchController {
+  //--ربط
+  StudentHomeControllerImp homeController =
+      Get.find<StudentHomeControllerImp>();
+  List<CompaniesPostModel> allAds = [];
+  List<FreelancerPostModel> allProjects = [];
+  //ربط--
   TextEditingController searchTextController = TextEditingController();
   String selectedType = "عمل";
   bool isLoading = false;
@@ -40,6 +49,19 @@ class StudentSearchControllerImp extends StudentSearchController {
     "تصميم",
     "برمجة"
   ];
+  @override
+  getAllAdsAndProjects() {
+    allAds.clear();
+    allProjects.clear();
+
+    if (homeController.allCompaniesAds.isNotEmpty) {
+      allAds.addAll(homeController.allCompaniesAds);
+    }
+
+    if (homeController.allCustomersAds.isNotEmpty) {
+      allProjects.addAll(homeController.allCustomersAds);
+    }
+  }
 
   // دالة البحث النصي (توسيع النطاق)
   @override
@@ -53,13 +75,15 @@ class StudentSearchControllerImp extends StudentSearchController {
     await Future.delayed(const Duration(milliseconds: 600));
 
     if (selectedType == "عمل") {
-      allFetchedResults = allcompaniesPosts.where((post) {
+      // allFetchedResults = allcompaniesPosts.where((post) {
+      allFetchedResults = allAds.where((post) {
         return post.jobTitle!.toLowerCase().contains(query) ||
             post.companyName!.toLowerCase().contains(query) ||
             post.content!.toLowerCase().contains(query); // توسيع النطاق للمحتوى
       }).toList();
     } else {
-      allFetchedResults = freelancerPostsList.where((post) {
+      // allFetchedResults = freelancerPostsList.where((post) {
+      allFetchedResults = allProjects.where((post) {
         return post.serviceTitle!.toLowerCase().contains(query) ||
             post.publisher!.toLowerCase().contains(query) ||
             post.description!
@@ -145,5 +169,16 @@ class StudentSearchControllerImp extends StudentSearchController {
       performSearch();
     }
     update();
+  }
+
+  @override
+  void onInit() {
+    getAllAdsAndProjects();
+    super.onInit();
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

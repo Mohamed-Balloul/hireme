@@ -8,6 +8,7 @@ import 'package:hireme/data/model/customerprofilemodel.dart';
 
 abstract class CustomerBottomNavigationBarrController extends GetxController {
   onChange(int val);
+  //ربط
   getData();
 }
 
@@ -21,34 +22,33 @@ class CustomerBottomNavigationBarrControllerImp
   CustomerData customerData = CustomerData(Get.find());
 
   CustomerProfileModel? customerModel;
-
-  @override
-  void onInit() {
-    getData();
-    super.onInit();
-  }
-
   //ربط
   @override
   getData() async {
     statusRequest = StatusRequest.loading;
-    print("==============================-*-Controller $statusRequest ");
+    print(
+        "=======CustomerBottomNavigationBarrController=========getData==============-*-Controller $statusRequest ");
     update();
 
     var response = await customerData.getCustomerData(
-        myServices.sharedPreferences.getString("id")!,
+        myServices.sharedPreferences.getString("user_id")!,
         myServices.sharedPreferences.getString("token")!);
 
-    print("==============================* Controller $response ");
-    print("==============================--Controller $statusRequest ");
+    print(
+        "======CustomerBottomNavigationBarrController=========getData===============* Controller $response ");
+    print(
+        "======CustomerBottomNavigationBarrController========getData================--Controller $statusRequest ");
 
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {
       // Start backend
-      if (response["message"] != null) {
+      if (response["data"] != null) {
+        // data.addAll(response['data']);
         customerModel = CustomerProfileModel.fromJson(response);
-
+        //*
+        // استخراج البيانات الهامة من الرد
+        // var responseData = response['data'];
         if (Get.isRegistered<CustomerHomeControllerImp>()) {
           Get.find<CustomerHomeControllerImp>().getCustomerData();
         }
@@ -62,7 +62,14 @@ class CustomerBottomNavigationBarrControllerImp
       // End
     } else {}
     update();
-    print("************************** *-*-* $statusRequest");
+    print(
+        "****CustomerBottomNavigationBarrController**********getData************ *-*-* $statusRequest");
+  }
+
+  @override
+  void onInit() {
+    getData();
+    super.onInit();
   }
 
   // add product to cart

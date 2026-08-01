@@ -13,6 +13,35 @@ class StudentData {
     return response.fold((l) => l, (r) => r);
   }
 
+  // getOneCompanyDataByName(String companyName, String token) async {
+  //   var response =
+  //       await crud.getData("${AppLink.companies}?name=$companyName", {
+  //     "Accept": "application/json",
+  //     "Content-Type": "application/json",
+  //     "Authorization": "Bearer $token"
+  //   });
+  //   return response.fold((l) => l, (r) => r);
+  // }
+  // أضف هذه الدالة بداخل كلاس StudentData في ملف remote/student/student.dart:
+
+  getCompanyDataById(String companyId, String token) async {
+    var response = await crud.getData("${AppLink.company}/$companyId", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  getCustomerDataById(String customerId, String token) async {
+    var response = await crud.getData("${AppLink.customer}/$customerId", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
   getAllCompaniesAds(
       // String id,
       /*String token*/
@@ -109,12 +138,29 @@ class StudentData {
     String token,
     int adId,
     int expectedSalarly,
+    String githubLink,
   ) async {
     var response = await crud.postData(AppLink.allProjectsApplications, {
-      "ad_id": adId,
+      "project_id": adId,
       "expected_salary": expectedSalarly,
+      "github_link": githubLink,
       "resume": "resumes/my-cv.pdf"
     }, {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  // داخل كلاس StudentData في ملف remote/student/student.dart قم بتعديل الدالة لتصبح هكذا:
+
+  editProfileInfo(
+    String id,
+    String token,
+    Map data, // إرسال خريطة البيانات هنا
+  ) async {
+    var response = await crud.putData("${AppLink.student}/$id", data, {
       "Accept": "application/json",
       "Content-Type": "application/json",
       "Authorization": "Bearer $token"

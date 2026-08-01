@@ -62,6 +62,42 @@ class Crud {
     }
   }
 
+  //--Post
+  Future<Either<StatusRequest, Map>> putData(String linkurl, Map data,
+      [Map<String, String>? headers]) async {
+    try {
+      if (await checkInternet()) {
+        // أضفنا الهيدر ليتوافق مع طلب الباك اند
+        var response = await http.put(
+          Uri.parse(linkurl),
+          body: jsonEncode(data),
+          headers: headers ??
+              {
+                // إذا كانت الـ headers فارغة، استخدم الأساسية
+                "Accept": "application/json",
+                "Content-Type": "application/json"
+              },
+        );
+        print(response.statusCode);
+
+        if (response.statusCode == 200 ||
+            response.statusCode == 201 ||
+            response.statusCode == 422) {
+          Map responsebody = jsonDecode(response.body);
+          print(responsebody);
+
+          return Right(responsebody);
+        } else {
+          return const Left(StatusRequest.serverfailure);
+        }
+      } else {
+        return const Left(StatusRequest.offlinefailure);
+      }
+    } catch (_) {
+      return const Left(StatusRequest.serverException);
+    }
+  }
+
   //--
   // 3. طلبات التحديث الجزئي (PATCH) - تستخدم لجعل الإشعار "مقروء" حسب التوثيق
   Future<Either<StatusRequest, Map>> patchData(String linkurl, Map data,

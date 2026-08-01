@@ -651,7 +651,7 @@ class StudentProfile extends StatelessWidget {
                                 color: AppColor.primaryColor, size: 17),
                             const SizedBox(width: 5),
                             Text(
-                              "${student.educationInfo!['isGraduated'] ? "تخرج من" : "يدرس في"} ${student.educationInfo!['college']} - ${student.educationInfo!['university']}",
+                              "${student.educationInfo!['isGraduated'] == 1 ? "تخرج من" : "يدرس في"} ${student.educationInfo!['college']} - ${student.educationInfo!['university']}",
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black45,

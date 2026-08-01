@@ -25,9 +25,11 @@ class SendRequestToCompany extends StatelessWidget {
           "إرسال طلب العمل",
           style: TextStyle(),
         ),
-        foregroundColor: Colors.white,
+        // foregroundColor: Colors.white,
+        foregroundColor: AppColor.primaryColor,
         centerTitle: true,
-        backgroundColor: AppColor.primaryColor,
+        // backgroundColor: AppColor.primaryColor,
+        backgroundColor: Colors.white,
       ),
       body: GetBuilder<SendRequestToCompanyControllerImp>(
         builder: (controller) => Container(
@@ -50,7 +52,8 @@ class SendRequestToCompany extends StatelessWidget {
                       ),
                     ),
                     //--
-                    if (companiesPostModel.isCvRequired!)
+                    // if (companiesPostModel.isCvRequired!)
+                    if (true)
                       Column(
                         crossAxisAlignment: CrossAxisAlignment.start,
                         children: [
@@ -91,7 +94,8 @@ class SendRequestToCompany extends StatelessWidget {
                         ],
                       ),
                     //--
-                    if (companiesPostModel.isGitHubOrPortfolioRequired!)
+                    // if (companiesPostModel.isGitHubOrPortfolioRequired!)
+                    if (true)
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 15,
@@ -99,7 +103,7 @@ class SendRequestToCompany extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 6, 100, "link");
                           },
                           mycontroller: controller.githubLinkController,
                           labelText: "رابط حسابك على Git Hub :",
@@ -109,7 +113,8 @@ class SendRequestToCompany extends StatelessWidget {
                         ),
                       ),
                     //--
-                    if (companiesPostModel.isSalaryRequired!)
+                    // if (companiesPostModel.isSalaryRequired!)
+                    if (true)
                       Padding(
                         padding: const EdgeInsets.only(
                           bottom: 15,
@@ -117,7 +122,7 @@ class SendRequestToCompany extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 1, 100, "description");
                           },
                           mycontroller: controller.expectedSalaryController,
                           labelText: "الراتب المتوقع :",

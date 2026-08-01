@@ -61,7 +61,7 @@ class ShowOneFreelancerPost extends StatelessWidget {
                         //
                         // استدعاء دالة الانتقال من المتحكم
                         controller.goToCustomerProfile(
-                            freelancerPostModel.publisher!);
+                            freelancerPostModel.publisherId!.toString());
                       },
                       child: CircleAvatar(
                         radius: 22,
@@ -89,7 +89,7 @@ class ShowOneFreelancerPost extends StatelessWidget {
                             onTap: () {
                               // استدعاء دالة الانتقال من المتحكم
                               controller.goToCustomerProfile(
-                                  freelancerPostModel.publisher!);
+                                  freelancerPostModel.publisherId!.toString());
                             },
                             child: Text(
                               // "$companyName • $timePosted",
@@ -169,18 +169,18 @@ class ShowOneFreelancerPost extends StatelessWidget {
                     //     items: companiesPostModel.requirements),
                     // ListSection(
                     //     title: "الميزات:", items: companiesPostModel.benefits),
-                    if (freelancerPostModel.additionalDetails != null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        "تفاصيل إضافية:",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      Text(
-                        freelancerPostModel.additionalDetails!,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[800]),
-                      ),
-                    ],
+                    // if (freelancerPostModel.additionalDetails != null) ...[
+                    //   const SizedBox(height: 10),
+                    //   Text(
+                    //     "تفاصيل إضافية:",
+                    //     style: const TextStyle(
+                    //         fontWeight: FontWeight.bold, fontSize: 14),
+                    //   ),
+                    //   Text(
+                    //     freelancerPostModel.additionalDetails!,
+                    //     style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                    //   ),
+                    // ],
                     const SizedBox(height: 10),
                   ],
                 ),
@@ -250,7 +250,8 @@ class ShowOneFreelancerPost extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         //
-                        controller.goToSendRequestToCustomer();
+                        controller
+                            .goToSendRequestToCustomer(freelancerPostModel);
                       },
                       child: Container(
                         padding: const EdgeInsets.symmetric(

@@ -22,6 +22,25 @@ class CustomerData {
     return response.fold((l) => l, (r) => r);
   }
 
+  getMyProjects(String token) async {
+    var response = await crud.getData(AppLink.myProjects, {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  getApplications(String token, String projectId) async {
+    var response =
+        await crud.getData("${AppLink.projects}/$projectId/applications", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
   createCustomerPost(Map data, String token) async {
     var response = await crud.postData(
         AppLink.projects,
@@ -34,27 +53,17 @@ class CustomerData {
     return response.fold((l) => l, (r) => r);
   }
 
-  // getAllCompaniesAds(
-  //     // String id,
-  //     /*String token*/
-  //     ) async {
-  //   var response = await crud.getData(AppLink.allCompaniesAds, {
-  //     // "Accept": "application/json",
-  //     // "Content-Type": "application/json",
-  //     // "Authorization": "Bearer $token"
-  //   });
-  //   return response.fold((l) => l, (r) => r);
-  // }
-
-  // getAllCustomersAds(
-  //     // String id,
-  //     /*String token*/
-  //     ) async {
-  //   var response = await crud.getData(AppLink.allCustomersAds, {
-  //     // "Accept": "application/json",
-  //     // "Content-Type": "application/json",
-  //     // "Authorization": "Bearer $token"
-  //   });
-  //   return response.fold((l) => l, (r) => r);
-  // }
+  //--
+  editProfileInfo(
+    String id,
+    String token,
+    Map data, // إرسال خريطة البيانات هنا
+  ) async {
+    var response = await crud.putData("${AppLink.customer}/$id", data, {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
 }

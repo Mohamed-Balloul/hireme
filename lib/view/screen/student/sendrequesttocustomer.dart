@@ -1,6 +1,7 @@
 import 'package:hireme/controller/student/sendrequesttocustomer_controller.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/core/functions/validinput.dart';
+import 'package:hireme/data/model/freelancerpostmodel.dart';
 import 'package:hireme/view/widget/auth/custombuttonauth.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
@@ -8,7 +9,8 @@ import 'package:hireme/view/widget/company/customtextformwithlabel.dart';
 import 'package:hireme/view/widget/customer/SingleFile.dart';
 
 class SendRequestToCustomer extends StatelessWidget {
-  const SendRequestToCustomer({super.key});
+  final FreelancerPostModel freelancerPostModel;
+  const SendRequestToCustomer({super.key, required this.freelancerPostModel});
 
   @override
   Widget build(BuildContext context) {
@@ -98,6 +100,22 @@ class SendRequestToCustomer extends StatelessWidget {
                               ),
                       ],
                     ),
+                    Padding(
+                      padding: const EdgeInsets.only(
+                        bottom: 15,
+                        top: 40,
+                      ),
+                      child: CustomTextFormWithLablel(
+                        valid: (val) {
+                          return validInput(val!, 6, 100, "link");
+                        },
+                        mycontroller: controller.gitController,
+                        labelText: "رابط حسابك على Git Hub :",
+                        hintText: "ادخل الرابط هنا",
+                        iconData: Icons.link,
+                        isNumber: false,
+                      ),
+                    ),
                     //--
                     Padding(
                       padding: const EdgeInsets.only(
@@ -106,7 +124,7 @@ class SendRequestToCustomer extends StatelessWidget {
                       ),
                       child: CustomTextFormWithLablel(
                         valid: (val) {
-                          return validInput(val!, 6, 30, "username");
+                          return validInput(val!, 1, 100, "text");
                         },
                         mycontroller: controller.expectedSalaryController,
                         labelText: "الأجر المطلوب مقابل تقديم الخدمة :",
@@ -127,7 +145,8 @@ class SendRequestToCustomer extends StatelessWidget {
                   child: CustomButtonAuth(
                     text: "إرسال",
                     onPressed: () {
-                      // controller.signUp();
+                      controller.createAndSendApplicationToCustomer(
+                          freelancerPostModel.id!);
                     },
                   ),
                 ),

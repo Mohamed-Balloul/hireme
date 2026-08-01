@@ -219,6 +219,28 @@ class StudentProfileModel {
       'university': profile?['university'] ??
           "جامعة القاهرة", // الباك يرسل الكلية فقط حالياً، فوضعنا قيمة افتراضية للجامعة لتفادي الخطأ
     };
+    //--
+    final String? rawAvatar = json['avatar'];
+    String fullAvatar =
+        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop'; // الصورة الافتراضية
+
+    if (rawAvatar != null && rawAvatar.isNotEmpty) {
+      // إذا كانت الصورة تبدأ بـ http (مثل صور الفيس بوك أو جوجل) نأخذها كما هي، وإلا ندمجها مع رابط السيرفر
+      fullAvatar = rawAvatar.startsWith('http')
+          ? rawAvatar
+          : "https://cage-sleep-dallying.ngrok-free.dev/storage/$rawAvatar"; // تعديل الرابط ليتناسب مع رابط الباك اند لديك
+    }
+    // نفس المنطق لـ cover_image:
+    final String? rawCover = json['cover_image'];
+    String fullCover =
+        'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop';
+
+    if (rawCover != null && rawCover.isNotEmpty) {
+      fullCover = rawCover.startsWith('http')
+          ? rawCover
+          : "https://cage-sleep-dallying.ngrok-free.dev/storage/$rawCover";
+    }
+    //--
 
     return StudentProfileModel(
       id: json['id'],
@@ -231,14 +253,18 @@ class StudentProfileModel {
           : 4.5,
       bio: json['description'] ??
           "لا توجد نبذة تعريفية حالياً.", // تم ربطها بـ description الوارد من الباك
-      image: json['avatar'] ??
+      image: fullAvatar ??
           'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop', // تم ربطها بـ avatar
-      cover: json['cover_image'] ??
+      cover: fullCover ??
           'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop', // تم ربطها بـ cover_image
+      // image: json['avatar'] ??
+      //     'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop', // تم ربطها بـ avatar
+      // cover: json['cover_image'] ??
+      //     'https://images.unsplash.com/photo-1519085360753-af0119f7cbe7?q=80&w=1000&auto=format&fit=crop', // تم ربطها بـ cover_image
 
       // Statistical Info
       city: profile?['address'] ??
-          "مكان الإقامة غير محدد", // تم ربطها بـ address الوارد في الكائن الفرعي profile
+          "--", // تم ربطها بـ address الوارد في الكائن الفرعي profile
       jobLabel: profile?['title'] ??
           "مطور برمجيات", // تم ربطها بـ title الوارد في الكائن الفرعي profile
       hourlySalary: parsedHourlySalary ?? 0,

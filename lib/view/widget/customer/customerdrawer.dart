@@ -4,7 +4,7 @@ import 'package:hireme/controller/customer/customerbottomnavigationbar/customerb
 import 'package:hireme/controller/customer/customerhome_controller.dart';
 import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/customerprofilemodel.dart';
 
 class CustomerDrawer extends StatelessWidget {
@@ -172,7 +172,9 @@ class CustomerDrawer extends StatelessWidget {
                         title: "تسجيل خروج",
                         icon: Icons.logout_rounded,
                         isLogout: true,
-                        onTap: () {},
+                        onTap: () {
+                          controller.logout();
+                        },
                       ),
                       const SizedBox(height: 20),
                     ],

@@ -2,25 +2,24 @@ import 'package:flutter/material.dart';
 import 'package:get/get.dart';
 import 'package:hireme/controller/company/incomingrequests_controller.dart';
 import 'package:hireme/core/constant/color.dart';
+import 'package:hireme/data/model/incomingrequeststocompanymodel.dart';
 import 'package:hireme/view/widget/company/buildmodernchip.dart';
 
 class ApplicantCardModern extends StatelessWidget {
-  final String image;
-  final String applicantName;
-  final int expectedSalary;
-  final String jobLabel;
+  final int index;
+  final IncomingRequestsToCompanyModel incomingRequestsToCompanyModel;
   const ApplicantCardModern({
     super.key,
-    required this.image,
-    required this.applicantName,
-    required this.expectedSalary,
-    required this.jobLabel,
+    required this.index,
+    required this.incomingRequestsToCompanyModel,
   });
 
   @override
   Widget build(BuildContext context) {
     IncomingRequestsControllerImp controller =
-        Get.put(IncomingRequestsControllerImp());
+        Get.find<IncomingRequestsControllerImp>();
+    // Get.put(IncomingRequestsControllerImp());
+
     return Container(
       decoration: BoxDecoration(
         color: Colors.white,
@@ -43,7 +42,8 @@ class ApplicantCardModern extends StatelessWidget {
               // الصورة
               InkWell(
                 onTap: () {
-                  controller.goToStudentProfile(applicantName);
+                  controller.goToStudentProfile(
+                      incomingRequestsToCompanyModel.applicantName!);
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -52,7 +52,8 @@ class ApplicantCardModern extends StatelessWidget {
                   ),
                   child: CircleAvatar(
                     radius: 26,
-                    backgroundImage: NetworkImage(image),
+                    backgroundImage:
+                        NetworkImage(incomingRequestsToCompanyModel.image!),
                   ),
                 ),
               ),
@@ -65,10 +66,11 @@ class ApplicantCardModern extends StatelessWidget {
                   children: [
                     InkWell(
                       onTap: () {
-                        controller.goToStudentProfile(applicantName);
+                        controller.goToStudentProfile(
+                            incomingRequestsToCompanyModel.applicantName!);
                       },
                       child: Text(
-                        applicantName,
+                        incomingRequestsToCompanyModel.applicantName!,
                         style: TextStyle(
                           fontSize: 15,
                           fontWeight: FontWeight.w600,
@@ -78,7 +80,7 @@ class ApplicantCardModern extends StatelessWidget {
                     ),
                     const SizedBox(height: 4),
                     Text(
-                      jobLabel,
+                      incomingRequestsToCompanyModel.joblabel!,
                       style: TextStyle(
                         fontSize: 12,
                         fontWeight: FontWeight.w400,
@@ -92,7 +94,7 @@ class ApplicantCardModern extends StatelessWidget {
                             size: 12, color: Colors.grey[400]),
                         const SizedBox(width: 4),
                         Text(
-                          "منذ ساعتين",
+                          "منذ قليل",
                           style:
                               TextStyle(fontSize: 11, color: Colors.grey[400]),
                         ),
@@ -118,7 +120,7 @@ class ApplicantCardModern extends StatelessWidget {
                   crossAxisAlignment: CrossAxisAlignment.center,
                   children: [
                     Text(
-                      "\$$expectedSalary",
+                      "\$${incomingRequestsToCompanyModel.expectedSalary}",
                       style: TextStyle(
                         fontSize: 16,
                         fontWeight: FontWeight.w800, // خط عريض للرقم

@@ -103,14 +103,15 @@ class NotificationsControllerImp extends NotificationsController {
         "app_version": "1.0.0" // يفضل جلبها من PackageInfo
       };
       var response = await notificationData.registerDevice(accessToken, data);
-      print("Device Token Registered on Server Successfully!");
-      if (response['status'] == "success" || response['data'] != null) {
-        // حفظ رقم السجل القادم من السيرفر لاستخدامه عند تسجيل الخروج
-        String deviceRecordId = response['data']['id'].toString();
-        myServices.sharedPreferences
-            .setString("device_record_id", deviceRecordId);
-        print("Saved Device Record ID: $deviceRecordId");
-      }
+      print("****notification******lanchapp****************** *-*-* $response");
+      // print("Device Token Registered on Server Successfully!");
+      // if (response['status'] == "success" || response['data'] != null) {
+      //   // حفظ رقم السجل القادم من السيرفر لاستخدامه عند تسجيل الخروج
+      //   String deviceRecordId = response['data']['id'].toString();
+      //   myServices.sharedPreferences
+      //       .setString("device_record_id", deviceRecordId);
+      //   print("Saved Device Record ID: $deviceRecordId");
+      // }
     }
   }
 

@@ -77,7 +77,7 @@ class HomeSlider extends StatelessWidget {
                           children: [
                             Positioned.fill(
                               child: Image.network(
-                                student.image! ??
+                                student.image ??
                                     "https://images.unsplash.com/photo-1573497019940-1c28c88b4f3e?q=80&w=1000&auto=format&fit=crop",
                                 fit: BoxFit.cover,
                               ),
@@ -228,7 +228,8 @@ class HomeSlider extends StatelessWidget {
                               Wrap(
                                 spacing: 4, // مسافة أفقية بين الكبسولات
                                 runSpacing: 4, // مسافة عمودية
-                                children: (student.skils! as List<String>)
+                                // children: (student.skils as List<String>)
+                                children: (student.skils ?? [])
                                     .take(3) // نأخذ أول 3 فقط
                                     .map((skill) {
                                   return Container(

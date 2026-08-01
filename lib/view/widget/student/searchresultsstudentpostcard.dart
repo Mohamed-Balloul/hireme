@@ -44,8 +44,8 @@ class SearchResultsStudentPostCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       // استدعاء دالة الانتقال من المتحكم
-                      controller
-                          .goToCompanyProfile(companiesPostModel.companyName!);
+                      controller.goToCompanyProfile(
+                          companiesPostModel.companyId!.toString());
                     },
                     child: CircleAvatar(
                       radius: 22,
@@ -72,7 +72,7 @@ class SearchResultsStudentPostCard extends StatelessWidget {
                           onTap: () {
                             // استدعاء دالة الانتقال من المتحكم
                             controller.goToCompanyProfile(
-                                companiesPostModel.companyName!);
+                                companiesPostModel.companyId!.toString());
                           },
                           child: Text(
                             // "$companyName • $timePosted",
@@ -126,18 +126,18 @@ class SearchResultsStudentPostCard extends StatelessWidget {
                         items: companiesPostModel.requirements),
                     ListSection(
                         title: "الميزات:", items: companiesPostModel.benefits),
-                    if (companiesPostModel.additionalDetails != null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        "تفاصيل إضافية:",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      Text(
-                        companiesPostModel.additionalDetails!,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[800]),
-                      ),
-                    ],
+                    // if (companiesPostModel.additionalDetails != null) ...[
+                    //   const SizedBox(height: 10),
+                    //   Text(
+                    //     "تفاصيل إضافية:",
+                    //     style: const TextStyle(
+                    //         fontWeight: FontWeight.bold, fontSize: 14),
+                    //   ),
+                    //   Text(
+                    //     companiesPostModel.additionalDetails!,
+                    //     style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                    //   ),
+                    // ],
                     const SizedBox(height: 10),
                   ],
                   // زر (عرض المزيد / عرض أقل) - التحسين هنا

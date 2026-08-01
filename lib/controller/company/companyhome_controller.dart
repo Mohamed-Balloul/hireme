@@ -8,6 +8,7 @@ import 'package:hireme/data/datasource/remote/auth/logout.dart';
 import 'package:hireme/data/datasource/remote/company/company.dart';
 import 'package:hireme/data/datasource/remote/student/notifications.dart';
 import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/data/model/companiespostmodel.dart';
 import 'package:hireme/data/model/companyprofilemodel.dart';
 import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:hireme/view/screen/company/companyprofile.dart';
@@ -18,18 +19,22 @@ import 'package:hireme/view/screen/student/studentprofile.dart';
 abstract class CompanyHomeController extends GetxController {
   goToCompanyPosts();
   goToStudentProfile();
-  goToIncomingRequests();
-  goToComingRequests();
+  goToIncomingRequests(int adId);
+  // goToComingRequests();
   action(int index);
   onChange(int index);
   goToSearchPage();
   goToMyProfile();
   goToSavedStudents();
   deleteMyPost(int index);
-  //--
+  //--ربط
   logout();
   getCompanyData();
   getAllStudents();
+  //--
+  getMyAds();
+  // الدالة الجديدة هنا
+  Future<void> refreshData();
 }
 
 class CompanyHomeControllerImp extends CompanyHomeController {
@@ -43,6 +48,9 @@ class CompanyHomeControllerImp extends CompanyHomeController {
   CompanyBottomNavigationBarrControllerImp controller =
       Get.find<CompanyBottomNavigationBarrControllerImp>();
   List<StudentProfileModel> allStudents = [];
+  List<CompaniesPostModel> myAds = [];
+  int selectedAdId =
+      0; // لتحديد الإعلان المختار عند الانتقال لصفحة الطلبات الواردة
   //--ربط
   int currentIndex = 0;
   // متغير للتحكم في حالة الفتح والإغلاق
@@ -58,6 +66,14 @@ class CompanyHomeControllerImp extends CompanyHomeController {
     Get.toNamed(AppRoute.companyComingRequests);
   }
 
+  @override
+  Future<void> refreshData() async {
+    // await getCompanyData();
+    // await getAllStudents();
+    await getMyAds();
+    update(); // تحديث واجهة المستخدم بعد تحديث البيانات
+  }
+
   // @override
   // goToProfile() {
   //   Get.toNamed(AppRoute.CompanyProfile);
@@ -67,6 +83,7 @@ class CompanyHomeControllerImp extends CompanyHomeController {
   void onInit() {
     getCompanyData();
     getAllStudents();
+    getMyAds();
     super.onInit();
     for (int i = 0; i < companyPosts.length; i++) {
       isExpanded!.add(false);
@@ -85,7 +102,8 @@ class CompanyHomeControllerImp extends CompanyHomeController {
   }
 
   @override
-  goToIncomingRequests() {
+  goToIncomingRequests(adId) {
+    selectedAdId = adId;
     Get.toNamed(AppRoute.incomingApplicationsScreen);
   }
 
@@ -148,62 +166,61 @@ class CompanyHomeControllerImp extends CompanyHomeController {
       middleText: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
       textCancel: "إلغاء",
       textConfirm: "تأكيد",
+      // confirmTextColor: Colors.white,
+      // buttonColor: const Color(0xFF1DBF53), // لون الزر الأخضر المعتمد لديك
       onConfirm: () async {
-        // هنا يمكنك استدعاء دالة تسجيل الخروج من الـ Controller الخاص بك
-        // مثلاً:
-        // authController.logout();
-        // Get.offAllNamed(AppRoute.login);
+        // 1. إغلاق دايلوج التأكيد فوراً لتجنب النقر المتعدد وإظهار شاشة التحميل بوضوح
+        Get.back();
+
         statusRequest = StatusRequest.loading;
-        print("==============================-*-Controller $statusRequest ");
+        print(
+            "=====logout========CompanyHomeControllerImp=================-*-Controller $statusRequest ");
         update();
-        // 1. جلب التوكن من الـ SharedPreferences
+
+        // 2. جلب البيانات المحلية
         String token = myServices.sharedPreferences.getString("token") ?? "";
         String? deviceId =
             myServices.sharedPreferences.getString("device_record_id");
 
-        // بعد ما ينجح الـ API call
-        await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
-        // الخطوة 1: حذف الجهاز من السيرفر (Push Notification Cleanup)
+        // 3. الخطوة الأولى: حذف جهاز الإشعارات بشكل محمي تماماً
         if (deviceId != null) {
-          await notificationData.deleteDevice(token, deviceId);
+          try {
+            await notificationData.deleteDevice(token, deviceId);
+          } catch (e) {
+            print("--- خطأ غير مؤثر في حذف توكن الإشعارات: $e");
+          }
         }
-        // ثم انتقل لصفحة الـ
-        // الخطوة 2: تسجيل الخروج الرسمي من الحساب
 
+        // 4. الخطوة الثانية: تسجيل الخروج الرسمي من السيرفر
         var response = await logoutData.postData(token);
 
-        print("==============================* Controller $response ");
-        print("==============================--Controller $statusRequest ");
-
+        print(
+            "===logout=======CompanyHomeControllerImp====================* Response: $response ");
         statusRequest = handlingData(response);
 
         if (StatusRequest.success == statusRequest) {
-          // Start backend
-          // if (response['status'] == "success") {
-          if (response['message'] != null) {
-            // data.addAll(response['data']);
-            // Get.offNamed(AppRoute.verfiyCodeSignUp,
-            //     arguments: {"email": email.text});
-            // 3. الخطوة الأهم: حذف البيانات محلياً
-            myServices.sharedPreferences
-                .clear(); // أو احذف فقط التوكن والـ step
-            // 4. الانتقال لصفحة تسجيل الدخول ومنع الرجوع للخلف
+          if (response['message'] == "Logged out successfully.") {
+            // نجاح كامل: مسح البيانات محلياً والتحويل لصفحة تسجيل الدخول
+            myServices.sharedPreferences.clear();
             Get.offAllNamed(AppRoute.login);
           } else {
-            Get.defaultDialog(
-              title: "warning",
-              middleText: "wrong logout",
-            );
-            statusRequest = StatusRequest.failure;
+            // رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن
+            print(
+                "رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن");
+            // myServices.sharedPreferences.clear();
+            // Get.offAllNamed(AppRoute.login);
           }
-          // End
         } else {
-          // حتى لو فشل السيرفر، يفضل تسجيل الخروج محلياً لضمان تجربة مستخدم جيدة
-          myServices.sharedPreferences.clear();
-          Get.offAllNamed(AppRoute.login);
+          // في حال فشل السيرفر أو انقطاع الإنترنت، نقوم بالتنظيف محلياً لضمان خروج العميل وتفادي احتجازه
+          print("--- فشل الاتصال بالسيرفر، يتم تسجيل الخروج محلياً الآن.");
+          // myServices.sharedPreferences.clear();
+          // Get.offAllNamed(AppRoute.login);
         }
-        // update();
-        print("************************** *-*-* $statusRequest");
+
+        statusRequest = StatusRequest.none;
+        update();
+        print(
+            "****logout******CompanyHomeControllerImp****************** *-*-* $statusRequest");
       },
     );
   }
@@ -211,20 +228,23 @@ class CompanyHomeControllerImp extends CompanyHomeController {
   @override
   getAllStudents() async {
     statusRequest = StatusRequest.loading;
-    print("==============================-*-Controller $statusRequest ");
+    print(
+        "=========getAllStudents==========CompanyHomeControllerImp===========-*-Controller $statusRequest ");
     update();
 
     String token = myServices.sharedPreferences.getString("token") ?? "";
     var response = await companyData.getAllStudents(token);
 
-    print("==============================* Controller $response ");
-    print("==============================--Controller $statusRequest ");
+    print(
+        "=========getAllStudents=======CompanyHomeControllerImp==============* Controller $response ");
+    print(
+        "========getAllStudents=========CompanyHomeControllerImp=============--Controller $statusRequest ");
 
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {
       // Start backend
-      if (response["message"] != null) {
+      if (response["data"] != null) {
         // تفريغ القائمة قبل الإضافة لتجنب التكرار عند تحديث الصفحة
         allStudents!.clear();
 
@@ -246,7 +266,49 @@ class CompanyHomeControllerImp extends CompanyHomeController {
       // End
     } else {}
     update();
-    print("************************** *-*-* $statusRequest");
+    print(
+        "*******getAllStudents*********CompanyHomeControllerImp********** *-*-* $statusRequest");
+  }
+
+  //ربط
+  @override
+  getMyAds() async {
+    statusRequest = StatusRequest.loading;
+    print(
+        "=========getMyAds==========CompanyHomeControllerImp===========-*-Controller $statusRequest ");
+    update();
+
+    String token = myServices.sharedPreferences.getString("token") ?? "";
+    var response = await companyData.getMyAds(token);
+
+    print(
+        "=========getMyAds=======CompanyHomeControllerImp==============* Controller $response ");
+    print(
+        "========getMyAds=========CompanyHomeControllerImp=============--Controller $statusRequest ");
+
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      // Start backend
+      if (response["data"] != null) {
+        // تفريغ القائمة قبل الإضافة لتجنب التكرار عند تحديث الصفحة
+        myAds!.clear();
+
+        // تحويل القائمة القادمة من السيرفر إلى موديلات وإضافتها
+        List responseData = response['data'];
+        myAds!.addAll(responseData.map((e) => CompaniesPostModel.fromJson(e)));
+      } else {
+        // Get.defaultDialog(
+        //   title: "warning",
+        //   middleText: "email or password is wrong, try again",
+        // );
+        statusRequest = StatusRequest.failure;
+      }
+      // End
+    } else {}
+    update();
+    print(
+        "*******getMyAds*********CompanyHomeControllerImp********** *-*-* $statusRequest");
   }
   //ربط
 }

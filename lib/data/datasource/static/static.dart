@@ -1260,8 +1260,8 @@ List<StudentNotificationModel> allCompanyNotifications = [
   ),
 ];
 //---------------- Static Data : Company's Posts Information In Her Home Page -----------------
-List<CompanyPostInCompanyHomeModel> companyPosts = [
-  CompanyPostInCompanyHomeModel(
+List<CompaniesPostModel> companyPosts = [
+  CompaniesPostModel(
     companyName: "Tech Solutions",
     logo:
         "https://cdn-icons-png.flaticon.com/512/732/732221.png", // مثال لوجو مايكروسوفت
@@ -1292,7 +1292,7 @@ List<CompanyPostInCompanyHomeModel> companyPosts = [
     additionalDetails: "اخر موعد للتقدم هو 20/11/2025",
     // --------------------------------
   ),
-  CompanyPostInCompanyHomeModel(
+  CompaniesPostModel(
     companyName: "Tech Solutions",
     logo:
         "https://cdn-icons-png.flaticon.com/512/732/732221.png", // مثال لوجو مايكروسوفت
@@ -1316,7 +1316,7 @@ List<CompanyPostInCompanyHomeModel> companyPosts = [
     ],
     additionalDetails: null,
   ),
-  CompanyPostInCompanyHomeModel(
+  CompaniesPostModel(
     companyName: "Tech Solutions",
     logo:
         "https://cdn-icons-png.flaticon.com/512/732/732221.png", // مثال لوجو مايكروسوفت

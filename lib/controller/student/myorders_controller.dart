@@ -25,6 +25,9 @@ abstract class MyOrdersController extends GetxController {
   //--
   deleteMyAdApplication(String id);
   deleteMyProjectApplication(String id);
+
+  // الدالة الجديدة هنا
+  Future<void> refreshData();
 }
 
 class MyOrdersControllerImp extends MyOrdersController {
@@ -47,12 +50,21 @@ class MyOrdersControllerImp extends MyOrdersController {
   //   // return allNotifications.where((n) => n.type == selectedFilter).toList();
   // }
   //ربط
+  @override
+  Future<void> refreshData() async {
+    // await getCompanyData();
+    // await getAllStudents();
+    await getAllMyAdApplications();
+    await getAllMyProjectApplications();
+    update(); // تحديث واجهة المستخدم بعد تحديث البيانات
+  }
   //ربط
+
   @override
   getAllMyAdApplications() async {
     statusRequest = StatusRequest.loading;
     print(
-        "=====getAllMyAdApplications=========================-*-Controller $statusRequest ");
+        "=====getAllMyAdApplications============MyOrdersControllerImp=============-*-Controller $statusRequest ");
     update();
 
     // بعد ما ينجح الـ API call
@@ -63,9 +75,9 @@ class MyOrdersControllerImp extends MyOrdersController {
         myServices.sharedPreferences.getString("token")!);
 
     print(
-        "=====getAllMyAdApplications=========================* Controller $response ");
+        "=====getAllMyAdApplications=============MyOrdersControllerImp============* Controller $response ");
     print(
-        "=====getAllMyAdApplications=========================--Controller $statusRequest ");
+        "=====getAllMyAdApplications=============MyOrdersControllerImp============--Controller $statusRequest ");
 
     statusRequest = handlingData(response);
 
@@ -78,8 +90,8 @@ class MyOrdersControllerImp extends MyOrdersController {
 
         // تحويل القائمة القادمة من السيرفر إلى موديلات وإضافتها
         List responseData = response['data'];
-        // allMyAdApplications!.addAll(
-        //     responseData.map((e) => MyRequestToCompanyModel.fromJson(e)));
+        allMyAdApplications!.addAll(
+            responseData.map((e) => MyRequestToCompanyModel.fromJson(e)));
         //--
         //     allMyAdApplications.clear(); // إزالة الـ ! هنا
 
@@ -104,7 +116,7 @@ class MyOrdersControllerImp extends MyOrdersController {
     } else {}
     update();
     print(
-        "****getAllMyAdApplications********************** *-*-* $statusRequest");
+        "****getAllMyAdApplications*************MyOrdersControllerImp********* *-*-* $statusRequest");
   }
 
   //ربط
@@ -137,8 +149,8 @@ class MyOrdersControllerImp extends MyOrdersController {
 
         // تحويل القائمة القادمة من السيرفر إلى موديلات وإضافتها
         List responseData = response['data'];
-        // allMyProjectApplications!.addAll(
-        //     responseData.map((e) => MyRequestToCustomerModel.fromJson(e)));
+        allMyProjectApplications!.addAll(
+            responseData.map((e) => MyRequestToCustomerModel.fromJson(e)));
         // _updateSuggestions(); // استدعاء دالة تحديث المقترحات
         // if (Get.isRegistered<CompaniesPostsControllerImp>()) {
         //   Get.find<CompaniesPostsControllerImp>().getAllCompaniesPosts();

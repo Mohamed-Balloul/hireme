@@ -1,47 +1,19 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-// import 'package:hireme/controller/company/companyhome_controller.dart';
 import 'package:hireme/controller/customer/customerhome_controller.dart';
 import 'package:hireme/core/constant/color.dart';
-// import 'package:hireme/data/model/companypostincompanyhomemodel.dart';
-import 'package:hireme/data/model/customerpostincustomerhomemodel.dart';
+import 'package:hireme/data/model/freelancerpostmodel.dart';
 import 'package:hireme/view/widget/company/listsection.dart';
 import 'package:hireme/view/widget/student/profile_dialogs.dart';
 
 class CustomerPostCard extends StatelessWidget {
   final int index;
-  final CustomerPostInCustomerHomeModel customerPostInCustomerHomeModel;
-  // المتغيرات التي ستجلبها من الباك إند مستقبلاً
-  // final String companyName;
-  // final String companyLogo;
-  // final String jobTitle;
-  // final String timePosted;
-  // final String postContent;
-  // final String? postImage; // الصورة اختيارية
-  // final int applicantsCount; // عدد المتقدمين
-  // final bool isActive; // هل الإعلان نشط أم مغلق
-  // // المتغيرات الجديدة (قوائم)
-  // final List<String>? mainResponsibilities;
-  // final List<String>? requirements;
-  // final List<String>? benefits;
-  // final String? additionalDetails;
+  final FreelancerPostModel freelancerPostModel;
 
   const CustomerPostCard({
     super.key,
-    // required this.companyName,
-    // required this.companyLogo,
-    // required this.jobTitle,
-    // required this.timePosted,
-    // required this.postContent,
-    // this.postImage,
-    // required this.applicantsCount,
-    // this.isActive = true,
-    // this.mainResponsibilities,
-    // this.requirements,
-    // this.benefits,
-    // this.additionalDetails,
     required this.index,
-    required this.customerPostInCustomerHomeModel,
+    required this.freelancerPostModel,
   });
 
   @override
@@ -72,8 +44,7 @@ class CustomerPostCard extends StatelessWidget {
                   // اللوجو
                   CircleAvatar(
                     radius: 22,
-                    backgroundImage:
-                        NetworkImage(customerPostInCustomerHomeModel.logo!),
+                    backgroundImage: NetworkImage(freelancerPostModel.logo!),
                     backgroundColor: Colors.grey[200],
                   ),
                   const SizedBox(width: 12),
@@ -83,7 +54,7 @@ class CustomerPostCard extends StatelessWidget {
                       crossAxisAlignment: CrossAxisAlignment.start,
                       children: [
                         Text(
-                          customerPostInCustomerHomeModel
+                          freelancerPostModel
                               .serviceTitle!, // العنوان الوظيفي هو الأهم
                           style: const TextStyle(
                             fontWeight: FontWeight.bold,
@@ -92,7 +63,7 @@ class CustomerPostCard extends StatelessWidget {
                           ),
                         ),
                         Text(
-                          "${customerPostInCustomerHomeModel.publisher} • ${customerPostInCustomerHomeModel.time}",
+                          "انا • ${freelancerPostModel.time}",
                           style: TextStyle(
                             color: Colors.grey[600],
                             fontSize: 12,
@@ -143,82 +114,84 @@ class CustomerPostCard extends StatelessWidget {
                 children: [
                   // النص المختصر (المقدمة)
                   Text(
-                    customerPostInCustomerHomeModel.description!,
+                    freelancerPostModel.description!,
                     style: const TextStyle(
                         fontSize: 14, color: Colors.black87, height: 1.6),
                     // إذا كان مفتوحاً لا نضع حداً للأسطر، وإلا نكتفي بسطرين
-                    maxLines: controller.isExpanded![index] ? null : 3,
-                    overflow: controller.isExpanded![index]
-                        ? TextOverflow.visible
-                        : TextOverflow.ellipsis,
+                    // maxLines: controller.isExpanded![index] ? null : 3,
+                    // overflow: controller.isExpanded![index]
+                    //     ? TextOverflow.visible
+                    //     : TextOverflow.ellipsis,
+                    maxLines: null,
+                    overflow: TextOverflow.visible,
                   ),
 
                   // --- التفاصيل المخفية (تظهر فقط عند الضغط) ---
-                  if (controller.isExpanded![index]) ...[
-                    const SizedBox(height: 10),
-                    ListSection(
-                        title: "الأدوات المطلوب استخدامها:",
-                        items: customerPostInCustomerHomeModel.tools),
-                    // ListSection(
-                    //     title: "المتطلبات:",
-                    //     items: companyPostInCompanyHomeModel.requirements),
-                    // ListSection(
-                    //     title: "الميزات:",
-                    //     items: companyPostInCompanyHomeModel.benefits),
-                    if (customerPostInCustomerHomeModel.additionalDetails !=
-                        null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        "تفاصيل إضافية:",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      Text(
-                        customerPostInCustomerHomeModel.additionalDetails!,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[800]),
-                      ),
-                    ],
-                    const SizedBox(height: 10),
-                  ],
+                  // if (controller.isExpanded![index]) ...[
+
+                  const SizedBox(height: 10),
+                  ListSection(
+                      title: "الأدوات المطلوب استخدامها:",
+                      items: freelancerPostModel.tools),
+                  // ListSection(
+                  //     title: "المتطلبات:",
+                  //     items: companyPostInCompanyHomeModel.requirements),
+                  // ListSection(
+                  //     title: "الميزات:",
+                  //     items: companyPostInCompanyHomeModel.benefits),
+                  // if (freelancerPostModel.additionalDetails != null) ...[
+                  //   const SizedBox(height: 10),
+                  //   Text(
+                  //     "تفاصيل إضافية:",
+                  //     style: const TextStyle(
+                  //         fontWeight: FontWeight.bold, fontSize: 14),
+                  //   ),
+                  //   Text(
+                  //     freelancerPostModel.additionalDetails!,
+                  //     style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                  //   ),
+                  // ],
+                  const SizedBox(height: 10),
+                  // ],
                   // زر (عرض المزيد / عرض أقل) - التحسين هنا
-                  InkWell(
-                    onTap: () {
-                      controller.action(index);
-                    },
-                    child: Padding(
-                      padding: const EdgeInsets.symmetric(vertical: 8),
-                      child: Row(
-                        mainAxisAlignment:
-                            MainAxisAlignment.end, // محاذاة لليسار
-                        children: [
-                          Text(
-                            controller.isExpanded![index]
-                                ? "عرض أقل"
-                                : "عرض المزيد",
-                            style: const TextStyle(
-                              color: AppColor.primaryColor,
-                              fontWeight: FontWeight.w600,
-                              fontSize: 13,
-                            ),
-                          ),
-                          const SizedBox(
-                              width: 4), // مسافة صغيرة بين النص والأيقونة
-                          Icon(
-                            controller.isExpanded![index]
-                                ? Icons.keyboard_arrow_up
-                                : Icons.keyboard_arrow_down,
-                            size: 18, // تكبير الأيقونة قليلاً
-                            color: AppColor.primaryColor,
-                          )
-                        ],
-                      ),
-                    ),
-                  ),
+                  // InkWell(
+                  //   onTap: () {
+                  //     controller.action(index);
+                  //   },
+                  //   child: Padding(
+                  //     padding: const EdgeInsets.symmetric(vertical: 8),
+                  //     child: Row(
+                  //       mainAxisAlignment:
+                  //           MainAxisAlignment.end, // محاذاة لليسار
+                  //       children: [
+                  //         Text(
+                  //           controller.isExpanded![index]
+                  //               ? "عرض أقل"
+                  //               : "عرض المزيد",
+                  //           style: const TextStyle(
+                  //             color: AppColor.primaryColor,
+                  //             fontWeight: FontWeight.w600,
+                  //             fontSize: 13,
+                  //           ),
+                  //         ),
+                  //         const SizedBox(
+                  //             width: 4), // مسافة صغيرة بين النص والأيقونة
+                  //         Icon(
+                  //           controller.isExpanded![index]
+                  //               ? Icons.keyboard_arrow_up
+                  //               : Icons.keyboard_arrow_down,
+                  //           size: 18, // تكبير الأيقونة قليلاً
+                  //           color: AppColor.primaryColor,
+                  //         )
+                  //       ],
+                  //     ),
+                  //   ),
+                  // ),
                 ],
               ),
             ),
 
-            if (customerPostInCustomerHomeModel.image != null)
+            if (freelancerPostModel.image != null)
               ClipRRect(
                 // إضافة قص للحواف السفلية للصورة إذا لم يكن هناك فوتر، أو لإعطاء جمالية
                 // borderRadius: BorderRadius.circular(0), // اختياري
@@ -227,8 +200,7 @@ class CustomerPostCard extends StatelessWidget {
                   height: 200,
                   decoration: BoxDecoration(
                     image: DecorationImage(
-                      image:
-                          NetworkImage(customerPostInCustomerHomeModel.image!),
+                      image: NetworkImage(freelancerPostModel.image!),
                       fit: BoxFit.cover,
                     ),
                   ),
@@ -264,8 +236,7 @@ class CustomerPostCard extends StatelessWidget {
                               fontFamily: 'Cairo'), // تأكد من نوع الخط
                           children: [
                             TextSpan(
-                                text:
-                                    "${customerPostInCustomerHomeModel.applicants} ",
+                                text: "${freelancerPostModel.applicants} ",
                                 style: const TextStyle(
                                     fontWeight: FontWeight.bold)),
                             const TextSpan(
@@ -282,7 +253,7 @@ class CustomerPostCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       //
-                      controller.goToIncomingRequests();
+                      controller.goToIncomingRequests(freelancerPostModel.id!);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(
@@ -308,48 +279,4 @@ class CustomerPostCard extends StatelessWidget {
       );
     });
   }
-
-  // دالة القوائم المحسنة (نقاط خضراء ناعمة)
-  // Widget _buildListSection(String title, List<String>? items) {
-  //   if (items == null || items.isEmpty) return const SizedBox.shrink();
-  //   return Column(
-  //     crossAxisAlignment: CrossAxisAlignment.start,
-  //     children: [
-  //       const SizedBox(height: 15), // مسافة قبل العنوان
-  //       Text(
-  //         title,
-  //         style: const TextStyle(
-  //             fontWeight: FontWeight.bold,
-  //             fontSize: 14,
-  //             color: AppColor.primaryColor), // لون العنوان
-  //       ),
-  //       const SizedBox(height: 8),
-  //       ...items.map((item) => Padding(
-  //             padding: const EdgeInsets.only(bottom: 6), // تباعد بين العناصر
-  //             child: Row(
-  //               crossAxisAlignment: CrossAxisAlignment.start,
-  //               children: [
-  //                 // النقطة الملونة بدلاً من النص
-  //                 Padding(
-  //                   padding:
-  //                       const EdgeInsets.only(top: 6), // محاذاة النقطة مع السطر
-  //                   child: CircleAvatar(
-  //                       radius: 3,
-  //                       backgroundColor:
-  //                           AppColor.primaryColor.withOpacity(0.6)),
-  //                 ),
-  //                 const SizedBox(width: 8),
-  //                 Expanded(
-  //                   child: Text(
-  //                     item,
-  //                     style: TextStyle(
-  //                         fontSize: 13, color: Colors.grey[800], height: 1.4),
-  //                   ),
-  //                 ),
-  //               ],
-  //             ),
-  //           )),
-  //     ],
-  //   );
-  // }
 }

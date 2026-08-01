@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/controller/student/companiesposts_controller.dart';
+// import 'package:hireme/controller/student/companiesposts_controller.dart';
 import 'package:hireme/controller/student/studenthome_controller.dart';
 import 'package:hireme/controller/student/studentsuggestions_controller.dart';
 import 'package:hireme/core/constant/color.dart';

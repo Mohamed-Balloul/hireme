@@ -53,7 +53,7 @@ class AddCustomerPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 1, 100, "description");
                           },
                           mycontroller: controller.titleController,
                           labelText: "اسم الخدمة المطلوبة",
@@ -68,7 +68,7 @@ class AddCustomerPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 150, "username");
+                            return validInput(val!, 6, 1000, "description");
                           },
                           mycontroller: controller.descriptionController,
                           labelText: "وصف الخدمة",
@@ -122,7 +122,7 @@ class AddCustomerPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 6, 100, "description");
                           },
                           mycontroller: controller.detailsController,
                           labelText: "تفاصيل إضافية",

@@ -12,9 +12,10 @@ abstract class CompanyNotificationsController extends GetxController {
   changeFilter(String newFilter);
   deleteNotification(int id); // النوع المحدد حالياً للفلترة
   goToStudentProfile(String studentName);
-  //
+  //ربط
   getAllCompanyNotifications();
   markRead(int id);
+  delete_Notification(id);
 }
 
 class CompanyNotificationsControllerImp extends CompanyNotificationsController {
@@ -72,19 +73,31 @@ class CompanyNotificationsControllerImp extends CompanyNotificationsController {
   @override
   getAllCompanyNotifications() async {
     statusRequest = StatusRequest.loading;
+    print(
+        "=====getAllCompanyNotifications=========================-*-Controller $statusRequest ");
     update();
     String token = myServices.sharedPreferences.getString("token")!;
     var response = await notificationData.getNotifications(token);
+    print(
+        "=====getAllCompanyNotifications================ The Response ===========* Controller $response ");
+    print(
+        "=====getAllCompanyNotifications==============================--Controller $statusRequest ");
 
     statusRequest = handlingData(response);
 
     if (StatusRequest.success == statusRequest) {
-      List responseData = response['data'];
-      allNotifications.clear();
-      allNotifications.addAll(
-          responseData.map((e) => StudentNotificationModel.fromJson(e)));
-    }
+      if (response['data'] != null) {
+        List responseData = response['data'];
+        allNotifications.clear();
+        allNotifications.addAll(
+            responseData.map((e) => StudentNotificationModel.fromJson(e)));
+      } else {
+        statusRequest = StatusRequest.failure;
+      }
+    } else {}
     update();
+    print(
+        "****getAllCompanyNotifications********************** *-*-* $statusRequest");
   }
 
   @override
@@ -100,5 +113,43 @@ class CompanyNotificationsControllerImp extends CompanyNotificationsController {
     // 2. إرسال الطلب للسيرفر في الخلفية
     String token = myServices.sharedPreferences.getString("token")!;
     await notificationData.markAsRead(token, id.toString());
+  }
+
+  //ربط
+  @override
+  delete_Notification(id) async {
+    statusRequest = StatusRequest.loading;
+    print(
+        "=====deleteNotification=========================-*-Controller $statusRequest ");
+    update();
+    // بعد ما ينجح الـ API call
+    // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
+    // ثم انتقل لصفحة الـ
+
+    var response = await notificationData.getNotifications(
+        /*id, */ myServices.sharedPreferences.getString("token")!);
+
+    print(
+        "=====deleteNotification=========================* Controller $response ");
+    print(
+        "=====deleteNotification=========================--Controller $statusRequest ");
+
+    statusRequest = handlingData(response);
+
+    if (StatusRequest.success == statusRequest) {
+      // Start backend
+      if (response["message"] == "Notification deleted successfully.") {
+        getAllCompanyNotifications();
+      } else {
+        // Get.defaultDialog(
+        //   title: "warning",
+        //   middleText: "email or password is wrong, try again",
+        // );
+        statusRequest = StatusRequest.failure;
+      }
+      // End
+    } else {}
+    update();
+    print("****deleteNotification********************** *-*-* $statusRequest");
   }
 }

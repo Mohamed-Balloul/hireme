@@ -128,9 +128,9 @@ List<GetPage<dynamic>>? routes = [
   //     name: AppRoute.sendRequestToCompany,
   //     page: () => const SendRequestToCompany()),
   //Send Request To Company
-  GetPage(
-      name: AppRoute.sendRequestToCustomer,
-      page: () => const SendRequestToCustomer()),
+  // GetPage(
+  //     name: AppRoute.sendRequestToCustomer,
+  //     page: () => const SendRequestToCustomer()),
   //Cover preview page
   // GetPage(
   //     name: AppRoute.coverPreviewPage, page: () => const CoverPreviewPage()),

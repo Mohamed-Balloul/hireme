@@ -62,7 +62,8 @@ class AddCompanyPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            // return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 6, 30, "description");
                           },
                           mycontroller: controller.titleController,
                           labelText: "المسمى الوظيفي",
@@ -78,7 +79,7 @@ class AddCompanyPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 150, "username");
+                            return validInput(val!, 6, 1000, "description");
                           },
                           mycontroller: controller.descriptionController,
                           labelText: "وصف الإعلان",
@@ -212,7 +213,7 @@ class AddCompanyPost extends StatelessWidget {
                         ),
                         child: CustomTextFormWithLablel(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 6, 100, "description");
                           },
                           mycontroller: controller.detailsController,
                           labelText: "تفاصيل إضافية",

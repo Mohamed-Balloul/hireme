@@ -1,10 +1,7 @@
-import 'package:get/get_connect/http/src/utils/utils.dart';
 import 'package:hireme/controller/student/thebottomnavigationbar/thebottomnavigationbar_controller.dart';
-import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/view/screen/student/myorders.dart';
 import 'package:hireme/view/screen/student/studenthome.dart';
 import 'package:hireme/view/screen/student/studentnotifications.dart';

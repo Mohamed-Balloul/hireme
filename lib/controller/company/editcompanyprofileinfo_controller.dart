@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/controller/company/companybottomnavigationbar/companybottomnavigationbar_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/company/company.dart';
 import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/data/model/companyprofilemodel.dart';
 import 'package:intl/intl.dart'; // ستحتاج لإضافة حزمة intl في pubspec.yaml لتنسيق التاريخ
 import 'package:image_picker/image_picker.dart';
 
@@ -9,15 +15,26 @@ abstract class EditCompanyProfileController extends GetxController {
   // pickExperienceLogo();
   addSkill();
   removeSkill(int index);
+  //ربط
   saveAll();
-  // selectDate(BuildContext context, bool isStart);
-  // addExperience();
-  // removeExperience(int index);
-  // deleteExperienceLogo();
+  //ربط
 }
 
 // ملاحظة: تأكد من إضافة هذا الملف في المسار الصحيح
 class EditCompanyProfileControllerImp extends EditCompanyProfileController {
+  //ربط
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+
+  CompanyBottomNavigationBarrControllerImp controller =
+      Get.find<CompanyBottomNavigationBarrControllerImp>();
+
+  MyServices myServices = Get.find();
+  StatusRequest statusRequest = StatusRequest.none;
+
+  CompanyData companyData = CompanyData(Get.find());
+
+  //ربط
+
   // نقوم بتعريف TextControllers لكل حقل لسهولة التحكم
   late TextEditingController nameController;
   late TextEditingController industryController;
@@ -27,35 +44,17 @@ class EditCompanyProfileControllerImp extends EditCompanyProfileController {
   late TextEditingController companySizeController;
   late TextEditingController headquartersController;
   late TextEditingController foundedYearController;
-  // late TextEditingController githubController;
-  // late TextEditingController linkedinController;
 
   // للمهارات (قائمة ديناميكية)
   List<String> skills = [];
   TextEditingController skillInputController = TextEditingController();
 
-  // للتعليم (Map)
-  // bool isGraduated = false;
-  // late TextEditingController collegeController;
-  // late TextEditingController uniController;
-// --- حقول الخبرة المهنية ---
-  // List<Map<String, dynamic>> workExperiences = [];
-
-  // حقول الإدخال لتجربة جديدة
-  // TextEditingController companyController = TextEditingController();
-  // TextEditingController jobTitleController = TextEditingController();
-  // DateTime? startDate;
-  // DateTime? endDate;
-  // bool isCurrentWork = false;
-  // bool isFreelancer = false;
-  // File? tempExperienceLogo;
-  // final ImagePicker _picker = ImagePicker();
-
   @override
   void onInit() {
     super.onInit();
     // هنا نقوم بتعبئة البيانات الحالية من المودل (فرضاً CompanyProfileList[0])
-    var data = companyProfileList[0];
+    // var data = companyProfileList[0];
+    var data = controller.companyModel!;
     nameController = TextEditingController(text: data.name);
     industryController = TextEditingController(text: data.industry);
     bioController = TextEditingController(text: data.description);
@@ -66,94 +65,9 @@ class EditCompanyProfileControllerImp extends EditCompanyProfileController {
     foundedYearController =
         TextEditingController(text: data.foundedYear.toString());
     headquartersController = TextEditingController(text: data.headquarters);
-    // experienceYearsController =
-    //     TextEditingController(text: data.experienceYears.toString());
-    // githubController = TextEditingController(text: data.github);
-    // linkedinController = TextEditingController(text: data.linkedIn);
 
     skills = List<String>.from(data.techStack ?? []);
-
-    // isGraduated = data.educationInfo?['isGraduated'] ?? false;
-    // collegeController =
-    //     TextEditingController(text: data.educationInfo?['college']);
-    // uniController =
-    //     TextEditingController(text: data.educationInfo?['university']);
-    // workExperiences =
-    //     List<Map<String, dynamic>>.from(data.workExperiences ?? []);
   }
-
-  // @override
-  // اختيار لوغو الشركة
-  // Future<void> pickExperienceLogo() async {
-  //   final XFile? image = await _picker.pickImage(source: ImageSource.gallery);
-  //   if (image != null) {
-  //     tempExperienceLogo = File(image.path);
-  //     update();
-  //   }
-  // }
-
-  // @override
-  // اختيار التاريخ (بداية ونهاية)
-  // Future<void> selectDate(context, isStart) async {
-  //   final DateTime? picked = await showDatePicker(
-  //     context: context,
-  //     initialDate: DateTime.now(),
-  //     firstDate: DateTime(2000),
-  //     lastDate: DateTime.now(),
-  //     locale: const Locale('ar', 'AE'), // لدعم التقويم العربي
-  //   );
-  //   if (picked != null) {
-  //     if (isStart) {
-  //       startDate = picked;
-  //     } else {
-  //       endDate = picked;
-  //     }
-  //     update();
-  //   }
-  // }
-
-  // التحقق من صلاحية البيانات لتفعيل زر الإضافة
-  // bool get isExperienceValid =>
-  //     companyController.text.isNotEmpty &&
-  //     jobTitleController.text.isNotEmpty &&
-  //     startDate != null &&
-  //     (isCurrentWork || endDate != null);
-
-  // @override
-  // إضافة تجربة جديدة للقائمة
-  // void addExperience() {
-  //   String endText = isCurrentWork
-  //       ? "حتى الآن"
-  //       : DateFormat('MMM yyyy', 'en').format(endDate!);
-  //   String startText = DateFormat('MMM yyyy', 'en').format(startDate!);
-
-  //   workExperiences.add({
-  //     "companyName": companyController.text,
-  //     "jobTitle": jobTitleController.text,
-  //     "startDate": startText,
-  //     "endDate": endText,
-  //     "logo": tempExperienceLogo?.path ?? "", // مسار ملف محلي أو فارغ
-  //     // "isFreelancer": tempExperienceLogo != null,
-  //     "isFreelancer": isFreelancer,
-  //   });
-
-  //   // إعادة تهيئة الحقول بعد الإضافة
-  //   companyController.clear();
-  //   jobTitleController.clear();
-  //   startDate = null;
-  //   endDate = null;
-  //   isCurrentWork = false;
-  //   isFreelancer = false;
-  //   tempExperienceLogo = null;
-
-  //   update();
-  // }
-
-  // @override
-  // void removeExperience(index) {
-  //   workExperiences.removeAt(index);
-  //   update();
-  // }
 
   @override
   void addSkill() {
@@ -170,17 +84,96 @@ class EditCompanyProfileControllerImp extends EditCompanyProfileController {
     update();
   }
 
+//ربط
+
   @override
-  void saveAll() {
-    // منطق الحفظ النهائي وإرسال البيانات للسيرفر
-    Get.back();
-    Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
-        backgroundColor: Colors.green, colorText: Colors.white);
+  void saveAll() async {
+    var formData = formState.currentState;
+
+    // التحقق من صحة المدخلات في الفورم
+    if (formData == null || formData.validate()) {
+      statusRequest = StatusRequest.loading;
+      print(
+          "=====saveAll===========EditCompanyProfileControllerImp==============-*-Controller $statusRequest ");
+      update();
+
+      // تركيب صيغة التاريخ المطلوبة للسيرفر YYYY-MM-DD
+      String formattedStartedAt = "${foundedYearController.text.trim()}-01-01";
+
+      // 1. تجهيز البيانات الدقيقة والمطابقة لتوثيق بوستمان لارافيل
+      Map<String, dynamic> updatedData = {
+        "username": nameController.text.trim(),
+        "description": bioController.text.trim(),
+        "phone_number": phoneController.text.trim(),
+
+        // استدعاء دالة المسارات النسبية لحفظ الصور بشكل سليم بقاعدة البيانات
+        "avatar": _getRelativePath(controller.companyModel?.logoUrl),
+        "cover_image": _getRelativePath(controller.companyModel?.coverUrl),
+
+        "started_at": formattedStartedAt, // إرسال التاريخ بالصيغة المطلوبة
+        "employees_count": int.tryParse(companySizeController.text.trim()) ??
+            50, // التعديل لاسم الحقل الصحيح ونوعه رقم صحيح
+        "tech1": skills.isNotEmpty
+            ? skills.first
+            : "Laravel", // إرسال التقنية الأولى
+      };
+
+      print("--- البيانات المرسلة للباك-إند: $updatedData");
+
+      // 2. إرسال طلب التحديث (PUT) للسيرفر
+      String token = myServices.sharedPreferences.getString("token")!;
+      String userId = myServices.sharedPreferences.getString("user_id")!;
+
+      var response =
+          await companyData.editProfileInfo(userId, token, updatedData);
+
+      print(
+          "=====saveAll============EditCompanyProfileControllerImp=============* Response: $response ");
+      print(
+          "=====saveAll===========EditCompanyProfileControllerImp==============-*-Controller $statusRequest ");
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        if (response['data'] != null) {
+          // 3. الخطوة الأهم: تحويل البيانات المحدثة المرجعة من السيرفر لموديل جديد
+          CompanyProfileModel updatedModel =
+              CompanyProfileModel.fromJson(response['data']);
+
+          // 4. عكس وتحديث البيانات مباشرة في الكنترولر الرئيسي للـ Navigation Bar والبروفايل
+          controller.companyModel = updatedModel;
+          controller.update(); // لتحديث واجهة البروفايل فوراً بالبيانات الجديدة
+
+          Get.back(); // العودة لواجهة البروفايل
+          Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
+              backgroundColor: Colors.green, colorText: Colors.white);
+
+          statusRequest = StatusRequest.none;
+        } else {
+          statusRequest = StatusRequest.failure;
+        }
+      } else {
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم، تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update();
+      print(
+          "=====saveAll===========EditCompanyProfileControllerImp==============-*-Controller $statusRequest ");
+    }
   }
 
-  // @override
-  // void deleteExperienceLogo() {
-  //   tempExperienceLogo = null;
-  //   update();
-  // }
+  // دالة مساعدة لتخليص مسار الصورة من رابط الـ ngrok وإرجاع المسار النسبي فقط
+  String _getRelativePath(String? fullUrl) {
+    if (fullUrl == null) return "";
+    if (fullUrl.contains("/storage/")) {
+      return fullUrl
+          .split("/storage/")
+          .last; // يستخلص الجزء بعد /storage/ مثل avatars/new-avatar.png
+    }
+    return fullUrl;
+  }
+  //ربط
 }

@@ -18,7 +18,6 @@ class StudentBottomNavigationBarrControllerImp
 
   StudentData studentData = StudentData(Get.find());
 
-  // List data = [];
   StudentProfileModel? studentModel;
   //ربط
 

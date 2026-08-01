@@ -1,7 +1,13 @@
 import 'dart:io';
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/controller/customer/customerbottomnavigationbar/customerbottomnavigationbar_controller.dart';
+import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/functions/handlingdatacontroller.dart';
+import 'package:hireme/core/services/services.dart';
+import 'package:hireme/data/datasource/remote/customer/customer.dart';
 import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/data/model/customerprofilemodel.dart';
 import 'package:intl/intl.dart'; // ستحتاج لإضافة حزمة intl في pubspec.yaml لتنسيق التاريخ
 import 'package:image_picker/image_picker.dart';
 
@@ -9,7 +15,10 @@ abstract class EditCustomerProfileController extends GetxController {
   pickExperienceLogo();
   addSkill();
   removeSkill(int index);
+  //ربط
   saveAll();
+  //ربط
+
   selectDate(BuildContext context, bool isStart);
   addExperience();
   removeExperience(int index);
@@ -18,6 +27,19 @@ abstract class EditCustomerProfileController extends GetxController {
 
 // ملاحظة: تأكد من إضافة هذا الملف في المسار الصحيح
 class EditCustomerProfileControllerImp extends EditCustomerProfileController {
+  //ربط
+  GlobalKey<FormState> formState = GlobalKey<FormState>();
+
+  CustomerBottomNavigationBarrControllerImp controller =
+      Get.find<CustomerBottomNavigationBarrControllerImp>();
+
+  MyServices myServices = Get.find();
+  StatusRequest statusRequest = StatusRequest.none;
+
+  CustomerData customerData = CustomerData(Get.find());
+
+  //ربط
+
   // نقوم بتعريف TextControllers لكل حقل لسهولة التحكم
   late TextEditingController nameController;
   late TextEditingController jobController;
@@ -54,30 +76,25 @@ class EditCustomerProfileControllerImp extends EditCustomerProfileController {
   @override
   void onInit() {
     super.onInit();
-    // هنا نقوم بتعبئة البيانات الحالية من المودل (فرضاً studentProfileList[0])
-    var data = customerProfileList[0];
+    var data = controller.customerModel!;
     nameController = TextEditingController(text: data.name);
     jobController = TextEditingController(text: data.jobLabel);
     bioController = TextEditingController(text: data.bio);
     emailController = TextEditingController(text: data.email);
     phoneController = TextEditingController(text: data.phone);
-    // salaryController =
-    //     TextEditingController(text: data.hourlySalary.toString());
     locationController = TextEditingController(text: data.city);
-    // experienceYearsController =
-    //     TextEditingController(text: data.experienceYears.toString());
     githubController = TextEditingController(text: data.github);
     linkedinController = TextEditingController(text: data.linkedIn);
-
-    // skills = List<String>.from(data.skils ?? []);
 
     isGraduated = data.educationInfo?['isGraduated'] ?? false;
     collegeController =
         TextEditingController(text: data.educationInfo?['college']);
     uniController =
         TextEditingController(text: data.educationInfo?['university']);
-    // workExperiences =
-    //     List<Map<String, dynamic>>.from(data.workExperiences ?? []);
+
+    // تهيئة الحقول غير المستخدمة بالواجهة لمنع أخطاء الـ Late Initialization
+    salaryController = TextEditingController(text: "75");
+    experienceYearsController = TextEditingController(text: "5");
   }
 
   @override
@@ -169,16 +186,99 @@ class EditCustomerProfileControllerImp extends EditCustomerProfileController {
   }
 
   @override
-  void saveAll() {
-    // منطق الحفظ النهائي وإرسال البيانات للسيرفر
-    Get.back();
-    Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
-        backgroundColor: Colors.green, colorText: Colors.white);
-  }
-
-  @override
   void deleteExperienceLogo() {
     tempExperienceLogo = null;
     update();
   }
+  //ربط
+
+  @override
+  void saveAll() async {
+    var formData = formState.currentState;
+
+    // التحقق من صحة المدخلات في الفورم
+    if (formData == null || formData.validate()) {
+      statusRequest = StatusRequest.loading;
+      print(
+          "=====saveAll===========EditCustomerProfileControllerImp==============-*-Controller $statusRequest ");
+      update();
+
+      // 1. تجهيز البيانات الدقيقة والمطابقة لتوثيق بوستمان لارافيل للعميل
+      Map<String, dynamic> updatedData = {
+        "username": nameController.text.trim(),
+        "description": bioController.text.trim(),
+        "phone_number": phoneController.text.trim(),
+
+        // استدعاء دالة الـ Relative Path لمعالجة الصور وحفظها نسبية في لارافيل
+        "avatar": _getRelativePath(controller.customerModel?.image),
+        "cover_image": _getRelativePath(controller.customerModel?.cover),
+
+        "address": locationController.text.trim(),
+        "college": collegeController.text.trim(),
+        "title": jobController.text.trim(),
+
+        // إرسال قيم افتراضية دفاعية للحقول الإجبارية بالسيرفر وغير المتوفرة بواجهة العميل حالياً
+        "hour_cost": "75",
+        "experience_years": 5,
+        "tech1": "Laravel",
+      };
+
+      print("--- البيانات المرسلة للباك-إند: $updatedData");
+
+      // 2. إرسال طلب التحديث (PUT) للسيرفر
+      String token = myServices.sharedPreferences.getString("token")!;
+      String userId = myServices.sharedPreferences.getString("user_id")!;
+
+      var response =
+          await customerData.editProfileInfo(userId, token, updatedData);
+
+      print(
+          "=====saveAll============EditCustomerProfileControllerImp=============* Response: $response ");
+      print(
+          "=====saveAll===========EditCustomerProfileControllerImp==============-*-Controller $statusRequest ");
+      statusRequest = handlingData(response);
+
+      if (StatusRequest.success == statusRequest) {
+        if (response['data'] != null) {
+          // 3. تحويل البيانات المحدثة المرجعة من السيرفر لموديل جديد
+          CustomerProfileModel updatedModel =
+              CustomerProfileModel.fromJson(response['data']);
+
+          // 4. عكس وتحديث البيانات مباشرة في الكنترولر الرئيسي للـ Navigation Bar والبروفايل
+          controller.customerModel = updatedModel;
+          controller.update(); // لتحديث واجهة البروفايل فوراً بالبيانات المحدثة
+
+          Get.back(); // العودة لواجهة البروفايل
+          Get.snackbar("نجاح", "تم تحديث بياناتك بنجاح",
+              backgroundColor: Colors.green, colorText: Colors.white);
+
+          statusRequest = StatusRequest.none;
+        } else {
+          statusRequest = StatusRequest.failure;
+        }
+      } else {
+        Get.defaultDialog(
+          title: "خطأ",
+          middleText:
+              "حدث خطأ أثناء الاتصال بالخادم، تحقق من اتصالك وأعد المحاولة.",
+        );
+        statusRequest = StatusRequest.none;
+      }
+      update();
+      print(
+          "=====saveAll===========EditCustomerProfileControllerImp==============-*-Controller $statusRequest ");
+    }
+  }
+
+  // دالة مساعدة لتخليص مسار الصورة من رابط الـ ngrok وإرجاع المسار النسبي فقط
+  String _getRelativePath(String? fullUrl) {
+    if (fullUrl == null) return "";
+    if (fullUrl.contains("/storage/")) {
+      return fullUrl
+          .split("/storage/")
+          .last; // يستخلص الجزء بعد /storage/ مثل avatars/new-avatar.png
+    }
+    return fullUrl;
+  }
+  //ربط
 }

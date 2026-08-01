@@ -6,6 +6,7 @@ class BuildTextField extends StatelessWidget {
   final TextEditingController controller;
   final IconData icon;
   final int maxLines = 4;
+  final String? Function(String?) valid;
 
   final TextInputType keyboardType;
   const BuildTextField({
@@ -14,6 +15,7 @@ class BuildTextField extends StatelessWidget {
     required this.controller,
     required this.icon,
     required this.keyboardType,
+    required this.valid,
   });
 
   @override
@@ -22,6 +24,7 @@ class BuildTextField extends StatelessWidget {
       padding: const EdgeInsets.only(bottom: 15),
       child: TextFormField(
         controller: controller,
+        validator: valid,
         maxLines: maxLines,
         minLines: 1,
         keyboardType: keyboardType,
