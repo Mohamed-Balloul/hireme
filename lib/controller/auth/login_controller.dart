@@ -66,6 +66,18 @@ class LoginControllerImp extends LoginController {
       //--
       print("==============================-*-Controller $statusRequest ");
       update();
+      print(
+          "=========login=============email========-*-Controller ${email.text} ");
+      print(
+          "==========login============password========-*-Controller ${password.text} ");
+      print(
+          "==========login============device_id========-*-Controller $deviceId ");
+      print(
+          "=========login=============fcm_token========-*-Controller $fcmToken ");
+      print(
+          "=========login=============platform========-*-Controller $platform ");
+      print(
+          "=========login=============appversion========-*-Controller $appVersion ");
 
       var response = await loginData.postData(
         email.text,

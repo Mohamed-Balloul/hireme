@@ -141,7 +141,7 @@ class CompanyProfileModel {
 
   // Statistical Informations
   final int foundedYear; // سنة التأسيس
-  final String companySize; // حجم الشركة (مثلاً: 50-100 موظف)
+  final int companySize; // حجم الشركة (مثلاً: 50-100 موظف)
   final String? headquarters; // المقر الرئيسي
   final double rating; // تقييم الشركة
   final List<String> techStack; // التقنيات المستخدمة (هام جداً للمطورين)
@@ -299,7 +299,7 @@ class CompanyProfileModel {
       }
     }
     if (compiledTechStack.isEmpty) {
-      compiledTechStack = ["Laravel", "React", "Flutter"];
+      compiledTechStack = ["--"];
     }
 
     List<String> socialLinks = [];
@@ -369,8 +369,11 @@ class CompanyProfileModel {
       website: json['website'] ?? "https://example.com",
       industry: json['industry'] ?? "تكنولوجيا المعلومات والبرمجيات",
       companySize: profile?['employees_count'] != null
-          ? "${profile!['employees_count']} موظف"
-          : "50 موظف",
+          ? profile!['employees_count']
+          : 50,
+      // companySize: profile?['employees_count'] != null
+      //     ? "${profile!['employees_count']} موظف"
+      //     : "50 موظف",
 
       foundedYear: parsedFoundedYear,
       rating: json['rating'] != null

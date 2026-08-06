@@ -1,4 +1,5 @@
 import 'package:hireme/core/constant/routes.dart';
+import 'package:hireme/core/middleware/mymiddlewate.dart';
 // import 'package:hireme/core/middleware/mymiddlewate.dart';
 import 'package:hireme/view/screen/auth/forgetpassword/forgetpassword.dart';
 import 'package:hireme/view/screen/auth/login.dart';
@@ -59,7 +60,16 @@ List<GetPage<dynamic>>? routes = [
   // GetPage(name: "/", page: () => const Language(), middlewares: [
   //   MyMiddleware(),
   // ]),
-  GetPage(name: "/", page: () => const Splash()),
+  // GetPage(name: "/", page: () => const Splash()),
+  // داخل قائمة الـ getPages في ملف main.dart أو ملف المسارات الخاص بك:
+
+  GetPage(
+    name: "/", // المسار الافتراضي لبداية تشغيل التطبيق (Splash أو Onboarding)
+    page: () => const Splash(), // أو اسم صفحة السبلاتش لديك
+    middlewares: [
+      AuthMiddleware(), // ربط الوسيط هنا ليفحص البيانات قبل رندر أي شاشة
+    ],
+  ),
   // OnBoarding
   GetPage(name: AppRoute.onBoarding, page: () => const OnBoarding()),
   // Auth

@@ -319,7 +319,8 @@ class HomeSlider extends StatelessWidget {
                                   InkWell(
                                     onTap: () {
                                       // i nee index here
-                                      controller.goToStudentProfile();
+                                      controller.goToStudentProfile(
+                                          student.id.toString()); /******* */
                                     },
                                     child: Row(
                                       children: const [

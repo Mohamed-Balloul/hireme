@@ -55,7 +55,8 @@ class CustomerSearch extends StatelessWidget {
                         final item = controller.searchResults[index]['post'];
                         final ind = controller.searchResults[index]['index'];
 
-                        return StudentCard(studentProfileModel: item, ind: ind);
+                        return StudentCard(
+                            studentProfileModel: item, ind: ind); //-----**
                       },
                     ),
                 ],

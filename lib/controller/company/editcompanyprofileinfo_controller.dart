@@ -116,6 +116,20 @@ class EditCompanyProfileControllerImp extends EditCompanyProfileController {
         "tech1": skills.isNotEmpty
             ? skills.first
             : "Laravel", // إرسال التقنية الأولى
+        "tech2":
+            skills.length > 1 ? skills[1] : "React", // إرسال التقنية الثانية
+        "tech3":
+            skills.length > 2 ? skills[2] : "Flutter", // إرسال التقنية الثالثة
+
+        //--
+        //--
+        // "git_link": githubController.text.isNotEmpty
+        //     ? githubController.text.trim()
+        //     : "https://github.com/Mohamed-Balloul",
+
+        // "linked_link": linkedinController.text.isNotEmpty
+        //     ? linkedinController.text.trim()
+        //     : "https://www.linkedin.com/in/mohamed-balloul-13b4173b3",
       };
 
       print("--- البيانات المرسلة للباك-إند: $updatedData");

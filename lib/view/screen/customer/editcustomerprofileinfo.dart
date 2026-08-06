@@ -52,7 +52,7 @@ class EditCustomerProfileInfo extends StatelessWidget {
                       children: [
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 1, 30, "all");
                           },
                           label: "الاسم الكامل",
                           controller: controller.nameController,
@@ -61,7 +61,7 @@ class EditCustomerProfileInfo extends StatelessWidget {
                         ),
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 2, 100, "job");
+                            return validInput(val!, 1, 100, "all");
                           },
                           label: "المسمى الوظيفي",
                           controller: controller.jobController,
@@ -70,7 +70,7 @@ class EditCustomerProfileInfo extends StatelessWidget {
                         ),
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 6, 100, "bio");
+                            return validInput(val!, 1, 1000, "all");
                           },
                           label: "النبذة التعريفية",
                           controller: controller.bioController,
@@ -79,14 +79,14 @@ class EditCustomerProfileInfo extends StatelessWidget {
 
                           keyboardType: TextInputType.text,
                         ),
-                        BuildTextField(
-                            valid: (val) {
-                              return validInput(val!, 6, 100, "email");
-                            },
-                            label: "البريد الإلكتروني",
-                            controller: controller.emailController,
-                            icon: Icons.email_outlined,
-                            keyboardType: TextInputType.emailAddress),
+                        // BuildTextField(
+                        //     valid: (val) {
+                        //       return validInput(val!, 6, 100, "email");
+                        //     },
+                        //     label: "البريد الإلكتروني",
+                        //     controller: controller.emailController,
+                        //     icon: Icons.email_outlined,
+                        //     keyboardType: TextInputType.emailAddress),
                         BuildTextField(
                             valid: (val) {
                               return validInput(val!, 6, 100, "phone");
@@ -97,7 +97,7 @@ class EditCustomerProfileInfo extends StatelessWidget {
                             keyboardType: TextInputType.phone),
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 2, 100, "city");
+                            return validInput(val!, 2, 100, "all");
                           },
                           label: "مكان الإقامة",
                           controller: controller.locationController,
@@ -142,36 +142,36 @@ class EditCustomerProfileInfo extends StatelessWidget {
                       title: "التعليم",
                       icon: Icons.school_outlined,
                       children: [
-                        GetBuilder<EditCustomerProfileControllerImp>(
-                            builder: (_) {
-                          return SwitchListTile(
-                            title: const Text("هل تخرجت؟",
-                                style: TextStyle(fontSize: 14)),
-                            value: controller.isGraduated,
-                            activeColor: AppColor.primaryColor,
-                            onChanged: (val) {
-                              controller.isGraduated = val;
-                              controller.update();
-                            },
-                          );
-                        }),
+                        // GetBuilder<EditCustomerProfileControllerImp>(
+                        //     builder: (_) {
+                        //   return SwitchListTile(
+                        //     title: const Text("هل تخرجت؟",
+                        //         style: TextStyle(fontSize: 14)),
+                        //     value: controller.isGraduated,
+                        //     activeColor: AppColor.primaryColor,
+                        //     onChanged: (val) {
+                        //       controller.isGraduated = val;
+                        //       controller.update();
+                        //     },
+                        //   );
+                        // }),
                         BuildTextField(
                           valid: (val) {
                             return validInput(val!, 2, 30, "major");
                           },
-                          label: "اسم الكلية",
+                          label: "اسم الكلية - الجامعة",
                           controller: controller.collegeController,
                           icon: Icons.account_balance,
                           keyboardType: TextInputType.text,
                         ),
-                        BuildTextField(
-                            valid: (val) {
-                              return validInput(val!, 2, 30, "major");
-                            },
-                            label: "اسم الجامعة",
-                            controller: controller.uniController,
-                            icon: Icons.location_city,
-                            keyboardType: TextInputType.text),
+                        // BuildTextField(
+                        //     valid: (val) {
+                        //       return validInput(val!, 2, 30, "major");
+                        //     },
+                        //     label: "اسم الجامعة",
+                        //     controller: controller.uniController,
+                        //     icon: Icons.location_city,
+                        //     keyboardType: TextInputType.text),
                       ],
                     ),
 

@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:get/get.dart';
+import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/data/datasource/static/static.dart';
 import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:hireme/view/screen/student/studentprofile.dart';
@@ -9,7 +11,7 @@ abstract class SavedStudentsController extends GetxController {
   // goToCompanyProfile(String companyName);
   action(int index);
   change(int index);
-  goToStudentProfile(int index);
+  goToStudentProfile(String studentId);
   //---
 
   // goToCustomerProfile(String customerName);
@@ -122,13 +124,48 @@ class SavedStudentsControllerImp extends SavedStudentsController {
   //         isMine: false, // لأن الزائر طالب وليس صاحب الشركة
   //       ));
   // }
-  //------------
+  //------------student.id.toString()
   @override
-  goToStudentProfile(index) {
-    Get.to(() => StudentProfile(
-          student: studentProfileList[index], //   المختار من السلايدر
-          isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
-          isCompany: true,
-        ));
+  goToStudentProfile(studentId) {
+    // Get.to(() => StudentProfile(
+    //       student: studentProfileList[index], //   المختار من السلايدر
+    //       isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
+    //       isCompany: true,
+    //     ));
+    // 1. إظهار ديالوغ التحميل المتناسق فوراً لمحاكاة الاتصال الفعلي
+    // Get.dialog(
+    //   const Center(
+    //     child: Card(
+    //       elevation: 4,
+    //       color: Colors.white,
+    //       shape: RoundedRectangleBorder(
+    //         borderRadius: BorderRadius.all(Radius.circular(16)),
+    //       ),
+    //       child: Padding(
+    //         padding: EdgeInsets.all(24.0),
+    //         child: CircularProgressIndicator(
+    //           color: AppColor.primaryColor, // المؤشر الأخضر الدائري المعتمد
+    //         ),
+    //       ),
+    //     ),
+    //   ),
+    //   barrierDismissible: false,
+    // );
+
+    // // 2. تأخير اصطناعي ناعم ومدروس لثانيتين لإضفاء الواقعية على الحركة
+    // await Future.delayed(const Duration(seconds: 2));
+
+    // // 3. إغلاق الديالوغ المنبثق بأمان
+    // if (Get.isDialogOpen ?? false) {
+    //   Get.back();
+    // }
+
+    // // 4. الانتقال السلس لبروفايل الطالب مع فحص المعرفات الآمن برمجياً لتفادي الـ StateError
+    // Get.to(() => StudentProfile(
+    //       student: allStudents
+    //           .firstWhere((student) => student.id.toString() == studentId),
+    //       isMine: false,
+    //       isCompany: true,
+    //     ));
   }
 }

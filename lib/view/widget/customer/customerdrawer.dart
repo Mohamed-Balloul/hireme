@@ -157,6 +157,13 @@ class CustomerDrawer extends StatelessWidget {
                         },
                       ),
                       _buildMenuItem(
+                        title: "الاعتراض على خدمة",
+                        icon: Icons.settings_outlined,
+                        onTap: () {
+                          controller.goToSendObjectionToAdmin();
+                        },
+                      ),
+                      _buildMenuItem(
                         title: "الإعدادات",
                         icon: Icons.settings_outlined,
                         onTap: () {},

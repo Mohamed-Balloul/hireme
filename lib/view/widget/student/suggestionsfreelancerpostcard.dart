@@ -270,7 +270,8 @@ class SuggestionsStudentFreelancerPostCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       //
-                      controller.goToSendRequestToCustomer();
+                      // controller.goToSendRequestToCustomer();
+                      controller.goToSendRequestToCustomer(freelancerPostModel);
                     },
                     child: Container(
                       padding: const EdgeInsets.symmetric(

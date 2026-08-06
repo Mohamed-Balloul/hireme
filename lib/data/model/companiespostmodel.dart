@@ -372,7 +372,8 @@ class CompaniesPostModel {
       logo: company?['image'] ??
           company?['logo'] ??
           "https://cdn-icons-png.flaticon.com/512/732/732221.png",
-      time: json['since'] ?? "منذ مدة",
+      // time: json['since'] ?? "منذ مدة",
+      time: _formatFriendlyTime(json['since']?.toString()),
       image: json['image'] ??
           "https://images.unsplash.com/photo-1498050108023-c5249f4df085?q=80&w=1000&auto=format&fit=crop",
       applicants: json['applicants_count'] != null
@@ -400,5 +401,42 @@ class CompaniesPostModel {
       isSalaryRequired:
           json['expected_salary_required'] ?? json['isSalaryRequired'] ?? false,
     );
+  }
+  // دالة مساعدة ذكية لتنسيق الوقت وإزالة الأرقام العشرية الطويلة القادمة من السيرفر
+  static String _formatFriendlyTime(String? rawSince) {
+    if (rawSince == null || rawSince.trim().isEmpty) {
+      return "منذ ساعات";
+    }
+    try {
+      // تقسيم السلسلة النصية بالفراغات
+      // مثال: "1.25430361 day ago" -> ["1.25430361", "day", "ago"]
+      List<String> parts = rawSince.trim().split(' ');
+      if (parts.isNotEmpty) {
+        double? parsedNumber = double.tryParse(parts[0]);
+        if (parsedNumber != null) {
+          // تقريب الرقم لأقرب عدد صحيح (مثلاً 1.25 تصبح 1 و 1.98 تصبح 2)
+          int roundedNumber = parsedNumber.round();
+
+          String unit = parts.length > 1 ? parts[1] : "day";
+          String suffix = parts.length > 2 ? parts[2] : "ago";
+
+          // تصحيح قواعد الجمع البسيطة للغة الإنجليزية
+          if (roundedNumber > 1) {
+            if (unit == "day") unit = "days";
+            if (unit == "hour") unit = "hours";
+            if (unit == "minute") unit = "minutes";
+          } else {
+            if (unit == "days") unit = "day";
+            if (unit == "hours") unit = "hour";
+            if (unit == "minutes") unit = "minute";
+          }
+
+          return "$roundedNumber $unit $suffix";
+        }
+      }
+    } catch (e) {
+      print("Error parsing since time: $e");
+    }
+    return rawSince; // في حال الفشل نرجع النص الأصلي كحماية
   }
 }

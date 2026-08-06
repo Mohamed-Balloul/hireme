@@ -92,7 +92,8 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
 
     skills = List<String>.from(data.skils ?? []);
 
-    isGraduated = data.educationInfo?['isGraduated'] ?? false;
+    // isGraduated = data.educationInfo?['isGraduated'] ?? false;
+    isGraduated = true;
     collegeController =
         TextEditingController(text: data.educationInfo?['college']);
     uniController =
@@ -195,7 +196,7 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
     var formData = formState.currentState;
 
     // التحقق من صحة المدخلات في الفورم
-    if (formData == null || formData.validate()) {
+    if (formData!.validate()) {
       statusRequest = StatusRequest.loading;
       print(
           "=====saveAll===========EditStudentProfileControllerImp==============-*-Controller $statusRequest ");
@@ -219,10 +220,21 @@ class EditStudentProfileControllerImp extends EditStudentProfileController {
         "college": collegeController.text.trim(),
 
         // إرسال المهارة الأولى كقيمة افتراضية لـ tech1 لتفادي أي مشاكل
-        "tech1": skills.isNotEmpty ? skills.first : "Laravel",
+        "tech1": skills.isNotEmpty ? skills.first : "--",
+        "tech2": (skills.isNotEmpty && skills.length > 1) ? skills[1] : "--",
+        "tech3": (skills.isNotEmpty && skills.length > 2) ? skills[2] : "--",
+        //--
+        "git_link": githubController.text.isNotEmpty
+            ? githubController.text.trim()
+            : "https://github.com/Mohamed-Balloul",
+
+        "linked_link": linkedinController.text.isNotEmpty
+            ? linkedinController.text.trim()
+            : "https://www.linkedin.com/in/mohamed-balloul-13b4173b3",
       };
 
       print("--- البيانات المرسلة للباك-إند: $updatedData");
+      print("tech1 : =============== ${updatedData["tech1"]}");
 
       // 2. إرسال طلب التحديث (PUT) للسيرفر
       String token = myServices.sharedPreferences.getString("token")!;

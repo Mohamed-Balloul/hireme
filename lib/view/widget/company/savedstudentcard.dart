@@ -252,23 +252,24 @@ class StudentCard extends StatelessWidget {
                             ],
                           ),
                           // زر عرض الملف
-                          InkWell(
-                            onTap: () {
-                              controller.goToStudentProfile(ind);
-                            },
-                            child: Row(
-                              children: const [
-                                Text("عرض الملف",
-                                    style: TextStyle(
-                                        fontSize:
-                                            10, // تصغير الخط قليلاً ليناسب
-                                        color: AppColor.primaryColor,
-                                        fontWeight: FontWeight.bold)),
-                                Icon(Icons.arrow_forward_ios,
-                                    size: 10, color: AppColor.primaryColor),
-                              ],
-                            ),
-                          ),
+                          // InkWell(
+                          //   onTap: () {
+                          //     // controller.goToStudentProfile(
+                          //     //     studentProfileModel.id.toString()); //--
+                          //   },
+                          //   child: Row(
+                          //     children: const [
+                          //       Text("عرض الملف",
+                          //           style: TextStyle(
+                          //               fontSize:
+                          //                   10, // تصغير الخط قليلاً ليناسب
+                          //               color: AppColor.primaryColor,
+                          //               fontWeight: FontWeight.bold)),
+                          //       Icon(Icons.arrow_forward_ios,
+                          //           size: 10, color: AppColor.primaryColor),
+                          //     ],
+                          //   ),
+                          // ),
                         ],
                       )
                     ],

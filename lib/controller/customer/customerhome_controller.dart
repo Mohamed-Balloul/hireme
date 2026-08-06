@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:hireme/controller/customer/customerbottomnavigationbar/customerbottomnavigationbar_controller.dart';
+import 'package:hireme/controller/customer/customersearch_controller.dart';
 import 'package:hireme/core/class/statusrequest.dart';
 import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/core/constant/routes.dart';
@@ -16,6 +17,7 @@ import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:hireme/view/screen/customer/savedstudents.dart';
 import 'package:hireme/view/screen/customer/customerprofile.dart';
 import 'package:hireme/view/screen/customer/customersearch.dart';
+import 'package:hireme/view/screen/customer/sendobjectiontoadmin.dart';
 import 'package:hireme/view/screen/student/studentprofile.dart';
 
 abstract class CustomerHomeController extends GetxController {
@@ -25,13 +27,13 @@ abstract class CustomerHomeController extends GetxController {
   goToCompanyPosts();
   goToIncomingRequests(int selectedProjectId);
   // goToComingRequests();
-  goToStudentProfile();
+  goToStudentProfile(String studentId);
   action(int index);
   onChange(int index);
   goToSearchPage();
   goToMyProfile();
   goToSavedStudents();
-  deleteMyPost(int index);
+  deleteMyPost(String projectId);
   //--
   logout();
   getCustomerData();
@@ -39,6 +41,8 @@ abstract class CustomerHomeController extends GetxController {
   getMyProjects();
   // الدالة الجديدة هنا
   Future<void> refreshData();
+  //--
+  goToSendObjectionToAdmin();
 }
 
 class CustomerHomeControllerImp extends CustomerHomeController {
@@ -59,7 +63,10 @@ class CustomerHomeControllerImp extends CustomerHomeController {
   @override
   Future<void> refreshData() async {
     // await getCustomerData();
-    // await getAllStudents();
+    if (Get.isRegistered<CustomerBottomNavigationBarrControllerImp>()) {
+      Get.find<CustomerBottomNavigationBarrControllerImp>().getData();
+    }
+    await getAllStudents();
     await getMyProjects();
     update();
   }
@@ -132,12 +139,52 @@ class CustomerHomeControllerImp extends CustomerHomeController {
     update();
   }
 
+  // @override
+  // goToStudentProfile(studentId) {
+  //   // Get.to(() => StudentProfile(
+  //   //       student: bestStudents[currentIndex], // الطالب المختار من السلايدر
+  //   //       isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
+  //   //       isCompany: false,
+  //   //     ));
+  // }
+  // داخل كلاس CompanyHomeControllerImp بملف الهوم للشركة:
+
   @override
-  goToStudentProfile() {
+  void goToStudentProfile(String studentId) async {
+    // 1. إظهار ديالوغ التحميل المتناسق فوراً لمحاكاة الاتصال الفعلي
+    Get.dialog(
+      const Center(
+        child: Card(
+          elevation: 4,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color: AppColor.primaryColor, // المؤشر الأخضر الدائري المعتمد
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    // 2. تأخير اصطناعي ناعم ومدروس لثانيتين لإضفاء الواقعية على الحركة
+    await Future.delayed(const Duration(seconds: 2));
+
+    // 3. إغلاق الديالوغ المنبثق بأمان
+    if (Get.isDialogOpen ?? false) {
+      Get.back();
+    }
+
+    // 4. الانتقال السلس لبروفايل الطالب مع فحص المعرفات الآمن برمجياً لتفادي الـ StateError
     Get.to(() => StudentProfile(
-          student: bestStudents[currentIndex], // الطالب المختار من السلايدر
-          isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
-          isCompany: false,
+          student: allStudents
+              .firstWhere((student) => student.id.toString() == studentId),
+          isMine: false,
+          isCompany: true,
         ));
   }
 
@@ -148,10 +195,20 @@ class CustomerHomeControllerImp extends CustomerHomeController {
 
   @override
   goToMyProfile() {
-    Get.to(() => CustomerProfile(
-          customer: customerProfileList[0],
-          isMine: true,
-        ));
+    if (customerModel != null) {
+      Get.to(() => CustomerProfile(
+            customer: customerModel!,
+            isMine: true,
+          ));
+    } else {
+      Get.snackbar(
+        "",
+        "فشل جلب البيانات، يرجى المحاولة مجددا.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: AppColor.greenblack,
+        colorText: Colors.white,
+      );
+    }
   }
 
   @override
@@ -160,9 +217,66 @@ class CustomerHomeControllerImp extends CustomerHomeController {
   }
 
   @override
-  deleteMyPost(index) {
-    customerPosts.removeAt(index);
+  goToSendObjectionToAdmin() {
+    Get.to(() => SendObjectionToAdmin());
+  }
+
+  @override
+  deleteMyPost(projectId) async {
+    statusRequest = StatusRequest.loading;
+    print(
+        "=====deleteMyPost=========================--Controller $statusRequest ");
     update();
+
+    String token = myServices.sharedPreferences.getString("token") ?? "";
+    var response = await customerData.deleteMyProject(projectId, token);
+    print("=====deleteMyPost=========================* Controller $response ");
+    print(
+        "=====deleteMyPost=========================--Controller $statusRequest ");
+
+    statusRequest = handlingData(response);
+    if (StatusRequest.success == statusRequest) {
+      if (response['message'] == "Project deleted successfully.") {
+        // إزالة الإعلان من القائمة محلياً لتحديث الواجهة فوراً
+        myProjects.removeWhere((post) => post.id.toString() == projectId);
+        update();
+        Get.snackbar(
+          "نجاح",
+          "تم حذف الإعلان بنجاح.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+      } else {
+        Get.snackbar(
+          "خطأ",
+          "فشل حذف الإعلان، يرجى المحاولة لاحقاً.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
+      }
+    } else {
+      Get.snackbar(
+        "خطأ",
+        "فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
+
+    statusRequest = StatusRequest.none;
+    update();
+    print(
+        "=====deleteMyPost=========================--Controller $statusRequest ");
+  }
+
+  // دالة مساعدة لتجنب تكرار الكود
+  void _updateSearch() {
+    if (Get.isRegistered<CustomerSearchControllerImp>()) {
+      Get.find<CustomerSearchControllerImp>().getAllStudents();
+    }
   }
 
   //ربط
@@ -193,6 +307,7 @@ class CustomerHomeControllerImp extends CustomerHomeController {
         List responseData = response['data'];
         allStudents!
             .addAll(responseData.map((e) => StudentProfileModel.fromJson(e)));
+        _updateSearch();
         // _updateSuggestions(); //
         // if (Get.isRegistered<CompaniesPostsControllerImp>()) {
         //   Get.find<CompaniesPostsControllerImp>().getAllCompaniesPosts();
@@ -302,7 +417,18 @@ class CustomerHomeControllerImp extends CustomerHomeController {
         if (StatusRequest.success == statusRequest) {
           if (response['message'] == "Logged out successfully.") {
             // نجاح كامل: مسح البيانات محلياً والتحويل لصفحة تسجيل الدخول
-            myServices.sharedPreferences.clear();
+            // myServices.sharedPreferences.clear();
+            // Get.offAllNamed(AppRoute.login);
+            // استبدل سطر myServices.sharedPreferences.clear() بداخل دوال الـ logout بالتالي لتجربة مستخدم أفضل:
+
+            myServices.sharedPreferences
+                .setString("step", "1"); // نعيده للخطوة 1 (مستعد لتسجيل الدخول)
+            myServices.sharedPreferences
+                .remove("token"); // حذف التوكن لحماية الحساب
+            myServices.sharedPreferences
+                .remove("user_id"); // حذف معرّف المستخدم
+            myServices.sharedPreferences.remove("role"); // حذف نوع الحساب
+            //--
             Get.offAllNamed(AppRoute.login);
           } else {
             // رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن

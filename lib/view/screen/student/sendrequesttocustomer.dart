@@ -25,9 +25,9 @@ class SendRequestToCustomer extends StatelessWidget {
           "إرسال طلب أداء الخدمة",
           style: TextStyle(),
         ),
-        foregroundColor: Colors.white,
+        foregroundColor: AppColor.primaryColor,
         centerTitle: true,
-        backgroundColor: AppColor.primaryColor,
+        backgroundColor: Colors.white,
       ),
       body: GetBuilder<SendRequestToCustomerControllerImp>(
         builder: (controller) => Container(
@@ -65,41 +65,41 @@ class SendRequestToCustomer extends StatelessWidget {
                     ),
                     //--
 
-                    Column(
-                      crossAxisAlignment: CrossAxisAlignment.start,
-                      children: [
-                        Text("ملف السيرة الذاتية :"),
-                        controller.cvFile != null
-                            ? SingleFile(
-                                singleFile: controller.cvFile,
-                                fileHandler: controller,
-                              )
-                            : InkWell(
-                                onTap: () {
-                                  controller.pickAndAddCvFile();
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.symmetric(vertical: 20),
-                                  width: 80,
-                                  decoration: BoxDecoration(
-                                      border: Border.all(
-                                          width: 1,
-                                          color: AppColor.primaryColor),
-                                      borderRadius: BorderRadius.circular(10)),
-                                  child: Row(
-                                    mainAxisAlignment: MainAxisAlignment.center,
-                                    children: [
-                                      Icon(
-                                        Icons.add,
-                                        size: 15,
-                                      ),
-                                      Text("إضافة")
-                                    ],
-                                  ),
-                                ),
-                              ),
-                      ],
-                    ),
+                    // Column(
+                    //   crossAxisAlignment: CrossAxisAlignment.start,
+                    //   children: [
+                    //     Text("ملف السيرة الذاتية :"),
+                    //     controller.cvFile != null
+                    //         ? SingleFile(
+                    //             singleFile: controller.cvFile,
+                    //             fileHandler: controller,
+                    //           )
+                    //         : InkWell(
+                    //             onTap: () {
+                    //               controller.pickAndAddCvFile();
+                    //             },
+                    //             child: Container(
+                    //               margin: EdgeInsets.symmetric(vertical: 20),
+                    //               width: 80,
+                    //               decoration: BoxDecoration(
+                    //                   border: Border.all(
+                    //                       width: 1,
+                    //                       color: AppColor.primaryColor),
+                    //                   borderRadius: BorderRadius.circular(10)),
+                    //               child: Row(
+                    //                 mainAxisAlignment: MainAxisAlignment.center,
+                    //                 children: [
+                    //                   Icon(
+                    //                     Icons.add,
+                    //                     size: 15,
+                    //                   ),
+                    //                   Text("إضافة")
+                    //                 ],
+                    //               ),
+                    //             ),
+                    //           ),
+                    //   ],
+                    // ),
                     Padding(
                       padding: const EdgeInsets.only(
                         bottom: 15,

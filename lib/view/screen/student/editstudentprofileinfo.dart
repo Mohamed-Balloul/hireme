@@ -54,7 +54,7 @@ class EditStudentProfileInfo extends StatelessWidget {
                             children: [
                               BuildTextField(
                                 valid: (val) {
-                                  return validInput(val!, 6, 30, "username");
+                                  return validInput(val!, 1, 30, "description");
                                 },
                                 label: "الاسم الكامل",
                                 controller: controller.nameController,
@@ -63,7 +63,7 @@ class EditStudentProfileInfo extends StatelessWidget {
                               ),
                               BuildTextField(
                                 valid: (val) {
-                                  return validInput(val!, 6, 30, "username");
+                                  return validInput(val!, 1, 30, "description");
                                 },
                                 label: "المسمى الوظيفي",
                                 controller: controller.jobController,
@@ -72,7 +72,7 @@ class EditStudentProfileInfo extends StatelessWidget {
                               ),
                               BuildTextField(
                                 valid: (val) {
-                                  return validInput(val!, 10, 1000, "bio");
+                                  return validInput(val!, 1, 1000, "all");
                                 },
                                 label: "النبذة التعريفية",
                                 controller: controller.bioController,
@@ -81,14 +81,14 @@ class EditStudentProfileInfo extends StatelessWidget {
 
                                 keyboardType: TextInputType.text,
                               ),
-                              BuildTextField(
-                                  valid: (val) {
-                                    return validInput(val!, 5, 100, "email");
-                                  },
-                                  label: "البريد الإلكتروني",
-                                  controller: controller.emailController,
-                                  icon: Icons.email_outlined,
-                                  keyboardType: TextInputType.emailAddress),
+                              // BuildTextField(
+                              //     valid: (val) {
+                              //       return validInput(val!, 5, 100, "email");
+                              //     },
+                              //     label: "البريد الإلكتروني",
+                              //     controller: controller.emailController,
+                              //     icon: Icons.email_outlined,
+                              //     keyboardType: TextInputType.emailAddress),
                               BuildTextField(
                                   valid: (val) {
                                     return validInput(val!, 10, 15, "phone");
@@ -99,7 +99,8 @@ class EditStudentProfileInfo extends StatelessWidget {
                                   keyboardType: TextInputType.phone),
                               BuildTextField(
                                 valid: (val) {
-                                  return validInput(val!, 6, 30, "username");
+                                  return validInput(
+                                      val!, 1, 100, "description");
                                 },
                                 label: "مكان الإقامة",
                                 controller: controller.locationController,
@@ -166,7 +167,11 @@ class EditStudentProfileInfo extends StatelessWidget {
                                   Expanded(
                                     child: BuildTextField(
                                       valid: (val) {
-                                        return validInput(val!, 1, 30, "skill");
+                                        if (val == null || val.trim().isEmpty) {
+                                          return null; // يسمح بحفظ البيانات إذا تُرك الحقل فارغاً
+                                        }
+                                        return validInput(
+                                            val!, 1, 30, "description");
                                       },
                                       label: "أضف مهارة جديدة",
                                       controller:
@@ -210,282 +215,282 @@ class EditStudentProfileInfo extends StatelessWidget {
                             title: "التعليم",
                             icon: Icons.school_outlined,
                             children: [
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (_) {
-                                return SwitchListTile(
-                                  title: const Text("هل تخرجت؟",
-                                      style: TextStyle(fontSize: 14)),
-                                  value: controller.isGraduated,
-                                  activeColor: AppColor.primaryColor,
-                                  onChanged: (val) {
-                                    controller.isGraduated = val;
-                                    controller.update();
-                                  },
-                                );
-                              }),
+                              // GetBuilder<EditStudentProfileControllerImp>(
+                              //     builder: (_) {
+                              //   // return SwitchListTile(
+                              //   //   title: const Text("هل تخرجت؟",
+                              //   //       style: TextStyle(fontSize: 14)),
+                              //   //   value: controller.isGraduated,
+                              //   //   activeColor: AppColor.primaryColor,
+                              //   //   onChanged: (val) {
+                              //   //     controller.isGraduated = val;
+                              //   //     controller.update();
+                              //   //   },
+                              //   // );
+                              // }),
                               BuildTextField(
-                                label: "اسم الكلية",
+                                label: "اسم الكلية-الجامعة",
                                 controller: controller.collegeController,
                                 icon: Icons.account_balance,
                                 keyboardType: TextInputType.text,
                                 valid: (val) {
-                                  return validInput(val!, 2, 50, "college");
+                                  return validInput(val!, 1, 50, "description");
                                 },
                               ),
-                              BuildTextField(
-                                  label: "اسم الجامعة",
-                                  controller: controller.uniController,
-                                  keyboardType: TextInputType.text,
-                                  icon: Icons.location_city,
-                                  valid: (val) {
-                                    return validInput(
-                                        val!, 2, 50, "university");
-                                  }),
+                              // BuildTextField(
+                              //     label: "اسم الجامعة",
+                              //     controller: controller.uniController,
+                              //     keyboardType: TextInputType.text,
+                              //     icon: Icons.location_city,
+                              //     valid: (val) {
+                              //       return validInput(
+                              //           val!, 1, 50, "description");
+                              //     }),
                             ],
                           ),
 
-                          const SizedBox(height: 20),
+                          // const SizedBox(height: 20),
                           // استبدل ListTile القديم الخاص بالخبرة المهنية بهذا القسم:
 
-                          BuildSectionCard(
-                            title: "الخبرة المهنية",
-                            icon: Icons.business_center_outlined,
-                            children: [
-                              // 1. قائمة الخبرات المضافة حالياً
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (controller) {
-                                return Column(
-                                  children: controller.workExperiences
-                                      .asMap()
-                                      .entries
-                                      .map((entry) {
-                                    int idx = entry.key;
-                                    var exp = entry.value;
-                                    return Stack(
-                                      children: [
-                                        BuildExperienceCard(exp: exp),
-                                        // _buildExperiencePreview(
-                                        //     exp), // دالة بناء شكل الكارد (مشابهة للأصلية)
-                                        Positioned(
-                                          left: -5,
-                                          bottom: 8,
-                                          child: IconButton(
-                                            icon: const Icon(
-                                                Icons.delete_forever,
-                                                size: 19,
-                                                color: Colors.black26),
-                                            // onPressed: () => controller.removeExperience(idx),
-                                            onPressed: () {
-                                              ProfileDialogs.showConfirmDialog(
-                                                title:
-                                                    "هل أنت متأكد أنك تريد حذف هذه التجربة؟",
-                                                onConfirm: () => controller
-                                                    .removeExperience(idx),
-                                              );
-                                            },
-                                          ),
-                                        ),
-                                      ],
-                                    );
-                                  }).toList(),
-                                );
-                              }),
+                          // BuildSectionCard(
+                          //   title: "الخبرة المهنية",
+                          //   icon: Icons.business_center_outlined,
+                          //   children: [
+                          //     // 1. قائمة الخبرات المضافة حالياً
+                          //     GetBuilder<EditStudentProfileControllerImp>(
+                          //         builder: (controller) {
+                          //       return Column(
+                          //         children: controller.workExperiences
+                          //             .asMap()
+                          //             .entries
+                          //             .map((entry) {
+                          //           int idx = entry.key;
+                          //           var exp = entry.value;
+                          //           return Stack(
+                          //             children: [
+                          //               BuildExperienceCard(exp: exp),
+                          //               // _buildExperiencePreview(
+                          //               //     exp), // دالة بناء شكل الكارد (مشابهة للأصلية)
+                          //               Positioned(
+                          //                 left: -5,
+                          //                 bottom: 8,
+                          //                 child: IconButton(
+                          //                   icon: const Icon(
+                          //                       Icons.delete_forever,
+                          //                       size: 19,
+                          //                       color: Colors.black26),
+                          //                   // onPressed: () => controller.removeExperience(idx),
+                          //                   onPressed: () {
+                          //                     ProfileDialogs.showConfirmDialog(
+                          //                       title:
+                          //                           "هل أنت متأكد أنك تريد حذف هذه التجربة؟",
+                          //                       onConfirm: () => controller
+                          //                           .removeExperience(idx),
+                          //                     );
+                          //                   },
+                          //                 ),
+                          //               ),
+                          //             ],
+                          //           );
+                          //         }).toList(),
+                          //       );
+                          //     }),
 
-                              const Divider(height: 40, thickness: 1),
-                              const Text("إضافة تجربة جديدة",
-                                  style: TextStyle(
-                                      fontWeight: FontWeight.bold,
-                                      fontSize: 13,
-                                      color: AppColor.primaryColor)),
-                              const SizedBox(height: 15),
+                          //     const Divider(height: 40, thickness: 1),
+                          //     const Text("إضافة تجربة جديدة",
+                          //         style: TextStyle(
+                          //             fontWeight: FontWeight.bold,
+                          //             fontSize: 13,
+                          //             color: AppColor.primaryColor)),
+                          //     const SizedBox(height: 15),
 
-                              // 2. نموذج إضافة تجربة جديدة
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (controller) {
-                                return Center(
-                                  child: Stack(
-                                    children: [
-                                      Container(
-                                        width: 80,
-                                        height: 80,
-                                        decoration: BoxDecoration(
-                                          color: Colors.grey[100],
-                                          borderRadius:
-                                              BorderRadius.circular(15),
-                                          border: Border.all(
-                                              color: Colors.grey.shade300),
-                                        ),
-                                        child: controller.tempExperienceLogo !=
-                                                null
-                                            ? ClipRRect(
-                                                borderRadius:
-                                                    BorderRadius.circular(15),
-                                                child: Image.file(
-                                                    controller
-                                                        .tempExperienceLogo!,
-                                                    fit: BoxFit.cover))
-                                            : const Icon(Icons.business,
-                                                size: 40, color: Colors.grey),
-                                      ),
-                                      if (controller.tempExperienceLogo != null)
-                                        Positioned(
-                                          top: 0,
-                                          right: 0,
-                                          child: InkWell(
-                                            onTap: () {
-                                              ProfileDialogs.showConfirmDialog(
-                                                title:
-                                                    "هل أنت متأكد أنك تريد حذف الصورة؟",
-                                                onConfirm: () => controller
-                                                    .deleteExperienceLogo(),
-                                              );
-                                            },
-                                            child: CircleAvatar(
-                                              radius: 12,
-                                              backgroundColor:
-                                                  AppColor.primaryColor,
-                                              child: const Icon(Icons.close,
-                                                  size: 14,
-                                                  color: Colors.white),
-                                            ),
-                                          ),
-                                        ),
-                                      Positioned(
-                                        bottom: 0,
-                                        left: 0,
-                                        child: InkWell(
-                                          onTap: () =>
-                                              controller.pickExperienceLogo(),
-                                          child: CircleAvatar(
-                                            radius: 12,
-                                            backgroundColor:
-                                                AppColor.primaryColor,
-                                            child: const Icon(Icons.camera_alt,
-                                                size: 14, color: Colors.white),
-                                          ),
-                                        ),
-                                      )
-                                    ],
-                                  ),
-                                );
-                              }),
-                              const SizedBox(height: 20),
-                              BuildTextField(
-                                  label: "اسم الشركة / Freelancer",
-                                  controller: controller.companyController,
-                                  keyboardType: TextInputType.text,
-                                  icon: Icons.apartment,
-                                  valid: (val) {
-                                    return validInput(val!, 2, 100, "company");
-                                  }),
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (controller) {
-                                return CheckboxListTile(
-                                  title: const Text("Freelancer Work",
-                                      style: TextStyle(fontSize: 12)),
-                                  value: controller.isFreelancer,
-                                  onChanged: (val) {
-                                    controller.isFreelancer = val!;
-                                    controller.update();
-                                  },
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
-                                  contentPadding: EdgeInsets.zero,
-                                );
-                              }),
-                              BuildTextField(
-                                label: "المسمى الوظيفي",
-                                controller: controller.jobTitleController,
-                                icon: Icons.badge_outlined,
-                                keyboardType: TextInputType.text,
-                                valid: (val) {
-                                  return validInput(val!, 2, 100, "jobTitle");
-                                },
-                              ),
+                          //     // 2. نموذج إضافة تجربة جديدة
+                          //     GetBuilder<EditStudentProfileControllerImp>(
+                          //         builder: (controller) {
+                          //       return Center(
+                          //         child: Stack(
+                          //           children: [
+                          //             Container(
+                          //               width: 80,
+                          //               height: 80,
+                          //               decoration: BoxDecoration(
+                          //                 color: Colors.grey[100],
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(15),
+                          //                 border: Border.all(
+                          //                     color: Colors.grey.shade300),
+                          //               ),
+                          //               child: controller.tempExperienceLogo !=
+                          //                       null
+                          //                   ? ClipRRect(
+                          //                       borderRadius:
+                          //                           BorderRadius.circular(15),
+                          //                       child: Image.file(
+                          //                           controller
+                          //                               .tempExperienceLogo!,
+                          //                           fit: BoxFit.cover))
+                          //                   : const Icon(Icons.business,
+                          //                       size: 40, color: Colors.grey),
+                          //             ),
+                          //             if (controller.tempExperienceLogo != null)
+                          //               Positioned(
+                          //                 top: 0,
+                          //                 right: 0,
+                          //                 child: InkWell(
+                          //                   onTap: () {
+                          //                     ProfileDialogs.showConfirmDialog(
+                          //                       title:
+                          //                           "هل أنت متأكد أنك تريد حذف الصورة؟",
+                          //                       onConfirm: () => controller
+                          //                           .deleteExperienceLogo(),
+                          //                     );
+                          //                   },
+                          //                   child: CircleAvatar(
+                          //                     radius: 12,
+                          //                     backgroundColor:
+                          //                         AppColor.primaryColor,
+                          //                     child: const Icon(Icons.close,
+                          //                         size: 14,
+                          //                         color: Colors.white),
+                          //                   ),
+                          //                 ),
+                          //               ),
+                          //             Positioned(
+                          //               bottom: 0,
+                          //               left: 0,
+                          //               child: InkWell(
+                          //                 onTap: () =>
+                          //                     controller.pickExperienceLogo(),
+                          //                 child: CircleAvatar(
+                          //                   radius: 12,
+                          //                   backgroundColor:
+                          //                       AppColor.primaryColor,
+                          //                   child: const Icon(Icons.camera_alt,
+                          //                       size: 14, color: Colors.white),
+                          //                 ),
+                          //               ),
+                          //             )
+                          //           ],
+                          //         ),
+                          //       );
+                          //     }),
+                          //     const SizedBox(height: 20),
+                          //     BuildTextField(
+                          //         label: "اسم الشركة / Freelancer",
+                          //         controller: controller.companyController,
+                          //         keyboardType: TextInputType.text,
+                          //         icon: Icons.apartment,
+                          //         valid: (val) {
+                          //           return validInput(val!, 2, 100, "company");
+                          //         }),
+                          //     GetBuilder<EditStudentProfileControllerImp>(
+                          //         builder: (controller) {
+                          //       return CheckboxListTile(
+                          //         title: const Text("Freelancer Work",
+                          //             style: TextStyle(fontSize: 12)),
+                          //         value: controller.isFreelancer,
+                          //         onChanged: (val) {
+                          //           controller.isFreelancer = val!;
+                          //           controller.update();
+                          //         },
+                          //         controlAffinity:
+                          //             ListTileControlAffinity.leading,
+                          //         contentPadding: EdgeInsets.zero,
+                          //       );
+                          //     }),
+                          //     BuildTextField(
+                          //       label: "المسمى الوظيفي",
+                          //       controller: controller.jobTitleController,
+                          //       icon: Icons.badge_outlined,
+                          //       keyboardType: TextInputType.text,
+                          //       valid: (val) {
+                          //         return validInput(val!, 2, 100, "jobTitle");
+                          //       },
+                          //     ),
 
-                              // اختيار التواريخ
-                              Row(
-                                children: [
-                                  Expanded(
-                                    child: GetBuilder<
-                                            EditStudentProfileControllerImp>(
-                                        builder: (controller) {
-                                      return BuildDateTile(
-                                        label: "تاريخ بدء العمل",
-                                        date: controller.startDate,
-                                        onTap: () => controller.selectDate(
-                                            context, true),
-                                      );
-                                    }),
-                                  ),
-                                  const SizedBox(width: 10),
-                                  Expanded(
-                                    child: GetBuilder<
-                                            EditStudentProfileControllerImp>(
-                                        builder: (_) {
-                                      return controller.isCurrentWork
-                                          ? Container(
-                                              height: 55,
-                                              decoration: BoxDecoration(
-                                                  color: Colors.grey[50],
-                                                  borderRadius:
-                                                      BorderRadius.circular(
-                                                          12)),
-                                              child: const Center(
-                                                  child: Text("حتى الآن",
-                                                      style: TextStyle(
-                                                          color: Colors.grey))),
-                                            )
-                                          : BuildDateTile(
-                                              label: "تاريخ نهاية العمل",
-                                              date: controller.endDate,
-                                              onTap: () => controller
-                                                  .selectDate(context, false),
-                                            );
-                                    }),
-                                  ),
-                                ],
-                              ),
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (_) {
-                                return CheckboxListTile(
-                                  title: const Text("أعمل هنا حالياً",
-                                      style: TextStyle(fontSize: 12)),
-                                  value: controller.isCurrentWork,
-                                  onChanged: (val) {
-                                    controller.isCurrentWork = val!;
-                                    controller.update();
-                                  },
-                                  controlAffinity:
-                                      ListTileControlAffinity.leading,
-                                  contentPadding: EdgeInsets.zero,
-                                );
-                              }),
+                          //     // اختيار التواريخ
+                          //     Row(
+                          //       children: [
+                          //         Expanded(
+                          //           child: GetBuilder<
+                          //                   EditStudentProfileControllerImp>(
+                          //               builder: (controller) {
+                          //             return BuildDateTile(
+                          //               label: "تاريخ بدء العمل",
+                          //               date: controller.startDate,
+                          //               onTap: () => controller.selectDate(
+                          //                   context, true),
+                          //             );
+                          //           }),
+                          //         ),
+                          //         const SizedBox(width: 10),
+                          //         Expanded(
+                          //           child: GetBuilder<
+                          //                   EditStudentProfileControllerImp>(
+                          //               builder: (_) {
+                          //             return controller.isCurrentWork
+                          //                 ? Container(
+                          //                     height: 55,
+                          //                     decoration: BoxDecoration(
+                          //                         color: Colors.grey[50],
+                          //                         borderRadius:
+                          //                             BorderRadius.circular(
+                          //                                 12)),
+                          //                     child: const Center(
+                          //                         child: Text("حتى الآن",
+                          //                             style: TextStyle(
+                          //                                 color: Colors.grey))),
+                          //                   )
+                          //                 : BuildDateTile(
+                          //                     label: "تاريخ نهاية العمل",
+                          //                     date: controller.endDate,
+                          //                     onTap: () => controller
+                          //                         .selectDate(context, false),
+                          //                   );
+                          //           }),
+                          //         ),
+                          //       ],
+                          //     ),
+                          //     GetBuilder<EditStudentProfileControllerImp>(
+                          //         builder: (_) {
+                          //       return CheckboxListTile(
+                          //         title: const Text("أعمل هنا حالياً",
+                          //             style: TextStyle(fontSize: 12)),
+                          //         value: controller.isCurrentWork,
+                          //         onChanged: (val) {
+                          //           controller.isCurrentWork = val!;
+                          //           controller.update();
+                          //         },
+                          //         controlAffinity:
+                          //             ListTileControlAffinity.leading,
+                          //         contentPadding: EdgeInsets.zero,
+                          //       );
+                          //     }),
 
-                              const SizedBox(height: 10),
-                              GetBuilder<EditStudentProfileControllerImp>(
-                                  builder: (_) {
-                                return SizedBox(
-                                  width: double.infinity,
-                                  child: ElevatedButton(
-                                    onPressed: controller.isExperienceValid
-                                        ? () => controller.addExperience()
-                                        : null,
-                                    style: ElevatedButton.styleFrom(
-                                      backgroundColor: AppColor.primaryColor,
-                                      disabledBackgroundColor: Colors.grey[300],
-                                      shape: RoundedRectangleBorder(
-                                          borderRadius:
-                                              BorderRadius.circular(10)),
-                                    ),
-                                    child: const Text("إضافة التجربة للقائمة",
-                                        style: TextStyle(color: Colors.white)),
-                                  ),
-                                );
-                              }),
-                            ],
-                          ),
-                          const SizedBox(height: 50),
+                          //     const SizedBox(height: 10),
+                          //     GetBuilder<EditStudentProfileControllerImp>(
+                          //         builder: (_) {
+                          //       return SizedBox(
+                          //         width: double.infinity,
+                          //         child: ElevatedButton(
+                          //           onPressed: controller.isExperienceValid
+                          //               ? () => controller.addExperience()
+                          //               : null,
+                          //           style: ElevatedButton.styleFrom(
+                          //             backgroundColor: AppColor.primaryColor,
+                          //             disabledBackgroundColor: Colors.grey[300],
+                          //             shape: RoundedRectangleBorder(
+                          //                 borderRadius:
+                          //                     BorderRadius.circular(10)),
+                          //           ),
+                          //           child: const Text("إضافة التجربة للقائمة",
+                          //               style: TextStyle(color: Colors.white)),
+                          //         ),
+                          //       );
+                          //     }),
+                          //   ],
+                          // ),
+                          // const SizedBox(height: 50),
                         ],
                       ),
                     ),

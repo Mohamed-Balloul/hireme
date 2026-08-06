@@ -92,8 +92,8 @@ class CompanyPostCard extends StatelessWidget {
                                   ProfileDialogs.showConfirmDialog(
                                     title:
                                         "هل أنت متأكد أنك تريد حذف هذا الإعلان بشكل نهائي؟",
-                                    onConfirm: () =>
-                                        controller.deleteMyPost(index),
+                                    onConfirm: () => controller.deleteMyPost(
+                                        companiesPostModel.id.toString()),
                                   );
                                 },
                               ),

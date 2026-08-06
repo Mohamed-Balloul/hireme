@@ -224,61 +224,61 @@ class AddCompanyPost extends StatelessWidget {
                       ),
                       //--
                       // --- القسم السادس: المستندات المطلوبة ---
-                      const Divider(
-                        thickness: 1.5,
-                        color: AppColor.greenblack,
-                      ),
-                      Padding(
-                        padding: const EdgeInsets.only(top: 8),
-                        child: const Text(
-                          "يرجى تحديد الملفات والمستندات التي يجب على المتقدم تزويدكم بها:",
-                          style: TextStyle(
-                            // fontSize: 14,
-                            fontWeight: FontWeight.bold,
-                          ),
-                        ),
-                      ),
+                      // const Divider(
+                      //   thickness: 1.5,
+                      //   color: AppColor.greenblack,
+                      // ),
+                      // Padding(
+                      //   padding: const EdgeInsets.only(top: 8),
+                      //   child: const Text(
+                      //     "يرجى تحديد الملفات والمستندات التي يجب على المتقدم تزويدكم بها:",
+                      //     style: TextStyle(
+                      //       // fontSize: 14,
+                      //       fontWeight: FontWeight.bold,
+                      //     ),
+                      //   ),
+                      // ),
 
-                      CheckboxListTile(
-                        activeColor: AppColor.primaryColor,
-                        // checkColor: AppColor.greenblack,
-                        title: const Text("السيرة الذاتية (CV)"),
-                        value: controller.reqCVIsChecked,
-                        onChanged: (value) {
-                          controller.onCvCheck(value);
-                        },
-                        // onChanged: (val) => setState(() => reqCV = val!),
-                      ),
-                      CheckboxListTile(
-                        activeColor: AppColor.primaryColor,
-                        // checkColor: AppColor.greenblack,
-                        title: const Text("رابط GitHub أو Portfolio"),
-                        value: controller.reqPortfolioIsChecked,
-                        onChanged: (value) {
-                          controller.onGitHubOrPortfolioCheck(value);
-                        },
-                        // onChanged: (val) => setState(() => reqPortfolio = val!),
-                      ),
-                      CheckboxListTile(
-                        activeColor: AppColor.primaryColor,
-                        // checkColor: AppColor.greenblack,
-                        title: const Text("أمثلة على أعمال سابقة"),
-                        value: controller.reqSamplesIsChecked,
-                        onChanged: (value) {
-                          controller.onPreSamplesCheck(value);
-                        },
-                        // onChanged: (val) => setState(() => reqSamples = val!),
-                      ),
-                      CheckboxListTile(
-                        title: const Text("الراتب المتوقع"),
-                        activeColor: AppColor.primaryColor,
-                        // checkColor: AppColor.greenblack,
-                        value: controller.reqSalaryIsChecked,
-                        onChanged: (value) {
-                          controller.onSalaryCheck(value);
-                        },
-                        // onChanged: (val) => setState(() => reqSalary = val!),
-                      ),
+                      // CheckboxListTile(
+                      //   activeColor: AppColor.primaryColor,
+                      //   // checkColor: AppColor.greenblack,
+                      //   title: const Text("السيرة الذاتية (CV)"),
+                      //   value: controller.reqCVIsChecked,
+                      //   onChanged: (value) {
+                      //     controller.onCvCheck(value);
+                      //   },
+                      //   // onChanged: (val) => setState(() => reqCV = val!),
+                      // ),
+                      // CheckboxListTile(
+                      //   activeColor: AppColor.primaryColor,
+                      //   // checkColor: AppColor.greenblack,
+                      //   title: const Text("رابط GitHub أو Portfolio"),
+                      //   value: controller.reqPortfolioIsChecked,
+                      //   onChanged: (value) {
+                      //     controller.onGitHubOrPortfolioCheck(value);
+                      //   },
+                      //   // onChanged: (val) => setState(() => reqPortfolio = val!),
+                      // ),
+                      // CheckboxListTile(
+                      //   activeColor: AppColor.primaryColor,
+                      //   // checkColor: AppColor.greenblack,
+                      //   title: const Text("أمثلة على أعمال سابقة"),
+                      //   value: controller.reqSamplesIsChecked,
+                      //   onChanged: (value) {
+                      //     controller.onPreSamplesCheck(value);
+                      //   },
+                      //   // onChanged: (val) => setState(() => reqSamples = val!),
+                      // ),
+                      // CheckboxListTile(
+                      //   title: const Text("الراتب المتوقع"),
+                      //   activeColor: AppColor.primaryColor,
+                      //   // checkColor: AppColor.greenblack,
+                      //   value: controller.reqSalaryIsChecked,
+                      //   onChanged: (value) {
+                      //     controller.onSalaryCheck(value);
+                      //   },
+                      //   // onChanged: (val) => setState(() => reqSalary = val!),
+                      // ),
 
                       const SizedBox(height: 30),
                       //--

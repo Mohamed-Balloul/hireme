@@ -403,44 +403,44 @@ class StudentProfile extends StatelessWidget {
                               ),
                             ),
                             // ================= زر الشركة (يظهر فقط إذا كان الزائر شركة) =================
-                            if (!isMine) ...[
-                              InkWell(
-                                onTap: () {
-                                  isCompany
-                                      ? controller
-                                          .goToCompanySendNotificationToStudent()
-                                      : controller
-                                          .goToCustomerSendNotificationToStudent(); //حاليا الواجهة فارغة
-                                },
-                                child: Container(
-                                  margin: EdgeInsets.only(
-                                    left: 10,
-                                  ),
-                                  padding: const EdgeInsets.symmetric(
-                                      horizontal: 12, vertical: 8),
-                                  decoration: BoxDecoration(
-                                    // color: Colors.grey.withOpacity(0.8),
-                                    color: AppColor.primaryColor,
-                                    borderRadius: BorderRadius.circular(6),
-                                  ),
-                                  child: Row(
-                                    children: [
-                                      Icon(Icons.send_rounded,
-                                          color: Colors.white, size: 14),
-                                      SizedBox(width: 5),
-                                      Text(
-                                        "إرسال إشعار",
-                                        style: TextStyle(
-                                          fontWeight: FontWeight.bold,
-                                          color: Colors.white,
-                                          fontSize: 9,
-                                        ),
-                                      ),
-                                    ],
-                                  ),
-                                ),
-                              ),
-                            ],
+                            // if (!isMine) ...[
+                            //   InkWell(
+                            //     onTap: () {
+                            //       isCompany
+                            //           ? controller
+                            //               .goToCompanySendNotificationToStudent()
+                            //           : controller
+                            //               .goToCustomerSendNotificationToStudent(); //حاليا الواجهة فارغة
+                            //     },
+                            //     child: Container(
+                            //       margin: EdgeInsets.only(
+                            //         left: 10,
+                            //       ),
+                            //       padding: const EdgeInsets.symmetric(
+                            //           horizontal: 12, vertical: 8),
+                            //       decoration: BoxDecoration(
+                            //         // color: Colors.grey.withOpacity(0.8),
+                            //         color: AppColor.primaryColor,
+                            //         borderRadius: BorderRadius.circular(6),
+                            //       ),
+                            //       child: Row(
+                            //         children: [
+                            //           Icon(Icons.send_rounded,
+                            //               color: Colors.white, size: 14),
+                            //           SizedBox(width: 5),
+                            //           Text(
+                            //             "إرسال إشعار",
+                            //             style: TextStyle(
+                            //               fontWeight: FontWeight.bold,
+                            //               color: Colors.white,
+                            //               fontSize: 9,
+                            //             ),
+                            //           ),
+                            //         ],
+                            //       ),
+                            //     ),
+                            //   ),
+                            // ],
                           ],
                         ),
 
@@ -651,7 +651,7 @@ class StudentProfile extends StatelessWidget {
                                 color: AppColor.primaryColor, size: 17),
                             const SizedBox(width: 5),
                             Text(
-                              "${student.educationInfo!['isGraduated'] == 1 ? "تخرج من" : "يدرس في"} ${student.educationInfo!['college']} - ${student.educationInfo!['university']}",
+                              "${student.educationInfo!['isGraduated'] == 1 ? "تخرج من" : "يدرس في"} ${student.educationInfo!['college']}",
                               style: const TextStyle(
                                 fontSize: 12,
                                 color: Colors.black45,

@@ -51,7 +51,7 @@ class EditCompanyProfileInfo extends StatelessWidget {
                       children: [
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 6, 30, "username");
+                            return validInput(val!, 1, 30, "all");
                           },
                           label: "اسم الشركة",
                           controller: controller.nameController,
@@ -60,7 +60,7 @@ class EditCompanyProfileInfo extends StatelessWidget {
                         ),
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 6, 100, "industry");
+                            return validInput(val!, 1, 100, "all");
                           },
                           label: "مجال الشركة",
                           controller: controller.industryController,
@@ -69,7 +69,7 @@ class EditCompanyProfileInfo extends StatelessWidget {
                         ),
                         BuildTextField(
                           valid: (val) {
-                            return validInput(val!, 10, 200, "bio");
+                            return validInput(val!, 1, 1000, "all");
                           },
                           label: "النبذة التعريفية",
                           controller: controller.bioController,
@@ -78,14 +78,14 @@ class EditCompanyProfileInfo extends StatelessWidget {
 
                           keyboardType: TextInputType.text,
                         ),
-                        BuildTextField(
-                            valid: (val) {
-                              return validInput(val!, 10, 100, "email");
-                            },
-                            label: "البريد الإلكتروني",
-                            controller: controller.emailController,
-                            icon: Icons.email_outlined,
-                            keyboardType: TextInputType.emailAddress),
+                        // BuildTextField(
+                        //     valid: (val) {
+                        //       return validInput(val!, 10, 100, "email");
+                        //     },
+                        //     label: "البريد الإلكتروني",
+                        //     controller: controller.emailController,
+                        //     icon: Icons.email_outlined,
+                        //     keyboardType: TextInputType.emailAddress),
                         BuildTextField(
                             valid: (val) {
                               return validInput(val!, 10, 20, "phone");
@@ -94,15 +94,15 @@ class EditCompanyProfileInfo extends StatelessWidget {
                             controller: controller.phoneController,
                             icon: Icons.phone_android,
                             keyboardType: TextInputType.phone),
-                        BuildTextField(
-                          valid: (val) {
-                            return validInput(val!, 3, 100, "headquarters");
-                          },
-                          label: "مقر الشركة",
-                          controller: controller.headquartersController,
-                          icon: Icons.location_on_outlined,
-                          keyboardType: TextInputType.text,
-                        ),
+                        // BuildTextField(
+                        //   valid: (val) {
+                        //     return validInput(val!, 1, 100, "all");
+                        //   },
+                        //   label: "مقر الشركة",
+                        //   controller: controller.headquartersController,
+                        //   icon: Icons.location_on_outlined,
+                        //   keyboardType: TextInputType.text,
+                        // ),
                       ],
                     ),
 
@@ -113,7 +113,7 @@ class EditCompanyProfileInfo extends StatelessWidget {
                       children: [
                         BuildTextField(
                             valid: (val) {
-                              return validInput(val!, 1, 100, "company_size");
+                              return validInput(val!, 1, 100, "all");
                             },
                             label: "عدد الموظفين",
                             controller: controller.companySizeController,
@@ -121,7 +121,7 @@ class EditCompanyProfileInfo extends StatelessWidget {
                             keyboardType: TextInputType.number),
                         BuildTextField(
                             valid: (val) {
-                              return validInput(val!, 4, 4, "founded_year");
+                              return validInput(val!, 4, 4, "all");
                             },
                             label: "سنة التأسيس",
                             controller: controller.foundedYearController,
@@ -140,7 +140,10 @@ class EditCompanyProfileInfo extends StatelessWidget {
                             Expanded(
                               child: BuildTextField(
                                 valid: (val) {
-                                  return validInput(val!, 2, 30, "skill");
+                                  if (val == null || val.trim().isEmpty) {
+                                    return null; // يسمح بحفظ البيانات إذا تُرك الحقل فارغاً
+                                  }
+                                  return validInput(val!, 1, 30, "all");
                                 },
                                 label: "أضف مهارة جديدة",
                                 controller: controller.skillInputController,

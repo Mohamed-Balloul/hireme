@@ -89,9 +89,10 @@ class CustomerPostCard extends StatelessWidget {
                                   Get.back(); // إغلاق القائمة
                                   ProfileDialogs.showConfirmDialog(
                                     title:
-                                        "هل أنت متأكد أنك تريد حذف هذا الإعلان بشكل نهائي؟",
-                                    onConfirm: () =>
-                                        controller.deleteMyPost(index),
+                                        // "هل أنت متأكد أنك تريد حذف هذا الإعلان بشكل نهائي؟",
+                                        "${freelancerPostModel.id.toString()} هل أنت متأكد أنك تريد حذف هذا الإعلان بشكل نهائي؟",
+                                    onConfirm: () => controller.deleteMyPost(
+                                        freelancerPostModel.id.toString()),
                                   );
                                 },
                               ),

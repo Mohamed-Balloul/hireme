@@ -498,7 +498,7 @@ class CustomerProfile extends StatelessWidget {
                               color: AppColor.primaryColor, size: 17),
                           const SizedBox(width: 5),
                           Text(
-                            "${customer.educationInfo!['isGraduated'] ? "تخرج من" : "يدرس في"} ${customer.educationInfo!['college']} - ${customer.educationInfo!['university']}",
+                            "${customer.educationInfo!['isGraduated'] ? "تخرج من" : "يدرس في"} ${customer.educationInfo!['college']}",
                             style: const TextStyle(
                               fontSize: 12,
                               color: Colors.black45,

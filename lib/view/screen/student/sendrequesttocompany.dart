@@ -53,46 +53,46 @@ class SendRequestToCompany extends StatelessWidget {
                     ),
                     //--
                     // if (companiesPostModel.isCvRequired!)
-                    if (true)
-                      Column(
-                        crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Text(
-                            "ملف السيرة الذاتية :",
-                            style: TextStyle(fontWeight: FontWeight.bold),
-                          ),
-                          controller.cvFile != null
-                              ? SingleFile(
-                                  singleFile: controller.cvFile,
-                                  fileHandler: controller,
-                                )
-                              : InkWell(
-                                  onTap: () {
-                                    controller.pickAndAddCvFile();
-                                  },
-                                  child: Container(
-                                    margin: EdgeInsets.symmetric(vertical: 20),
-                                    width: 80,
-                                    decoration: BoxDecoration(
-                                        border: Border.all(
-                                            width: 1,
-                                            color: AppColor.primaryColor),
-                                        borderRadius: BorderRadius.circular(5)),
-                                    child: Row(
-                                      mainAxisAlignment:
-                                          MainAxisAlignment.center,
-                                      children: [
-                                        Icon(
-                                          Icons.add,
-                                          size: 15,
-                                        ),
-                                        Text("إضافة")
-                                      ],
-                                    ),
-                                  ),
-                                ),
-                        ],
-                      ),
+                    // if (true)
+                    //   Column(
+                    //     crossAxisAlignment: CrossAxisAlignment.start,
+                    //     children: [
+                    //       Text(
+                    //         "ملف السيرة الذاتية :",
+                    //         style: TextStyle(fontWeight: FontWeight.bold),
+                    //       ),
+                    //       controller.cvFile != null
+                    //           ? SingleFile(
+                    //               singleFile: controller.cvFile,
+                    //               fileHandler: controller,
+                    //             )
+                    //           : InkWell(
+                    //               onTap: () {
+                    //                 controller.pickAndAddCvFile();
+                    //               },
+                    //               child: Container(
+                    //                 margin: EdgeInsets.symmetric(vertical: 20),
+                    //                 width: 80,
+                    //                 decoration: BoxDecoration(
+                    //                     border: Border.all(
+                    //                         width: 1,
+                    //                         color: AppColor.primaryColor),
+                    //                     borderRadius: BorderRadius.circular(5)),
+                    //                 child: Row(
+                    //                   mainAxisAlignment:
+                    //                       MainAxisAlignment.center,
+                    //                   children: [
+                    //                     Icon(
+                    //                       Icons.add,
+                    //                       size: 15,
+                    //                     ),
+                    //                     Text("إضافة")
+                    //                   ],
+                    //                 ),
+                    //               ),
+                    //             ),
+                    //     ],
+                    //   ),
                     //--
                     // if (companiesPostModel.isGitHubOrPortfolioRequired!)
                     if (true)

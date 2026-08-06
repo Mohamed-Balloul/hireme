@@ -263,7 +263,8 @@ class HomeSlider extends StatelessWidget {
                                   // زر عرض الملف
                                   InkWell(
                                     onTap: () {
-                                      controller.goToStudentProfile();
+                                      controller.goToStudentProfile(
+                                          student.id.toString());
                                     },
                                     child: Row(
                                       children: const [

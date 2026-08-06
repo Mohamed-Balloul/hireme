@@ -44,7 +44,7 @@ class ApplicantCardModern extends StatelessWidget {
               InkWell(
                 onTap: () {
                   controller.goToStudentProfile(
-                      incomingRequestsToCustomerModel.applicantName!);
+                      incomingRequestsToCustomerModel.applicantId.toString());
                 },
                 child: Container(
                   decoration: BoxDecoration(
@@ -68,7 +68,8 @@ class ApplicantCardModern extends StatelessWidget {
                     InkWell(
                       onTap: () {
                         controller.goToStudentProfile(
-                            incomingRequestsToCustomerModel.applicantName!);
+                            incomingRequestsToCustomerModel.applicantId
+                                .toString());
                       },
                       child: Text(
                         incomingRequestsToCustomerModel.applicantName!,
@@ -80,14 +81,14 @@ class ApplicantCardModern extends StatelessWidget {
                       ),
                     ),
                     const SizedBox(height: 4),
-                    Text(
-                      incomingRequestsToCustomerModel.joblabel!,
-                      style: TextStyle(
-                        fontSize: 12,
-                        fontWeight: FontWeight.w400,
-                        color: Color(0xFF718096),
-                      ),
-                    ),
+                    // Text(
+                    //   incomingRequestsToCustomerModel.joblabel!,
+                    //   style: TextStyle(
+                    //     fontSize: 12,
+                    //     fontWeight: FontWeight.w400,
+                    //     color: Color(0xFF718096),
+                    //   ),
+                    // ),
                     const SizedBox(height: 4),
                     Row(
                       children: [
@@ -95,7 +96,7 @@ class ApplicantCardModern extends StatelessWidget {
                             size: 12, color: Colors.grey[400]),
                         const SizedBox(width: 4),
                         Text(
-                          "منذ قليل",
+                          incomingRequestsToCustomerModel.time ?? "منذ قليل",
                           style:
                               TextStyle(fontSize: 11, color: Colors.grey[400]),
                         ),
@@ -142,78 +143,132 @@ class ApplicantCardModern extends StatelessWidget {
             ],
           ),
 
-          const SizedBox(height: 20),
+          const SizedBox(height: 30),
 
           // خط فاصل رفيع جداً
-          Divider(color: Colors.grey[100], height: 1),
-          const SizedBox(height: 15),
+          // Divider(color: Colors.grey[100], height: 1),
+          // const SizedBox(height: 15),
 
           // ================= 2. المرفقات =================
-          Row(
-            children: [
-              BuildModernChip(
-                icon: Icons.description_outlined,
-                label: "السيرة الذاتية",
-                color: const Color(0xFFE53E3E),
-                onTap: () {},
-              ),
-              const SizedBox(width: 10),
-              BuildModernChip(
-                icon: Icons.link,
-                label: "معرض الأعمال",
-                color: const Color(0xFF3182CE),
-                onTap: () {},
-              ),
-            ],
-          ),
+          // Row(
+          //   children: [
+          //     BuildModernChip(
+          //       icon: Icons.description_outlined,
+          //       label: "السيرة الذاتية",
+          //       color: const Color(0xFFE53E3E),
+          //       onTap: () {},
+          //     ),
+          //     const SizedBox(width: 10),
+          //     BuildModernChip(
+          //       icon: Icons.link,
+          //       label: "معرض الأعمال",
+          //       color: const Color(0xFF3182CE),
+          //       onTap: () {},
+          //     ),
+          //   ],
+          // ),
 
-          const SizedBox(height: 20),
+          // const SizedBox(height: 20),
 
           // ================= 3. أزرار القرار =================
-          Row(
-            children: [
-              // زر الرفض
-              Expanded(
-                child: TextButton(
-                  onPressed: () {},
-                  style: TextButton.styleFrom(
-                    // foregroundColor: Colors.grey[600],
-                    // غيرنا اللون من رمادي باهت إلى أحمر ناعم جداً أو رمادي غامق
-                    foregroundColor: const Color(0xFFE53E3E),
-                    // أو استخدم Colors.grey[800] إذا كنت لا تريد اللون الأحمر
+          // ================= 2. الفحص الشرطي لأزرار القرار أو كارت الحالة الجديد =================
+          if (incomingRequestsToCustomerModel.applicationStatus ==
+              "قيد الانتظار")
+            // الحالة أ: يظهر زر القبول والرفض بشكل طبيعي إذا كان الطلب قيد الانتظار
+            Row(
+              children: [
+                // زر الرفض
+                Expanded(
+                  child: TextButton(
+                    onPressed: () {
+                      controller.rejectApplication(
+                          incomingRequestsToCustomerModel.applicationId
+                              .toString());
+                    },
+                    style: TextButton.styleFrom(
+                      // foregroundColor: Colors.grey[600],
+                      // غيرنا اللون من رمادي باهت إلى أحمر ناعم جداً أو رمادي غامق
+                      // foregroundColor: const Color(0xFFE53E3E),
+                      foregroundColor: Colors.white,
+                      // أو استخدم Colors.grey[800] إذا كنت لا تريد اللون الأحمر
 
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
-                    backgroundColor: Colors.grey[50],
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                      backgroundColor: Colors.red,
+                      // backgroundColor: Colors.grey[50],
+                    ),
+                    child: const Text("رفض",
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600)),
                   ),
-                  child: const Text("رفض",
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w500)),
                 ),
-              ),
 
-              const SizedBox(width: 12),
+                const SizedBox(width: 12),
 
-              // زر القبول (حافظت على اللون الغامق لأنه أفخم، ويمكنك تغييره للأخضر إذا أردت)
-              Expanded(
-                child: ElevatedButton(
-                  onPressed: () {},
-                  style: ElevatedButton.styleFrom(
-                    backgroundColor: const Color(0xFF1A202C),
-                    foregroundColor: Colors.white,
-                    elevation: 0,
-                    padding: const EdgeInsets.symmetric(vertical: 12),
-                    shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.circular(8)),
+                // زر القبول (حافظت على اللون الغامق لأنه أفخم، ويمكنك تغييره للأخضر إذا أردت)
+                Expanded(
+                  child: ElevatedButton(
+                    onPressed: () {
+                      controller.acceptApplication(
+                          incomingRequestsToCustomerModel.applicationId
+                              .toString());
+                    },
+                    style: ElevatedButton.styleFrom(
+                      backgroundColor: AppColor.primaryColor,
+                      foregroundColor: Colors.white,
+                      elevation: 0,
+                      padding: const EdgeInsets.symmetric(vertical: 12),
+                      shape: RoundedRectangleBorder(
+                          borderRadius: BorderRadius.circular(8)),
+                    ),
+                    child: const Text("قبول للمقابلة",
+                        style: TextStyle(
+                            fontSize: 13, fontWeight: FontWeight.w600)),
                   ),
-                  child: const Text("قبول للمقابلة",
-                      style:
-                          TextStyle(fontSize: 13, fontWeight: FontWeight.w600)),
                 ),
-              ),
-            ],
-          )
+              ],
+            )
+          else
+            // الحالة ب: إخفاء الأزرار وعرض الكارت الفني الذي يعبّر عن الحالة بشكل فخم وجذاب
+            _buildStatusChip(
+                incomingRequestsToCustomerModel.applicationStatus ??
+                    "قيد الانتظار"),
+        ],
+      ),
+    );
+  }
+
+  // وجت بناء كارت الحالة الملون والناعم بأسلوب فلاتر الاحترافي
+  Widget _buildStatusChip(String status) {
+    final bool isAccepted = status == "تم القبول";
+    final Color color = isAccepted ? Colors.green : Colors.red;
+    final IconData icon =
+        isAccepted ? Icons.check_circle_outline_rounded : Icons.cancel_outlined;
+
+    return Container(
+      width: double
+          .infinity, // يمتد ليملأ نفس مساحة الأزرار السابقة لجمالية التصميم
+      padding: const EdgeInsets.symmetric(vertical: 12),
+      decoration: BoxDecoration(
+        color: color.withOpacity(0.08), // خلفية ناعمة وشفافة بلون الحالة
+        borderRadius: BorderRadius.circular(10),
+        border: Border.all(color: color.withOpacity(0.2)),
+      ),
+      child: Row(
+        mainAxisAlignment: MainAxisAlignment.center,
+        children: [
+          Icon(icon, color: color, size: 18),
+          const SizedBox(width: 8),
+          Text(
+            status,
+            style: TextStyle(
+              fontSize: 13,
+              fontWeight: FontWeight.bold,
+              color: color,
+              fontFamily: 'Cairo',
+            ),
+          ),
         ],
       ),
     );

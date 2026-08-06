@@ -198,7 +198,8 @@ class StudentCard extends StatelessWidget {
                         // زر عرض الملف
                         InkWell(
                           onTap: () {
-                            controller.goToStudentProfile(ind);
+                            controller.goToStudentProfile(studentProfileModel.id
+                                .toString()); // تمرير معرف الطالب إلى الدالة
                           },
                           child: Row(
                             children: const [

@@ -221,6 +221,14 @@ class EditCustomerProfileControllerImp extends EditCustomerProfileController {
         "hour_cost": "75",
         "experience_years": 5,
         "tech1": "Laravel",
+        //--
+        "git_link": githubController.text.isNotEmpty
+            ? githubController.text.trim()
+            : "https://github.com/Mohamed-Balloul",
+
+        "linked_link": linkedinController.text.isNotEmpty
+            ? linkedinController.text.trim()
+            : "https://www.linkedin.com/in/mohamed-balloul-13b4173b3",
       };
 
       print("--- البيانات المرسلة للباك-إند: $updatedData");

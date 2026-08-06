@@ -5,6 +5,7 @@ import 'package:hireme/view/widget/student/profile_dialogs.dart';
 
 class BuildModernRequestCard extends StatelessWidget {
   final int id;
+  final int publisherId;
   final String title;
   final String publisher;
   final String imageUrl;
@@ -16,6 +17,7 @@ class BuildModernRequestCard extends StatelessWidget {
   const BuildModernRequestCard({
     super.key,
     required this.id,
+    required this.publisherId,
     required this.title,
     required this.publisher,
     required this.imageUrl,
@@ -51,8 +53,8 @@ class BuildModernRequestCard extends StatelessWidget {
           InkWell(
             onTap: () {
               isCompany
-                  ? controller.goToCompanyProfile(publisher)
-                  : controller.goToCustomerProfile(publisher);
+                  ? controller.goToCompanyProfile(publisherId.toString())
+                  : controller.goToCustomerProfile(publisherId.toString());
             },
             child: Container(
               width: 48,
@@ -129,8 +131,9 @@ class BuildModernRequestCard extends StatelessWidget {
                 InkWell(
                   onTap: () {
                     isCompany
-                        ? controller.goToCompanyProfile(publisher)
-                        : controller.goToCustomerProfile(publisher);
+                        ? controller.goToCompanyProfile(publisherId.toString())
+                        : controller
+                            .goToCustomerProfile(publisherId.toString());
                   },
                   child: Text(
                     publisher,

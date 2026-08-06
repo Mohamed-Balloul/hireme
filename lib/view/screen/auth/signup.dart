@@ -64,7 +64,7 @@ class SignUp extends StatelessWidget {
                                 ),
                                 child: CustomTextFormAuthWithLablel(
                                   valid: (val) {
-                                    return validInput(val!, 6, 30, "username");
+                                    return validInput(val!, 4, 30, "all");
                                   },
                                   mycontroller: controller.name,
                                   labelText: "الاسم",

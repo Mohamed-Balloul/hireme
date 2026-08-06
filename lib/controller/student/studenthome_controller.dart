@@ -1,9 +1,12 @@
 // import 'package:hireme/controller/company/freelancerposts_controller.dart';
+import 'package:flutter/material.dart';
 import 'package:hireme/controller/student/companiesposts_controller.dart';
 import 'package:hireme/controller/student/freelancerposts_controller.dart';
 import 'package:hireme/controller/student/studentsearch_controller.dart';
 import 'package:hireme/controller/student/studentsuggestions_controller.dart';
+import 'package:hireme/controller/student/thebottomnavigationbar/thebottomnavigationbar_controller.dart';
 import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/core/constant/routes.dart';
 import 'package:get/get.dart';
 import 'package:hireme/core/functions/handlingdatacontroller.dart';
@@ -56,6 +59,17 @@ class StudentHomeControllerImp extends StudentHomeController {
   int currentIndex = 0;
   int currentIndx = 0;
   // متغير للتحكم في حالة الفتح والإغلاق
+
+  Future<void> refreshData() async {
+    // await getCustomerData();
+    if (Get.isRegistered<StudentBottomNavigationBarrControllerImp>()) {
+      Get.find<StudentBottomNavigationBarrControllerImp>().getData();
+    }
+    await getAllCompaniesAds();
+    await getAllCustomersAds();
+    await getStudentData();
+    update();
+  }
 
   List<bool>? isExpanded = [];
   @override
@@ -393,8 +407,8 @@ class StudentHomeControllerImp extends StudentHomeController {
       middleText: "هل أنت متأكد أنك تريد تسجيل الخروج؟",
       textCancel: "إلغاء",
       textConfirm: "تأكيد",
-      // confirmTextColor: Colors.white,
-      // buttonColor: const Color(0xFF1DBF53), // لون الزر الأخضر المعتمد لديك
+      confirmTextColor: Colors.white,
+      buttonColor: AppColor.primaryColor, // لون الزر الأخضر المعتمد لديك
       onConfirm: () async {
         // 1. إغلاق دايلوج التأكيد فوراً لتجنب النقر المتعدد وإظهار شاشة التحميل بوضوح
         Get.back();
@@ -428,7 +442,18 @@ class StudentHomeControllerImp extends StudentHomeController {
         if (StatusRequest.success == statusRequest) {
           if (response['message'] == "Logged out successfully.") {
             // نجاح كامل: مسح البيانات محلياً والتحويل لصفحة تسجيل الدخول
-            myServices.sharedPreferences.clear();
+            // myServices.sharedPreferences.clear();
+            //--
+            // استبدل سطر myServices.sharedPreferences.clear() بداخل دوال الـ logout بالتالي لتجربة مستخدم أفضل:
+
+            myServices.sharedPreferences
+                .setString("step", "1"); // نعيده للخطوة 1 (مستعد لتسجيل الدخول)
+            myServices.sharedPreferences
+                .remove("token"); // حذف التوكن لحماية الحساب
+            myServices.sharedPreferences
+                .remove("user_id"); // حذف معرّف المستخدم
+            myServices.sharedPreferences.remove("role"); // حذف نوع الحساب
+            //--
             Get.offAllNamed(AppRoute.login);
           } else {
             // رد غير متوقع من السيرفر: نسجل الخروج محلياً كإجراء دفاعي آمن

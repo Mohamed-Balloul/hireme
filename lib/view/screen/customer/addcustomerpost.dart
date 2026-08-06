@@ -133,46 +133,46 @@ class AddCustomerPost extends StatelessWidget {
                       ),
                       //--
                       // --- القسم السادس: المستندات المطلوبة ---
-                      const Divider(
-                        thickness: 1.5,
-                        color: AppColor.greenblack,
-                      ),
+                      // const Divider(
+                      //   thickness: 1.5,
+                      //   color: AppColor.greenblack,
+                      // ),
 
-                      Column(
-                        // crossAxisAlignment: CrossAxisAlignment.start,
-                        children: [
-                          Padding(
-                            padding: const EdgeInsets.only(bottom: 5),
-                            child: Row(
-                              mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                              children: [
-                                FieldLablel(
-                                  label: "الملفات المرفقة:",
-                                ),
-                                // زر الإضافة (يظهر فقط إذا لم نصل للحد الأقصى 5)
-                                if (controller.attachedFiles.length < 5)
-                                  InkWell(
-                                    onTap: () {
-                                      controller.pickAndAddFile();
-                                    },
-                                    child: Row(
-                                      children: [
-                                        Icon(
-                                          Icons.add,
-                                          size: 15,
-                                        ),
-                                        Text("إضافة ملف جديد")
-                                      ],
-                                    ),
-                                  )
-                              ],
-                            ),
-                          ),
-                          DynamicFilesList(
-                              controllers: controller.attachedFiles,
-                              hint: "أدخل وصف للملف"),
-                        ],
-                      ),
+                      // Column(
+                      //   // crossAxisAlignment: CrossAxisAlignment.start,
+                      //   children: [
+                      //     Padding(
+                      //       padding: const EdgeInsets.only(bottom: 5),
+                      //       child: Row(
+                      //         mainAxisAlignment: MainAxisAlignment.spaceBetween,
+                      //         children: [
+                      //           FieldLablel(
+                      //             label: "الملفات المرفقة:",
+                      //           ),
+                      //           // زر الإضافة (يظهر فقط إذا لم نصل للحد الأقصى 5)
+                      //           if (controller.attachedFiles.length < 5)
+                      //             InkWell(
+                      //               onTap: () {
+                      //                 controller.pickAndAddFile();
+                      //               },
+                      //               child: Row(
+                      //                 children: [
+                      //                   Icon(
+                      //                     Icons.add,
+                      //                     size: 15,
+                      //                   ),
+                      //                   Text("إضافة ملف جديد")
+                      //                 ],
+                      //               ),
+                      //             )
+                      //         ],
+                      //       ),
+                      //     ),
+                      //     DynamicFilesList(
+                      //         controllers: controller.attachedFiles,
+                      //         hint: "أدخل وصف للملف"),
+                      //   ],
+                      // ),
                       const SizedBox(height: 30),
                       //--
 

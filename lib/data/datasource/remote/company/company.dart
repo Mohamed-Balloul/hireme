@@ -22,6 +22,17 @@ class CompanyData {
     return response.fold((l) => l, (r) => r);
   }
 
+  //--
+  getStudentDataById(String studentId, String token) async {
+    var response = await crud.getData("${AppLink.student}/$studentId", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+  //--
+
   getMyAds(String token) async {
     var response = await crud.getData(AppLink.myAds, {
       "Accept": "application/json",
@@ -87,6 +98,42 @@ class CompanyData {
       "Content-Type": "application/json",
       "Authorization": "Bearer $token"
     });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  //delete my ad
+  deleteMyAd(String adId, String token) async {
+    var response = await crud.deleteData("${AppLink.ads}/$adId", {
+      "Accept": "application/json",
+      "Content-Type": "application/json",
+      "Authorization": "Bearer $token"
+    });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  //accept application
+  acceptApplication(String token, String applicationId) async {
+    var response = await crud.postData(
+        "${AppLink.server}/ad-applications/$applicationId/accept",
+        {}, // إرسال خريطة البيانات هنا (فارغة في هذه الحالة)
+        {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        });
+    return response.fold((l) => l, (r) => r);
+  }
+
+  //reject application
+  rejectApplication(String token, String applicationId) async {
+    var response = await crud.postData(
+        "${AppLink.server}/ad-applications/$applicationId/reject",
+        {}, // إرسال خريطة البيانات هنا (فارغة في هذه الحالة)
+        {
+          "Accept": "application/json",
+          "Content-Type": "application/json",
+          "Authorization": "Bearer $token"
+        });
     return response.fold((l) => l, (r) => r);
   }
 }

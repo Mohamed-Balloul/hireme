@@ -326,7 +326,7 @@ class CompanyProfile extends StatelessWidget {
                           // العمود 1: الموقع
                           BuildStateItem(
                             icon: Icons.people,
-                            value: company.companySize!,
+                            value: company.companySize.toString(),
                             label: "عدد الموظفين",
                             color: Colors.grey,
                           ),

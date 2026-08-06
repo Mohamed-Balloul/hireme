@@ -13,14 +13,17 @@ import 'package:get/get.dart';
 import 'package:hireme/data/model/companiespostmodel.dart';
 import 'package:hireme/data/model/companyprofilemodel.dart';
 import 'package:hireme/data/model/customerprofilemodel.dart';
+import 'package:hireme/data/model/freelancerpostmodel.dart';
 import 'package:hireme/view/screen/company/companyprofile.dart';
 import 'package:hireme/view/screen/customer/customerprofile.dart';
 import 'package:hireme/view/screen/student/sendrequesttocompany.dart';
+import 'package:hireme/view/screen/student/sendrequesttocustomer.dart';
 import 'package:hireme/view/screen/student/studentsearch.dart';
 
 abstract class StudentSuggestionsController extends GetxController {
   // goToPostDetails(CompanyPostModel companyPostModel);
   goToSendRequestToCompany(CompaniesPostModel companiesPostModel);
+  goToSendRequestToCustomer(FreelancerPostModel freelancerPostModel);
   goToCompanyProfile(String companyId);
   action(int index);
   change(int index);
@@ -29,7 +32,7 @@ abstract class StudentSuggestionsController extends GetxController {
   goToCustomerProfile(String customerId);
   // action(int index);
   // change(int index);
-  goToSendRequestToCustomer();
+  // goToSendRequestToCustomer();
   //--
   makeSuggestionsPosts();
 }
@@ -164,8 +167,10 @@ class StudentSuggestionsControllerImp extends StudentSuggestionsController {
   //---------
 
   @override
-  goToSendRequestToCustomer() {
-    Get.toNamed(AppRoute.sendRequestToCustomer);
+  goToSendRequestToCustomer(freelancerPostModel) {
+    // Get.toNamed(AppRoute.sendRequestToCustomer);
+    Get.to(
+        () => SendRequestToCustomer(freelancerPostModel: freelancerPostModel));
   }
 
   @override

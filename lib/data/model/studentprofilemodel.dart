@@ -208,7 +208,7 @@ class StudentProfileModel {
       }
     }
     if (skillsList.isEmpty) {
-      skillsList = ["Laravel", "React"]; // قيمة افتراضية عند عدم توفر تقنيات
+      skillsList = ["--"]; // قيمة افتراضية عند عدم توفر تقنيات
     }
 
     // 3. إعادة بناء خريطة التعليم (educationInfo) لتتوافق مع ما تطلبه الواجهة في تطبيقك
@@ -269,8 +269,8 @@ class StudentProfileModel {
           "مطور برمجيات", // تم ربطها بـ title الوارد في الكائن الفرعي profile
       hourlySalary: parsedHourlySalary ?? 0,
       experienceYears: profile?['experience_years'] ?? 0,
-      github: profile?['github'] ?? "https://github.com",
-      linkedIn: profile?['linkedin'] ?? "https://linkedin.com",
+      github: profile?['git_link'] ?? "https://github.com",
+      linkedIn: profile?['linked_link'] ?? "https://linkedin.com",
       skils: skillsList,
 
       // Education Info

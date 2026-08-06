@@ -46,6 +46,14 @@ class AppLink {
   static const String customer = "$server/customers";
   static const String projects = "$server/projects";
   static const String myProjects = "$server/my-projects";
+  // روابط الاعتراضات
+  // static const String receivedProjects =
+  //     "$server/customer/received-projects"; // جلب المشاريع المستلمة بحالة "Received"
+  // static const String sendObjection = "$server/customer/objections";
+  // روابط الاعتراضات الجديدة المحدثة
+  static const String eligibleObjections =
+      "$server/objections/eligible"; // جلب الطلبات المؤهلة للاعتراض
+  static const String createObjection = "$server/objections";
 
   // static const String verifycodessignup = "$server/auth/verfiycode.php";
 //   static const String resend = "$server/auth/resend.php";

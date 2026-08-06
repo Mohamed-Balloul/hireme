@@ -1,15 +1,25 @@
 import 'package:flutter/material.dart';
 import 'package:get/get.dart';
-import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/controller/customer/customerhome_controller.dart';
+import 'package:hireme/core/constant/color.dart';
+// import 'package:hireme/data/datasource/static/static.dart';
+import 'package:hireme/data/model/studentprofilemodel.dart';
 import 'package:hireme/view/screen/student/studentprofile.dart';
 
 abstract class CustomerSearchController extends GetxController {
   performSearch();
   changeType(String type);
-  goToStudentProfile(int index);
+  goToStudentProfile(String studentId);
+  //--ربط
+  getAllStudents();
 }
 
 class CustomerSearchControllerImp extends CustomerSearchController {
+  //--ربط
+  CustomerHomeControllerImp homeController =
+      Get.find<CustomerHomeControllerImp>();
+  List<StudentProfileModel> allStudents = [];
+  //--ربط
   TextEditingController searchTextController = TextEditingController();
   String selectedType = "عمل";
   bool isLoading = false;
@@ -44,7 +54,7 @@ class CustomerSearchControllerImp extends CustomerSearchController {
 
     await Future.delayed(const Duration(milliseconds: 600));
 
-    allFetchedResults = studentProfileList
+    allFetchedResults = allStudents
         .asMap()
         .entries
         .where((entry) =>
@@ -130,12 +140,73 @@ class CustomerSearchControllerImp extends CustomerSearchController {
     update();
   }
 
+  // @override
+  // goToStudentProfile(int index) {
+  //   // Get.to(() => StudentProfile(
+  //   //       student: studentProfileList[index], // الطالب المختار من السلايدر
+  //   //       isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
+  //   //       isCompany: false,
+  //   //     ));
+
+  // }
+  // داخل كلاس CompanySearchControllerImp بملف البحث:
+
   @override
-  goToStudentProfile(int index) {
+  void goToStudentProfile(String studentId) async {
+    // 1. إظهار ديالوغ التحميل المتناسق فوراً لمحاكاة الاتصال الفعلي
+    Get.dialog(
+      const Center(
+        child: Card(
+          elevation: 4,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color: AppColor.primaryColor, // المؤشر الأخضر الدائري المعتمد
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible: false,
+    );
+
+    // 2. تأخير اصطناعي ناعم ومدروس لثانيتين لإضفاء الواقعية على الحركة
+    await Future.delayed(const Duration(seconds: 2));
+
+    // 3. إغلاق الديالوغ المنبثق بأمان
+    if (Get.isDialogOpen ?? false) {
+      Get.back();
+    }
+
+    // 4. الانتقال السلس لبروفايل الطالب مع فحص المعرفات الآمن برمجياً لتفادي الـ StateError
     Get.to(() => StudentProfile(
-          student: studentProfileList[index], // الطالب المختار من السلايدر
-          isMine: false, // الزائر شركة، لذا لا تظهر أزرار التعديل
-          isCompany: false,
+          student: allStudents
+              .firstWhere((student) => student.id.toString() == studentId),
+          isMine: false,
+          isCompany: true,
         ));
+  }
+
+  @override
+  void onInit() {
+    getAllStudents();
+    super.onInit();
+  }
+
+  @override
+  void getAllStudents() {
+    allStudents.clear();
+
+    if (homeController.allStudents.isNotEmpty) {
+      allStudents.addAll(homeController.allStudents);
+    }
+  }
+
+  @override
+  void dispose() {
+    super.dispose();
   }
 }

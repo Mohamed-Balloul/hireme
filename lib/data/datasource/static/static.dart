@@ -1159,7 +1159,7 @@ List<CompanyProfileModel> companyProfileList = [
 
     // Statistical informations
     headquarters: "Seattle, Washington, USA (France Branch)",
-    companySize: "10,000+",
+    companySize: 50,
     foundedYear: 1994,
     rating: 4.8,
     techStack: ["AWS", "Flutter", "Java", "React", "Python", "Docker"],
@@ -1190,7 +1190,7 @@ List<CompanyProfileModel> companyProfileList = [
 
     // Statistical informations
     headquarters: "Seattle, Washington, USA (France Branch)",
-    companySize: "10,000+",
+    companySize: 10000,
     foundedYear: 1994,
     rating: 4.8,
     techStack: ["AWS", "Flutter", "Java", "React", "Python", "Docker"],
@@ -1221,7 +1221,7 @@ List<CompanyProfileModel> companyProfileList = [
 
     // Statistical informations
     headquarters: "Seattle, Washington, USA (France Branch)",
-    companySize: "10,000+",
+    companySize: 50,
     foundedYear: 1994,
     rating: 4.8,
     techStack: ["AWS", "Flutter", "Java", "React", "Python", "Docker"],

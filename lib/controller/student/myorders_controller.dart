@@ -1,4 +1,6 @@
+import 'package:flutter/material.dart';
 import 'package:hireme/core/class/statusrequest.dart';
+import 'package:hireme/core/constant/color.dart';
 import 'package:hireme/core/functions/handlingdatacontroller.dart';
 import 'package:hireme/core/services/services.dart';
 import 'package:hireme/data/datasource/remote/student/student.dart';
@@ -15,8 +17,8 @@ import 'package:hireme/view/screen/customer/customerprofile.dart';
 
 abstract class MyOrdersController extends GetxController {
   goToPostDetails(CompanyPostModel companyPostModel);
-  goToCompanyProfile(String companyName);
-  goToCustomerProfile(String customerName);
+  goToCompanyProfile(String companyId);
+  goToCustomerProfile(String customerId);
   deleteOrder(int id, bool isCompany);
   printHi();
   //--ربط
@@ -37,6 +39,9 @@ class MyOrdersControllerImp extends MyOrdersController {
   StudentData studentData = StudentData(Get.find());
   List<MyRequestToCompanyModel> allMyAdApplications = [];
   List<MyRequestToCustomerModel> allMyProjectApplications = [];
+  CompanyProfileModel? companyProfileModel;
+  CustomerProfileModel? customerProfileModel;
+
   //--ربط
   // القائمة التي يتم عرضها
   // List<MyRequestToCompanyModel> get myAllRequestsToCompaniesList {
@@ -175,10 +180,8 @@ class MyOrdersControllerImp extends MyOrdersController {
     statusRequest = StatusRequest.loading;
     print(
         "=====deleteMyAdApplication=========================-*-Controller $statusRequest ");
+    print("=====deleteMyAdApplication====== id = $id =================== ");
     update();
-    // بعد ما ينجح الـ API call
-    // await Future.delayed(const Duration(seconds: 5)); // أضف هذا السطر
-    // ثم انتقل لصفحة الـ
 
     var response = await studentData.deleteMyAdApplication(
         id, myServices.sharedPreferences.getString("token")!);
@@ -193,16 +196,36 @@ class MyOrdersControllerImp extends MyOrdersController {
     if (StatusRequest.success == statusRequest) {
       // Start backend
       if (response["message"] == "Ad application deleted successfully.") {
-        getAllMyAdApplications();
+        // إزالة  من القائمة محلياً لتحديث الواجهة فوراً
+        allMyAdApplications
+            .removeWhere((application) => application.id.toString() == id);
+        update();
+        Get.snackbar(
+          "نجاح",
+          "تم الحذف بنجاح",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+        );
       } else {
-        // Get.defaultDialog(
-        //   title: "warning",
-        //   middleText: "email or password is wrong, try again",
-        // );
-        statusRequest = StatusRequest.failure;
+        Get.snackbar(
+          "خطأ",
+          "فشل الحذف، يرجى المحاولة لاحقاً.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
       }
       // End
-    } else {}
+    } else {
+      Get.snackbar(
+        "خطأ",
+        "فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
     update();
     print(
         "****deleteMyAdApplication********************** *-*-* $statusRequest");
@@ -232,16 +255,36 @@ class MyOrdersControllerImp extends MyOrdersController {
     if (StatusRequest.success == statusRequest) {
       // Start backend
       if (response["message"] == "Project application deleted successfully.") {
-        getAllMyProjectApplications();
+        // إزالة  من القائمة محلياً لتحديث الواجهة فوراً
+        allMyProjectApplications
+            .removeWhere((application) => application.id.toString() == id);
+        update();
+        Get.snackbar(
+          "نجاح",
+          "تم الحذف بنجاح",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.green.withOpacity(0.8),
+          colorText: Colors.white,
+        );
       } else {
-        // Get.defaultDialog(
-        //   title: "warning",
-        //   middleText: "email or password is wrong, try again",
-        // );
-        statusRequest = StatusRequest.failure;
+        Get.snackbar(
+          "خطأ",
+          "فشل الحذف، يرجى المحاولة لاحقاً.",
+          snackPosition: SnackPosition.BOTTOM,
+          backgroundColor: Colors.red.withOpacity(0.8),
+          colorText: Colors.white,
+        );
       }
       // End
-    } else {}
+    } else {
+      Get.snackbar(
+        "خطأ",
+        "فشل الاتصال بالسيرفر، يرجى المحاولة لاحقاً.",
+        snackPosition: SnackPosition.BOTTOM,
+        backgroundColor: Colors.red.withOpacity(0.8),
+        colorText: Colors.white,
+      );
+    }
     update();
     print(
         "****deleteMyProjectApplication********************** *-*-* $statusRequest");
@@ -257,31 +300,143 @@ class MyOrdersControllerImp extends MyOrdersController {
   @override
   goToPostDetails(companyPostModel) {}
   @override
-  void goToCompanyProfile(companyName) {
-    // البحث في قائمة بروفايلات الشركات عن الشركة التي تملك نفس الاسم
-    // CompanyProfileModel? companyData = companyProfileList.firstWhere(
-    //   (element) => element.name == companyName,
-    //   orElse: () => companyProfileList[0], // قيمة افتراضية في حال عدم الوجود
-    // );
+  void goToCompanyProfile(companyId) async {
+    Get.dialog(
+      const Center(
+        child: Card(
+          elevation: 4,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color:
+                  AppColor.primaryColor, // المؤشر الأخضر الدائري المعتمد لديك
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible:
+          false, // يمنع إغلاق الديالوغ بالضغط خارجاً لضمان عدم مقاطعة العملية
+    );
 
-    // Get.to(() => CompanyProfile(
-    //       company: companyData,
-    //       isMine: false, // لأن الزائر طالب وليس صاحب الشركة
-    //     ));
+    statusRequest = StatusRequest.loading;
+    print(
+        "=====goToCompanyProfile=========MyOrdersControllerImp================-*-Controller $statusRequest ");
+    // update();
+
+    // استدعاء دالة جلب معلومات الشركة بالـ ID الفعلي
+    var response = await studentData.getCompanyDataById(
+        companyId, myServices.sharedPreferences.getString("token")!);
+
+    print(
+        "=====goToCompanyProfile=========MyOrdersControllerImp======= The Response ===========* Controller $response ");
+    statusRequest = handlingData(response);
+    // 3. إغلاق ديالوغ التحميل فوراً عند انتهاء عملية الاتصال بالسيرفر (سواءً نجحت أو فشلت)
+    if (Get.isDialogOpen ?? false) {
+      Get.back();
+    }
+
+    if (StatusRequest.success == statusRequest) {
+      if (response['data'] != null) {
+        // تعبئة البيانات في الموديل بنجاح وبشكل مباشر
+        companyProfileModel = CompanyProfileModel.fromJson(response['data']);
+
+        // الانتقال لصفحة البروفايل وتمرير الموديل
+        Get.to(() => CompanyProfile(
+              company: companyProfileModel!,
+              isMine: false, // الزائر طالب
+            ));
+      } else {
+        statusRequest = StatusRequest.none;
+      }
+    } else {
+      statusRequest = StatusRequest.none;
+      // إظهار رسالة تنبيه سريعة في حال فشل الاتصال بالشبكة
+      Get.snackbar(
+        "خطأ في الاتصال",
+        "تعذر جلب معلومات الشركة، يرجى التحقق من الإنترنت وإعادة المحاولة",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      statusRequest = StatusRequest.none;
+    }
+    update();
+    print(
+        "****goToCompanyProfile****MyOrdersControllerImp****************** *-*-* $statusRequest");
   }
 
   @override
-  void goToCustomerProfile(customerName) {
-    // البحث في قائمة بروفايلات الشركات عن الشركة التي تملك نفس الاسم
-    // CustomerProfileModel? customerData = customerProfileList.firstWhere(
-    //   (element) => element.name == customerName,
-    //   orElse: () => customerProfileList[0], // قيمة افتراضية في حال عدم الوجود
-    // );
+  void goToCustomerProfile(customerId) async {
+    Get.dialog(
+      const Center(
+        child: Card(
+          elevation: 4,
+          color: Colors.white,
+          shape: RoundedRectangleBorder(
+            borderRadius: BorderRadius.all(Radius.circular(16)),
+          ),
+          child: Padding(
+            padding: EdgeInsets.all(24.0),
+            child: CircularProgressIndicator(
+              color:
+                  AppColor.primaryColor, // المؤشر الأخضر الدائري المعتمد لديك
+            ),
+          ),
+        ),
+      ),
+      barrierDismissible:
+          false, // يمنع إغلاق الديالوغ بالضغط خارجاً لضمان عدم مقاطعة العملية
+    );
 
-    // Get.to(() => CustomerProfile(
-    //       customer: customerData,
-    //       isMine: false, // لأن الزائر طالب وليس صاحب الشركة
-    //     ));
+    statusRequest = StatusRequest.loading;
+    print(
+        "=====goToCustomerProfile=========MyOrdersControllerImp================-*-Controller $statusRequest ");
+    // update();
+
+    // استدعاء دالة جلب معلومات الشركة بالـ ID الفعلي
+    var response = await studentData.getCustomerDataById(
+        customerId, myServices.sharedPreferences.getString("token")!);
+
+    print(
+        "=====goToCustomerProfile=========MyOrdersControllerImp======= The Response ===========* Controller $response ");
+    statusRequest = handlingData(response);
+    // 3. إغلاق ديالوغ التحميل فوراً عند انتهاء عملية الاتصال بالسيرفر (سواءً نجحت أو فشلت)
+    if (Get.isDialogOpen ?? false) {
+      Get.back();
+    }
+
+    if (StatusRequest.success == statusRequest) {
+      if (response['data'] != null) {
+        // تعبئة البيانات في الموديل بنجاح وبشكل مباشر
+        customerProfileModel = CustomerProfileModel.fromJson(response['data']);
+
+        // الانتقال لصفحة البروفايل وتمرير الموديل
+        Get.to(() => CustomerProfile(
+              customer: customerProfileModel!,
+              isMine: false, // الزائر طالب
+            ));
+      } else {
+        statusRequest = StatusRequest.none;
+      }
+    } else {
+      statusRequest = StatusRequest.none;
+      // إظهار رسالة تنبيه سريعة في حال فشل الاتصال بالشبكة
+      Get.snackbar(
+        "خطأ في الاتصال",
+        "تعذر جلب معلومات العميل، يرجى التحقق من الإنترنت وإعادة المحاولة",
+        backgroundColor: Colors.red,
+        colorText: Colors.white,
+        snackPosition: SnackPosition.BOTTOM,
+      );
+      statusRequest = StatusRequest.none;
+    }
+    update();
+    print(
+        "****goToCustomerProfile****MyOrdersControllerImp****************** *-*-* $statusRequest");
   }
 
   @override

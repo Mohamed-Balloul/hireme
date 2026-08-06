@@ -45,8 +45,8 @@ class SavedPostCard extends StatelessWidget {
                   InkWell(
                     onTap: () {
                       // استدعاء دالة الانتقال من المتحكم
-                      controller
-                          .goToCompanyProfile(companiesPostModel.companyName!);
+                      // controller.goToCompanyProfile(
+                      //     companiesPostModel.companyId.toString());
                     },
                     child: CircleAvatar(
                       radius: 22,
@@ -72,8 +72,8 @@ class SavedPostCard extends StatelessWidget {
                         InkWell(
                           onTap: () {
                             // استدعاء دالة الانتقال من المتحكم
-                            controller.goToCompanyProfile(
-                                companiesPostModel.companyName!);
+                            // controller.goToCompanyProfile(
+                            //     companiesPostModel.companyId.toString());
                           },
                           child: Text(
                             // "$companyName • $timePosted",
@@ -151,18 +151,18 @@ class SavedPostCard extends StatelessWidget {
                         items: companiesPostModel.requirements),
                     ListSection(
                         title: "الميزات:", items: companiesPostModel.benefits),
-                    if (companiesPostModel.additionalDetails != null) ...[
-                      const SizedBox(height: 10),
-                      Text(
-                        "تفاصيل إضافية:",
-                        style: const TextStyle(
-                            fontWeight: FontWeight.bold, fontSize: 14),
-                      ),
-                      Text(
-                        companiesPostModel.additionalDetails!,
-                        style: TextStyle(fontSize: 13, color: Colors.grey[800]),
-                      ),
-                    ],
+                    // if (companiesPostModel.additionalDetails != null) ...[
+                    //   const SizedBox(height: 10),
+                    //   Text(
+                    //     "تفاصيل إضافية:",
+                    //     style: const TextStyle(
+                    //         fontWeight: FontWeight.bold, fontSize: 14),
+                    //   ),
+                    //   Text(
+                    //     companiesPostModel.additionalDetails!,
+                    //     style: TextStyle(fontSize: 13, color: Colors.grey[800]),
+                    //   ),
+                    // ],
                     const SizedBox(height: 10),
                   ],
                   // زر (عرض المزيد / عرض أقل) - التحسين هنا
@@ -220,73 +220,73 @@ class SavedPostCard extends StatelessWidget {
               ),
 
             // ================= 4. إحصائيات وتفاعل (لوحة التحكم) =================
-            Container(
-              padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
-              decoration: BoxDecoration(
-                border: Border(top: BorderSide(color: Colors.grey.shade100)),
-              ),
-              child: Row(
-                mainAxisAlignment: MainAxisAlignment.spaceBetween,
-                children: [
-                  // عدد المتقدمين (الجزء الأهم للشركة)
-                  Row(
-                    children: [
-                      Container(
-                        padding: const EdgeInsets.all(6),
-                        decoration: BoxDecoration(
-                          color: AppColor.primaryColor.withOpacity(0.1),
-                          shape: BoxShape.circle,
-                        ),
-                        child: const Icon(Icons.people_alt_outlined,
-                            size: 16, color: AppColor.primaryColor),
-                      ),
-                      const SizedBox(width: 8),
-                      RichText(
-                        text: TextSpan(
-                          style: const TextStyle(
-                              color: Colors.black87,
-                              fontFamily: 'Cairo'), // تأكد من نوع الخط
-                          children: [
-                            TextSpan(
-                                // text: "$applicantsCount ",
-                                text: "${companiesPostModel.applicants} ",
-                                style: const TextStyle(
-                                    fontWeight: FontWeight.bold)),
-                            const TextSpan(
-                                text: "متقدم للوظيفة",
-                                style: TextStyle(
-                                    fontSize: 12, color: Colors.grey)),
-                          ],
-                        ),
-                      ),
-                    ],
-                  ),
+            // Container(
+            //   padding: const EdgeInsets.symmetric(horizontal: 15, vertical: 12),
+            //   decoration: BoxDecoration(
+            //     border: Border(top: BorderSide(color: Colors.grey.shade100)),
+            //   ),
+            //   child: Row(
+            //     mainAxisAlignment: MainAxisAlignment.spaceBetween,
+            //     children: [
+            //       // عدد المتقدمين (الجزء الأهم للشركة)
+            //       Row(
+            //         children: [
+            //           Container(
+            //             padding: const EdgeInsets.all(6),
+            //             decoration: BoxDecoration(
+            //               color: AppColor.primaryColor.withOpacity(0.1),
+            //               shape: BoxShape.circle,
+            //             ),
+            //             child: const Icon(Icons.people_alt_outlined,
+            //                 size: 16, color: AppColor.primaryColor),
+            //           ),
+            //           const SizedBox(width: 8),
+            //           RichText(
+            //             text: TextSpan(
+            //               style: const TextStyle(
+            //                   color: Colors.black87,
+            //                   fontFamily: 'Cairo'), // تأكد من نوع الخط
+            //               children: [
+            //                 TextSpan(
+            //                     // text: "$applicantsCount ",
+            //                     text: "${companiesPostModel.applicants} ",
+            //                     style: const TextStyle(
+            //                         fontWeight: FontWeight.bold)),
+            //                 const TextSpan(
+            //                     text: "متقدم للوظيفة",
+            //                     style: TextStyle(
+            //                         fontSize: 12, color: Colors.grey)),
+            //               ],
+            //             ),
+            //           ),
+            //         ],
+            //       ),
 
-                  // زر ارسال الطلبات
-                  InkWell(
-                    onTap: () {
-                      //
-                      controller.goToSendRequestToCompany(companiesPostModel);
-                    },
-                    child: Container(
-                      padding: const EdgeInsets.symmetric(
-                          horizontal: 15, vertical: 8),
-                      decoration: BoxDecoration(
-                        color: AppColor.primaryColor,
-                        borderRadius: BorderRadius.circular(20),
-                      ),
-                      child: const Text(
-                        "إرسال طلب",
-                        style: TextStyle(
-                            color: Colors.white,
-                            fontSize: 12,
-                            fontWeight: FontWeight.bold),
-                      ),
-                    ),
-                  )
-                ],
-              ),
-            ),
+            //       // زر ارسال الطلبات
+            //       InkWell(
+            //         onTap: () {
+            //           //
+            //           controller.goToSendRequestToCompany(companiesPostModel);
+            //         },
+            //         child: Container(
+            //           padding: const EdgeInsets.symmetric(
+            //               horizontal: 15, vertical: 8),
+            //           decoration: BoxDecoration(
+            //             color: AppColor.primaryColor,
+            //             borderRadius: BorderRadius.circular(20),
+            //           ),
+            //           child: const Text(
+            //             "إرسال طلب",
+            //             style: TextStyle(
+            //                 color: Colors.white,
+            //                 fontSize: 12,
+            //                 fontWeight: FontWeight.bold),
+            //           ),
+            //         ),
+            //       )
+            //     ],
+            //   ),
+            // ),
           ],
         ),
       );

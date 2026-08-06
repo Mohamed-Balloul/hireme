@@ -220,8 +220,8 @@ class CustomerProfileModel {
           "أبحث عن مبرمجين ومطورين موهوبين للعمل على مشاريع برمجية جديدة.",
 
       city: profile?['address'] ?? "Cairo, Egypt",
-      github: profile?['github'] ?? "https://github.com",
-      linkedIn: profile?['linkedin'] ?? "https://linkedin.com",
+      github: profile?['git_link'] ?? "https://github.com",
+      linkedIn: profile?['linked_link'] ?? "https://linkedin.com",
 
       educationInfo: eduMap,
     );
